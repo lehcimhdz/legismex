@@ -56,3 +56,13 @@ pytest tests/
 *   **[EN DESARROLLO]** Módulo de Iniciativas y Legisladores (Extracción detallada de Perfiles y Votaciones).
 *   Integración con Diario Oficial de la Federación (DOF).
 *   Soporte para Gaceta Parlamentaria.
+
+## Instalación desde GitHub
+
+Si deseas instalar y usar la biblioteca directamente en otro proyecto sin clonarla, puedes hacerlo instalándola mediante `pip` apuntando a tu repositorio de GitHub:
+
+```bash
+pip install git+https://github.com/lehcimhdz/legismex.git
+```
+
+*Nota: Asegúrate de tener Git instalado en el ambiente donde vas a ejecutar el comando `pip install`.*
