@@ -27,31 +27,46 @@ source .venv/bin/activate
 pip install -e '.[dev]'
 ```
 
-## Ejemplo de Uso
+## Uso Detallado (API)
 
+A continuación se explican las 3 funciones principales expuestas por `GacetaClient`. Todas retornan objetos de **Pydantic**, por lo que puedes acceder a sus datos como atributos (ej. `resultado.fecha`) o convertirlos a diccionarios con `.model_dump()`.
+
+### 1. Obtener Periodos de Votación
+Extrae el índice histórico de todos los periodos registrados en la Gaceta (Ordinarios, Extraordinarios, etc.).
 ```python
 from legismex.gaceta import GacetaClient
 
 client = GacetaClient()
-
-# -- 1. Explorar Periodos de Votación --
 periodos = client.get_periodos_votacion()
+
 ultimo = periodos[0]
 print(f"[{ultimo.legislatura}] {ultimo.nombre}")
+```
+*   **Retorna:** Una lista de objetos `PeriodoVotacion`.
 
-# -- 2. Obtener el Detalle Numérico de una Asamblea --
+### 2. Descargar Votaciones por Periodo
+Extrae el detalle de cada votación ocurrida en un periodo específico (asuntos tratados, quién propuso, actas y el resultado numérico de la votación).
+```python
+# Usamos el URL base del periodo obtenido en el paso anterior
 vots = client.get_votaciones_por_periodo(ultimo.url_base)
+
 for v in vots[:3]:
     print(f"{v.fecha}: {v.votos_favor} A Favor, {v.votos_contra} En Contra")
-    print(v.asunto)
+    print(f"Dictamen: {v.url_pdf}")
+```
+*   **Retorna:** Una lista de objetos `VotacionDetalle`.
 
-### 3. Buscar Iniciativas/Asuntos Históricos por Palabra Clave
+### 3. Buscar Iniciativas/Asuntos por Palabra Clave
+Utiliza el motor de búsqueda interno (HTDIG) de la Gaceta para encontrar menciones de cualquier término en todos los diarios y gacetas históricas. Ideal para "Sub-Scrapping".
 ```python
+# Busca la palabra "seguridad" en la Legislatura 66
 resultados = client.buscar_palabra_clave("seguridad", legislatura="66")
+
 for r in resultados[:3]:
     print(f"Contexto: {r.contexto}")
     print(f"Descargar PDF: {r.url_pdf}")
 ```
+*   **Retorna:** Una lista de objetos `ResultadoBusqueda`.
 
 ## Referencia de Modelos (Pydantic)
 
