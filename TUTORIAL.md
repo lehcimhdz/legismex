@@ -109,7 +109,35 @@ for i, res in enumerate(resultados[:2], 1):
 
 ---
 
-## 💾 Paso 5: Exportando Datos para Análisis (con Pandas)
+## 📅 Paso 5: Consultar Iniciativas y su Estatus
+
+Otra función clave es extraer el catálogo de iniciativas que presentan los diputados o el Ejecutivo, junto con su estado (turnada, dictaminada, desechada). Con esto, en lugar de descargar periodo por periodo, interactúas con la base de datos de iniciativas por Legislatura.
+
+Por defecto, la función busca en la Legislatura 66 y trae "Todas" (`origen="T"`).
+
+```python
+print("\nObteniendo el catálogo de iniciativas recientes...")
+iniciativas = client.obtener_iniciativas(legislatura="66", origen="T")
+
+print(f"Se encontraron {len(iniciativas)} iniciativas registradas.")
+
+# Inspeccionemos las primeras dos:
+for i, ini in enumerate(iniciativas[:2], 1):
+    print(f"\nIniciativa #{i}")
+    print(f"Fecha:       {ini.fecha_presentacion}")
+    print(f"Asunto:      {ini.titulo[:100]}...") # Truncamos el título largo
+    print(f"Promovido:   {ini.promovente}")
+    print(f"Trámite:     {ini.tramite_o_estado}")
+    print(f"Dictaminada: {'✅ Sí' if ini.dictaminada else '⏳ No'}")
+    if ini.url_gaceta:
+        print(f"Enlace Web:  {ini.url_gaceta}")
+```
+
+Este tipo de listado resulta muy práctico para crear rastreadores que te notifiquen cuando una iniciativa importante finalmente es votada y pasa de estar `Turnada` a ser declarada como `Dictaminada` e incorporada a la ley.
+
+---
+
+## 💾 Paso 6: Exportando Datos para Análisis (con Pandas)
 
 Ya que `legismex` usa **Pydantic**, convertir las respuestas a formatos tabulares para machine learning o visualización de datos es increíblemente fácil.
 
@@ -121,6 +149,7 @@ import pandas as pd
 
 # 1. Convertimos la lista de objetos Pydantic a una lista de diccionarios
 datos_para_df = [v.model_dump() for v in votaciones]
+# (Podrías hacer lo mismo para `iniciativas` o `resultados` de búsqueda)
 
 # 2. Creamos el DataFrame de Pandas
 df = pd.DataFrame(datos_para_df)
