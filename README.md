@@ -45,12 +45,36 @@ for v in vots[:3]:
     print(f"{v.fecha}: {v.votos_favor} A Favor, {v.votos_contra} En Contra")
     print(v.asunto)
 
-# -- 3. Buscar Iniciativas/Asuntos Históricos por Palabra Clave --
+### 3. Buscar Iniciativas/Asuntos Históricos por Palabra Clave
+```python
 resultados = client.buscar_palabra_clave("seguridad", legislatura="66")
 for r in resultados[:3]:
     print(f"Contexto: {r.contexto}")
     print(f"Descargar PDF: {r.url_pdf}")
 ```
+
+## Referencia de Modelos (Pydantic)
+
+La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
+
+*   **`PeriodoVotacion`**: Representa un semestre o lapso (ej. "Primer periodo ordinario LXVI").
+    *   `legislatura`: int
+    *   `nombre`: str
+    *   `url_base`: str
+*   **`VotacionDetalle`**: Representa el acta de una votación particular, con saldos de votos si aplica.
+    *   `fecha`: str
+    *   `asunto`: str (Contiene la síntesis legislativa)
+    *   `url_acta`: Optional[str]
+    *   `url_pdf`: Optional[str]
+    *   `votos_favor`: Optional[int]
+    *   `votos_contra`: Optional[int]
+    *   `abstenciones`: Optional[int]
+*   **`ResultadoBusqueda`**: Un hit devuelto por el buscador interno.
+    *   `palabra_clave`: str
+    *   `fecha`: str
+    *   `contexto`: str (Extracto textual donde aparece la palabra clave)
+    *   `url_origen`: str
+    *   `url_pdf`: Optional[str]
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.
