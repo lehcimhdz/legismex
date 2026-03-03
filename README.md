@@ -1,61 +1,14 @@
 # legismex
 
-Biblioteca en Python para facilitar el trabajo legislativo en México. Extrae, estructura y provee acceso analítico a fuentes como el Sistema de Información Legislativa (SIL), permitiendo a monitoristas legislativos, analistas de datos y consultoras acceder a datos limpios.
+Biblioteca en Python para facilitar el trabajo legislativo en México. Extrae, estructura y provee acceso analítico a fuentes gubernamentales clásicas enfrentándose a retos técnicos (frames, SSL obsoletos). Pensado para monitoristas legislativos, analistas de datos y consultoras.
 
-## Características Actuales (MVP)
+## Características Actuales (MVP: Gaceta Parlamentaria)
 
-Actualmente, `legismex` ofrece soporte inicial para el **Sistema de Información Legislativa (SIL)**.
+Actualmente, `legismex` ofrece soporte para la **Gaceta Parlamentaria de la Cámara de Diputados** (`gaceta.diputados.gob.mx`), abstrayendo sus subpáginas y `framesets` antiguos en una API moderna de Pydantic.
 
-*   **Reportes de Sesión:** Listado de sesiones recientes de la Cámara de Diputados y la Cámara de Senadores (Efemérides, Iniciativas, Dictámenes, etc.).
-*   **Extracción de Detalle Estructurado:** Parsea el detalle de cada asunto discutido en sesión, separando el tipo de asunto, el título, el promovente y los trámites.
-*   **Texto para NLP:** Extrae de manera adicional el contenido crudo completo de la sesión (~190,000 caracteres por sesión) para facilitar modelos de Procesamiento de Lenguaje Natural (NLP).
-*   **Modelos Fuertes:** Usa `Pydantic` para estructurar la salida de los datos legislativos de forma estricta.
-
-## Instalación
-
-*Se requiere Python 3.9 o superior.*
-
-Puedes instalar las dependencias de desarrollo locales con:
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e '.[dev]'
-```
-
-## Ejemplo de Uso
-
-```python
-from legismex.sil import SILClient
-
-client = SILClient()
-
-# 1. Obtener lista de las sesiones más recientes en la Cámara de Senadores
-sesiones_senado = client.get_reportes_sesiones(camara="senadores")
-print(f"Última sesión: {sesiones_senado[0].fecha} - {sesiones_senado[0].tipo_sesion}")
-
-# 2. Obtener el detalle a fondo de la última asamblea
-detalle = client.get_reporte_sesion(sesiones_senado[0].url_detalle)
-
-# Asuntos Estructurados
-for asunto in detalle.asuntos[:3]:
-    print(f"[{asunto.tipo_asunto}] {asunto.promovente}: {asunto.titulo[:50]}...")
-
-# Contexto no estructurado para IA o Búsquedas textuales completas
-texto_crudo = detalle.texto_raw
-print(f"Total Caracteres Crudos: {len(texto_crudo)}")
-```
-
-## Pruebas
-
-Para correr la pequeña suite de pruebas estructurales:
-```bash
-pytest tests/
-```
-
-## Hoja de Ruta
-*   **[EN DESARROLLO]** Módulo de Iniciativas y Legisladores (Extracción detallada de Perfiles y Votaciones).
-*   Integración con Diario Oficial de la Federación (DOF).
-*   Soporte para Gaceta Parlamentaria.
+*   **Periodos de Votación:** Lista todos los periodos (ordinarios y extraordinarios) históricos de la Gaceta.
+*   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo Actas, PDFs y la síntesis del texto, sumando los votos "A Favor", "En Contra" y "Abstenciones".
+*   **Buscador HTDIG Empotrado:** Se conecta al buscador interno de la Gaceta para extraer contextos, fechas y enlaces de PDF de una "palabra clave" masivamente en distintas legislaturas.
 
 ## Instalación desde GitHub
 
@@ -66,3 +19,39 @@ pip install git+https://github.com/lehcimhdz/legismex.git
 ```
 
 *Nota: Asegúrate de tener Git instalado en el ambiente donde vas a ejecutar el comando `pip install`.*
+
+*(Para desarrollo local)*:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e '.[dev]'
+```
+
+## Ejemplo de Uso
+
+```python
+from legismex.gaceta import GacetaClient
+
+client = GacetaClient()
+
+# -- 1. Explorar Periodos de Votación --
+periodos = client.get_periodos_votacion()
+ultimo = periodos[0]
+print(f"[{ultimo.legislatura}] {ultimo.nombre}")
+
+# -- 2. Obtener el Detalle Numérico de una Asamblea --
+vots = client.get_votaciones_por_periodo(ultimo.url_base)
+for v in vots[:3]:
+    print(f"{v.fecha}: {v.votos_favor} A Favor, {v.votos_contra} En Contra")
+    print(v.asunto)
+
+# -- 3. Buscar Iniciativas/Asuntos Históricos por Palabra Clave --
+resultados = client.buscar_palabra_clave("seguridad", legislatura="66")
+for r in resultados[:3]:
+    print(f"Contexto: {r.contexto}")
+    print(f"Descargar PDF: {r.url_pdf}")
+```
+
+## Hoja de Ruta
+*   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.
+*   **[DESCARTADO POR AHORA]** Integración directa con las tablas del Sistema de Información Legislativa (SIL) dadas las altas restricciones de origen y WAF anti-scraping en subpáginas de iniciativas.

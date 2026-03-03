@@ -1,0 +1,143 @@
+from bs4 import BeautifulSoup
+import re
+from typing import List
+from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda
+
+class GacetaParser:
+    """
+    Parser especializado para extraer la información estructurada de la Gaceta Parlamentaria.
+    """
+    
+    @staticmethod
+    def parse_periodos_votacion(html: str) -> List[PeriodoVotacion]:
+        """
+        Extrae los periodos de votación (ej. 'Primer periodo ordinario LXVI') 
+        del índice de Votaciones.
+        """
+        # Suprimir warning de XML al forzar html.parser
+        soup = BeautifulSoup(html, "html.parser")
+        links = soup.find_all('a')
+        
+        periodos = []
+        for l in links:
+            href = l.get('href', '')
+            texto = l.text.strip()
+            
+            # Buscamos links que apunten a /Gaceta/Votaciones/{Leg}/vot...
+            if '/Gaceta/Votaciones/' in href and 'vot' in href:
+                # Extraer número de legislatura de la ruta, ej: /Gaceta/Votaciones/66/vot66_a1primero.html
+                partes = href.split('/')
+                try:
+                    leg = int(partes[-2]) # Penúltima carpeta suele ser la legisaltura (66, 65)
+                    periodos.append(PeriodoVotacion(
+                        legislatura=leg,
+                        nombre=texto,
+                        # Para urls que traigan el '/Gaceta/Votaciones' lo respetamos, si es relativa lo arregla el cliente
+                        url_base=href
+                    ))
+                except (ValueError, IndexError):
+                    pass
+                    
+        return periodos
+
+    @staticmethod
+    def parse_votaciones_detalle(html: str) -> List[VotacionDetalle]:
+        """
+        Extrae la lista de votaciones individuales (Asunto, Acta, PDF, Votos)
+        desde el código HTML del periodo.
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        items = soup.find_all('li')
+        votaciones = []
+        
+        for li in items:
+            texto_puro = li.text.strip()
+            
+            # Buscando links de PDFs y de Actas (tabla...php3)
+            links = li.find_all('a')
+            url_pdf = None
+            url_acta = None
+            
+            for a in links:
+                href = a.get('href', '')
+                if 'PDF' in href:
+                    url_pdf = href
+                elif 'Votaciones' in href and 'tabla' in href:
+                    if not url_acta:
+                        url_acta = href
+                        
+            # Buscar fecha superior en la jerarquía (etiqueta <font color="#CC0000">)
+            parent_ul = li.find_parent('ul')
+            fecha_text = "Desconocida"
+            if parent_ul:
+                prev = parent_ul.find_previous_sibling()
+                while prev:
+                    if prev.name == 'font':
+                        fecha_text = prev.text.strip()
+                        break
+                    prev = prev.find_previous_sibling()
+                    
+            # Extraer conteo de votos
+            fav = None
+            contra = None
+            abs = None
+            
+            m_fav = re.search(r'(\d+)\s+votos\s+(en\s+pro|a\s+favor)', texto_puro, re.IGNORECASE)
+            m_contra = re.search(r'(\d+)\s+(en\s+contra)', texto_puro, re.IGNORECASE)
+            m_abs = re.search(r'(\d+)\s+(abstenc)', texto_puro, re.IGNORECASE)
+            
+            if m_fav: fav = int(m_fav.group(1))
+            if m_contra: contra = int(m_contra.group(1))
+            if m_abs: abs = int(m_abs.group(1))
+            
+            votaciones.append(VotacionDetalle(
+                fecha=fecha_text,
+                asunto=texto_puro, # El texto crudo tiene la síntesis completa
+                url_acta=url_acta,
+                url_pdf=url_pdf,
+                votos_favor=fav,
+                votos_contra=contra,
+                abstenciones=abs
+            ))
+            
+        return votaciones
+
+    @staticmethod
+    def parse_resultados_busqueda(html: str, palabra_clave: str) -> List[ResultadoBusqueda]:
+        """
+        Extrae los resultados de búsqueda de Gaceta desde el motor interno (HTDIG).
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        resultados = []
+        dls = soup.find_all('dl')
+        
+        for dl in dls:
+            titulo = ""
+            url_origen = ""
+            contexto = ""
+            
+            dt = dl.find('dt')
+            if dt:
+                a = dt.find('a')
+                if a:
+                    titulo = a.text.strip()
+                    url_origen = a.get('href', '')
+            
+            dd = dl.find('dd')
+            if dd:
+                contexto = dd.text.strip()
+                
+            # Extraer fecha desde el título heurísticamente ("Gaceta Parlamentaria ..., miércoles 30 de abril de 2025")
+            fecha_ext = titulo.split(',')[-1].strip() if ',' in titulo else titulo
+                
+            resultados.append(ResultadoBusqueda(
+                palabra_clave=palabra_clave,
+                fecha=fecha_ext,
+                contexto=contexto,
+                url_origen=url_origen,
+                # En gaceta el PDF usualmente tiene el mismo prefijo que su origin HTML,
+                # ej: .../2025/abr/20250430-X.html -> .../2025/abr/20250430-X.pdf
+                url_pdf=url_origen.replace('.html', '.pdf') if url_origen.endswith('.html') else None
+            ))
+            
+        return resultados
