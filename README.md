@@ -9,6 +9,7 @@ Actualmente, `legismex` ofrece soporte para la **Gaceta Parlamentaria de la Cám
 *   **Periodos de Votación:** Lista todos los periodos (ordinarios y extraordinarios) históricos de la Gaceta.
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo Actas, PDFs y la síntesis del texto, sumando los votos "A Favor", "En Contra" y "Abstenciones".
 *   **Buscador HTDIG Empotrado:** Se conecta al buscador interno de la Gaceta para extraer contextos, fechas y enlaces de PDF de una "palabra clave" masivamente en distintas legislaturas.
+*   **Iniciativas:** Accede al registro de iniciativas del Ejecutivo y de Grupos Parlamentarios, obteniendo el estatus de trámite, promotores y links directos a su publicación.
 
 ## Instalación desde GitHub
 
@@ -29,7 +30,7 @@ pip install -e '.[dev]'
 
 ## Uso Detallado (API)
 
-A continuación se explican las 3 funciones principales expuestas por `GacetaClient`. Todas retornan objetos de **Pydantic**, por lo que puedes acceder a sus datos como atributos (ej. `resultado.fecha`) o convertirlos a diccionarios con `.model_dump()`.
+A continuación se explican las 4 funciones principales expuestas por `GacetaClient`. Todas retornan objetos de **Pydantic**, por lo que puedes acceder a sus datos como atributos (ej. `resultado.fecha`) o convertirlos a diccionarios con `.model_dump()`.
 
 ### 1. Obtener Periodos de Votación
 Extrae el índice histórico de todos los periodos registrados en la Gaceta (Ordinarios, Extraordinarios, etc.).
@@ -68,6 +69,20 @@ for r in resultados[:3]:
 ```
 *   **Retorna:** Una lista de objetos `ResultadoBusqueda`.
 
+### 4. Consultar Iniciativas
+Extrae el concentrado de las iniciativas presentadas, conectándose a las bases de datos por legislatura de la Gaceta Parlamentaria.
+
+```python
+# Obtener todas las iniciativas de la Legislatura 66
+iniciativas = client.obtener_iniciativas(legislatura="66", origen="T")
+
+for ini in iniciativas[:3]:
+    print(f"[{ini.fecha_presentacion}] {ini.titulo}")
+    print(f"Estado: {ini.tramite_o_estado}")
+    print(f"Dictaminada: {'Sí' if ini.dictaminada else 'No'}")
+```
+*   **Retorna:** Una lista de objetos `Iniciativa`.
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -90,6 +105,14 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `contexto`: str (Extracto textual donde aparece la palabra clave)
     *   `url_origen`: str
     *   `url_pdf`: Optional[str]
+*   **`Iniciativa`**: Registro de seguimiento de una iniciativa particular.
+    *   `fecha_presentacion`: str
+    *   `titulo`: str
+    *   `promovente`: str
+    *   `tramite_o_estado`: str
+    *   `url_gaceta`: Optional[str]
+    *   `url_pdf`: Optional[str]
+    *   `dictaminada`: bool
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.

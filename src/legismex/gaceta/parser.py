@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import re
 from typing import List
-from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda
+from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa
 
 class GacetaParser:
     """
@@ -141,3 +141,79 @@ class GacetaParser:
             ))
             
         return resultados
+
+    @staticmethod
+    def parse_iniciativas(html: str) -> List[Iniciativa]:
+        """
+        Extrae las iniciativas de los resultados de búsqueda de la Gaceta Parlamentaria.
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        iniciativas = []
+        
+        # Las iniciativas están generalmente dentro de <p><font size="-1">
+        parrafos = soup.find_all('p')
+        for p in parrafos:
+            font = p.find('font', size="-1")
+            if not font:
+                continue
+                
+            texto_html = font.decode_contents()
+            
+            # Buscar explícitamente el marcador "Fecha:" para confirmar
+            if "Fecha:" not in texto_html:
+                continue
+                
+            partes = [t.strip() for t in texto_html.split('<br/>') if t.strip()]
+            
+            # Inicializar los campos
+            fecha = ""
+            titulo = ""
+            promovente = ""
+            tramite = ""
+            url_gaceta = None
+            url_pdf = None
+            dictaminada = False
+            
+            for index, linea in enumerate(partes):
+                # Usar BeautifulSoup en cada línea para extraer los links y quitar formato (ej. <b>)
+                linea_soup = BeautifulSoup(linea, "html.parser")
+                texto_limpio = linea_soup.get_text().strip()
+                
+                if texto_limpio.startswith("Fecha:"):
+                    fecha = texto_limpio.replace("Fecha:", "").strip()
+                elif texto_limpio.startswith("Que reforma") or texto_limpio.startswith("De decreto") or texto_limpio.startswith("Que adiciona") or texto_limpio.startswith("Que expide"):
+                    titulo = texto_limpio
+                elif texto_limpio.startswith("Presentada por"):
+                    promovente = texto_limpio
+                elif ("Turnada" in texto_limpio or "Desechada" in texto_limpio or "Aprobada" in texto_limpio or "Prórroga" in texto_limpio or "Retirada" in texto_limpio or "Dictaminada" in texto_limpio):
+                    if not tramite: # Guardar el primer trámite como principal
+                        tramite = texto_limpio
+                    else: # Acumular el historial de trámites
+                        tramite += f" | {texto_limpio}"
+                        
+                    if "Dictaminada" in texto_limpio or "Aprobada" in texto_limpio:
+                        dictaminada = True
+                        
+                # Buscar enlaces
+                for a in linea_soup.find_all('a'):
+                    href = a.get('href', '')
+                    if href:
+                        # Si contiene .pdf es el PDF
+                        if href.lower().endswith('.pdf') or 'PDF' in href:
+                            url_pdf = href
+                        # Si contiene Gaceta Parlamentaria, es el documento HTML de gaceta
+                        elif 'Gaceta Parlamentaria' in a.text or '.html' in href:
+                            url_gaceta = href
+                            
+            if fecha and (titulo or promovente):
+                iniciativas.append(Iniciativa(
+                    fecha_presentacion=fecha,
+                    titulo=titulo,
+                    promovente=promovente,
+                    tramite_o_estado=tramite,
+                    url_gaceta=url_gaceta,
+                    url_pdf=url_pdf,
+                    dictaminada=dictaminada
+                ))
+                
+        return iniciativas

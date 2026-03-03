@@ -22,3 +22,13 @@ class ResultadoBusqueda(BaseModel):
     contexto: str
     url_origen: str
     url_pdf: Optional[str] = None
+
+class Iniciativa(BaseModel):
+    fecha_presentacion: str
+    titulo: str
+    promovente: str
+    tramite_o_estado: str
+    url_gaceta: Optional[str] = None
+    url_pdf: Optional[str] = None
+    dictaminada: bool = False
+

@@ -1,6 +1,6 @@
 import httpx
 from typing import Optional, Dict, List
-from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda
+from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa
 from .parser import GacetaParser
 
 class GacetaClient:
@@ -82,3 +82,40 @@ class GacetaClient:
         resultados = GacetaParser.parse_resultados_busqueda(res.text, palabra_clave=palabra)
         
         return resultados
+
+    def obtener_iniciativas(self, legislatura: str = "66", origen: str = "T") -> List[Iniciativa]:
+        """
+        Obtiene las iniciativas de la Gaceta Parlamentaria.
+        Mapea al buscador histórico interno.
+        
+        legislatura: "66", "65", etc.
+        origen: "T" (Todas), "D" (Dictaminadas), "N" (Sin dictaminar)
+        """
+        # Según el HTML de muestra el endpoint es dinámico por legislatura
+        url = f"{self.BASE_URL}/gp{legislatura}_b_QEjecutivo.php3"
+        
+        # En el HTML se usa el método POST
+        data = {
+            'origen': origen,
+            # Parámetros vacíos por defecto según el form: 'anio', 'periodo', 'tipo_perio'
+            'anio': '',
+            'periodo': '',
+            'tipo_perio': ''
+        }
+        
+        with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
+            response = client.post(url, data=data)
+            response.encoding = 'iso-8859-1'
+            response.raise_for_status()
+            
+            # El parser necesita arreglar URLs relativas tal vez
+            iniciativas = GacetaParser.parse_iniciativas(response.text)
+            
+            # Corregir URLs relativas
+            for i in iniciativas:
+                if i.url_gaceta and i.url_gaceta.startswith("/"):
+                    i.url_gaceta = f"{self.BASE_URL}{i.url_gaceta}"
+                if i.url_pdf and i.url_pdf.startswith("/"):
+                    i.url_pdf = f"{self.BASE_URL}{i.url_pdf}"
+                    
+            return iniciativas
