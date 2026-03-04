@@ -229,6 +229,22 @@ for evt in eventos:
             print(f"    URL: {doc.url}")
 ```
 
+### 12. Consultar el Periódico Oficial de Jalisco
+El portal de la Gaceta cuenta con una API subyacente que devuelve los enlaces en crudo. `legismex.jalisco_po` los recupera de manera veloz sin renderizaciones DOM inestables.
+
+```python
+from legismex.jalisco_po import JaliscoPoClient
+
+client = JaliscoPoClient()
+resultados = client.buscar_ediciones(elementos_por_pagina=1)
+
+if resultados.items:
+    # Resolvemos el detalle absoluto del primer resultado para obtener links
+    detalle = client.obtener_edicion(resultados.items[0].id_newspaper)
+    print(f"Edición: {detalle.post_date}")
+    print(f"URL de Descarga Directa: {detalle.link}")
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -320,6 +336,18 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
 *   **`JaliscoDocumento`**: Documento final adjunto o embebido (pdf, docx).
     *   `titulo`: str
     *   `url`: str
+
+#### Modelos del Periódico Oficial de Jalisco
+*   **`JaliscoPoResumen`**: Vista previa de una edición en listas o búsquedas.
+    *   `id_newspaper`: int
+    *   `date_newspaper`: str
+    *   `tomo`: str
+    *   `number`: str
+    *   `description`: str
+*   **`JaliscoPoEdicion`**: Detalle definitivo de la publicación.
+    *   `id`: int
+    *   `post_date`: str
+    *   `link`: str (Enlace directo al PDF)
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.

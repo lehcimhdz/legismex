@@ -407,6 +407,34 @@ for evt in eventos:
 
 La estructura en árbol (`Evento -> Puntos -> Documentos`) de Pydantic facilita cruzar los documentos contra su acta u orden respectivo.
 
+## 📰 Paso 13: Periódico Oficial del Estado de Jalisco
+
+Jalisco, adicionalmente a su Congreso, cuenta con el Periódico Oficial operado por el gobierno estatal. El portal (una SPA hecha en Angular) consume una veloz API JSON interconectada que `legismex` aprovecha (`legismex.jalisco_po`) para ofrecer tiempos de extracción insuperables sin procesar HTML. 
+
+```python
+from legismex.jalisco_po import JaliscoPoClient
+
+print("Buscando las ediciones más recientes...")
+client = JaliscoPoClient()
+
+# 1. Podemos buscar ediciones por palabra clave o por fecha
+paginacion = client.buscar_ediciones(elementos_por_pagina=3)
+print(f"Se encontraron un total de {paginacion.total} publicaciones en la BD.")
+
+# 2. Iteramos los resúmenes iniciales
+for edicion_resumen in paginacion.items:
+    print(f"\n[FECHA: {edicion_resumen.date_newspaper}] - Tomo {edicion_resumen.tomo}")
+    print(f"Descripción: {edicion_resumen.description[:50]}...")
+    
+    # 3. Solicitamos el detalle cruzando el ID único para extraer el archivo PDF
+    detalle_completo = client.obtener_edicion(edicion_resumen.id_newspaper)
+    
+    if detalle_completo.link:
+        print(f" -> Enlace oficial al PDF: {detalle_completo.link}")
+```
+
+La asombrosa velocidad de esta API te permite escanear la hemeroteca e indexar PDFs completos fácilmente.
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
