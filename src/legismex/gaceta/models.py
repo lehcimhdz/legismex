@@ -45,3 +45,16 @@ class Dictamen(BaseModel):
     url_gaceta: Optional[str] = None
     url_pdf: Optional[str] = None
 
+class DocumentoGaceta(BaseModel):
+    fecha_o_titulo: str
+    url_documento: str
+
+class Proposicion(BaseModel):
+    fecha_presentacion: str
+    titulo: str
+    promovente: str
+    tramite_o_estado: str
+    url_gaceta: Optional[str] = None
+    url_pdf: Optional[str] = None
+    aprobada: bool = False
+

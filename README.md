@@ -9,7 +9,8 @@ Actualmente, `legismex` ofrece soporte para la **Gaceta Parlamentaria de la Cám
 *   **Periodos de Votación:** Lista todos los periodos (ordinarios y extraordinarios) históricos de la Gaceta.
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo Actas, PDFs y la síntesis del texto, sumando los votos "A Favor", "En Contra" y "Abstenciones".
 *   **Buscador HTDIG Empotrado:** Se conecta al buscador interno de la Gaceta para extraer contextos, fechas y enlaces de PDF de una "palabra clave" masivamente en distintas legislaturas.
-*   **Iniciativas:** Accede al registro de iniciativas del Ejecutivo y de Grupos Parlamentarios, obteniendo el estatus de trámite, promotores y links directos a su publicación.
+*   **Iniciativas, Dictámenes y Proposiciones:** Accede al registro de asuntos presentados y en comisiones, obteniendo el estatus de trámite, promotores y links directos a su publicación.
+*   **Documentos Estáticos (Actas, Acuerdos, Agendas, Asistencias):** Escrapeo rápido y ordenado del listado general histórico de la Gaceta Parlamentaria de estos instrumentos.
 
 ## Instalación desde GitHub
 
@@ -96,6 +97,21 @@ for d in dictamenes[:2]:
 ```
 *   **Retorna:** Una lista de objetos `Dictamen`.
 
+### 6. Extraer Proposiciones, Actas, Asistencias, Acuerdos y Agendas
+`legismex` también provee métodos de extracción limpia para documentos genéricos, así como búsqueda avanzada de proposiciones con punto de acuerdo:
+
+```python
+# Buscar proposiciones que hablen de 'salud' en la L66
+propos = client.buscar_proposiciones(legislatura="66", palabra_clave="salud")
+
+# Obtener listado estático de URLs hacia actas de Pleno o Acuerdos
+actas = client.obtener_actas(legislatura="66")
+asistencias = client.obtener_asistencias()
+
+print(f"Total proposiciones de salud: {len(propos)}")
+print(f"Total actas registradas: {len(actas)}")
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -118,7 +134,8 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `tramites`: str
     *   `url_gaceta`: Optional[str]
     *   `url_pdf`: Optional[str]
-    *   `abstenciones`: Optional[int]
+*   **`Proposicion`**: Similar a Iniciativa, con datos como: `fecha_presentacion`, `titulo`, `promovente`, `tramite_o_estado`, `aprobada`, `url_gaceta`, `url_pdf`.
+*   **`DocumentoGaceta`**: Enlace estático para Asistencias, Agendas o Actas sumamente sencillo (`fecha_o_titulo`, `url_documento`).
 *   **`ResultadoBusqueda`**: Un hit devuelto por el buscador interno.
     *   `palabra_clave`: str
     *   `fecha`: str

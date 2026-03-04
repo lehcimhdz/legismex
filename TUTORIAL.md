@@ -170,7 +170,32 @@ if dictamenes:
 
 ---
 
-## 💾 Paso 6: Exportando Datos para Análisis (con Pandas)
+## 6. Proposiciones y Documentos Estáticos (Actas, Acuerdos, Agendas, Asistencias)
+
+La Gaceta también cuenta con un buscador idéntico para **Proposiciones con punto de acuerdo** y directorios históricos en formato de texto.
+
+```python
+from legismex.gaceta import GacetaClient
+client = GacetaClient()
+
+# 1. Proposiciones
+proposiciones = client.buscar_proposiciones(legislatura="66", palabra_clave="salud")
+print(f"Proposiciones encontradas: {len(proposiciones)}")
+if proposiciones:
+    print(proposiciones[0].titulo)
+
+# 2. Documentos estáticos (Devuelven nombre/fecha y link)
+actas = client.obtener_actas(legislatura="66")
+acuerdos = client.obtener_acuerdos(legislatura="66")
+agendas = client.obtener_agendas()
+asistencias = client.obtener_asistencias()
+
+print(f"Primer acta disponible: {actas[0].fecha_o_titulo} ({actas[0].url_documento})")
+```
+
+---
+
+## 💾 Paso 7: Exportando Datos para Análisis (con Pandas)
 
 Ya que `legismex` usa **Pydantic**, convertir las respuestas a formatos tabulares para machine learning o visualización de datos es increíblemente fácil.
 

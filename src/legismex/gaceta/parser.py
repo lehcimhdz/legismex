@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import re
 from typing import List
-from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa, BaseDictamenes, Dictamen
+from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa, BaseDictamenes, Dictamen, DocumentoGaceta, Proposicion
 
 class GacetaParser:
     """
@@ -314,3 +314,111 @@ class GacetaParser:
                 ))
                 
         return dictamenes
+
+    @staticmethod
+    def parse_documentos_gaceta(html: str, base_url: str) -> List[DocumentoGaceta]:
+        """
+        Extrae un listado genérico de enlaces a documentos estáticos
+        (Actas, Acuerdos, Agendas, Asistencias).
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        docs = []
+        
+        # Muchas veces estos listados son puras etiquetas <a> sueltas
+        for a in soup.find_all('a', href=True):
+            texto = a.get_text().strip()
+            href = a['href'].strip()
+            
+            # Evitar anclajes internos de la página o correos
+            if not href or href.startswith('#') or href.startswith('mailto:') or href.startswith('javascript:'):
+                continue
+                
+            # Evitar enlaces repetitivos de navegación superior
+            if texto.lower() in ["home page", "búsquedas", "busca", "regresar", "gaceta parlamentaria"]:
+                continue
+                
+            # Algunos href vienen con "file://..." en Gaceta, limpiar si pasa
+            if href.startswith('http'):
+                url_doc = href
+            else:
+                if href.startswith('/'):
+                    url_doc = base_url + href
+                else:
+                    url_doc = base_url + "/" + href
+                    
+            docs.append(DocumentoGaceta(
+                fecha_o_titulo=texto if texto else "Documento sin título",
+                url_documento=url_doc
+            ))
+            
+        return docs
+
+    @staticmethod
+    def parse_proposiciones(html: str) -> List[Proposicion]:
+        """
+        Extrae proposiciones del buscador HTDIG (Estructura casi idéntica a Inicativas).
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        propos = []
+        html_str = str(soup)
+        
+        # Igual que iniciativas, separar por "<b>Fecha:</b>" por HTML malformado
+        chunks = html_str.split('<b>Fecha:</b>')
+        for chunk in chunks[1:]:
+            partes = re.split(r'(?i)<br\s*/?>', chunk)
+            if not partes: continue
+            
+            fecha = BeautifulSoup(partes[0], "html.parser").get_text().strip().split('<')[0].strip()
+            
+            titulo = ""
+            promotores = ""
+            tramite = ""
+            aprobada = False
+            url_gaceta = None
+            url_pdf = None
+            
+            for idx, linea in enumerate(partes[1:]):
+                linea_soup = BeautifulSoup(linea, "html.parser")
+                texto_limpio = linea_soup.get_text().strip()
+                
+                if texto_limpio.startswith("Con punto de") or texto_limpio.startswith("Proposición"):
+                    if not titulo:
+                        titulo = texto_limpio
+                elif texto_limpio.startswith("Presentad") or texto_limpio.startswith("Suscrit"):
+                    if not promotores:
+                        promotores = texto_limpio
+                elif texto_limpio and not texto_limpio.startswith("<!--") and "Fecha:" not in texto_limpio:
+                    if not tramite:
+                        tramite = texto_limpio
+                    else:
+                        tramite += f" | {texto_limpio}"
+                        
+                    if "Aprobada" in texto_limpio or "aprobada" in texto_limpio:
+                        aprobada = True
+
+                for a in linea_soup.find_all('a'):
+                    href = a.get('href', '')
+                    if href:
+                        if href.lower().endswith('.pdf') or 'PDF' in href:
+                            url_pdf = href
+                        elif 'Gaceta' in a.text or '.html' in href or '.php3' in href:
+                            if not url_gaceta or ('Gaceta' in a.text and '.pdf' not in href):
+                                url_gaceta = href
+
+            if fecha and titulo:
+                # Limpiar residuos HTML y ruidos de búsqueda HTDIG
+                tramite = re.sub(r'<!--.*?-->', '', tramite).strip()
+                tramite = BeautifulSoup(tramite, "html.parser").get_text()
+                tramite = re.sub(r'Se encontró.*', '', tramite, flags=re.IGNORECASE).strip()
+                
+                propos.append(Proposicion(
+                    fecha_presentacion=fecha,
+                    titulo=titulo,
+                    promovente=promotores if promotores else "No especificado",
+                    tramite_o_estado=tramite if tramite else "Sin trámite registrado",
+                    url_gaceta=url_gaceta,
+                    url_pdf=url_pdf,
+                    aprobada=aprobada
+                ))
+                
+        return propos

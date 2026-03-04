@@ -2,7 +2,7 @@ import httpx
 from typing import Optional, Dict, List
 from bs4 import BeautifulSoup
 
-from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa, BaseDictamenes, Dictamen
+from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa, BaseDictamenes, Dictamen, DocumentoGaceta, Proposicion
 from .parser import GacetaParser
 
 class GacetaClient:
@@ -175,3 +175,44 @@ class GacetaClient:
                 
         except httpx.RequestError as exc:
             raise Exception(f"Error de red al conectar con el buscador de dictámenes de la Gaceta: {exc}")
+
+    def buscar_proposiciones(self, legislatura: str = "66", palabra_clave: str = "") -> List[Proposicion]:
+        """
+        Busca proposiciones con punto de acuerdo en la Gaceta Parlamentaria.
+        """
+        url = f"https://gaceta.diputados.gob.mx/base/propos/{legislatura}/gp{legislatura}_bp_encuentra.php3"
+        data = {
+            "texto": palabra_clave
+        }
+        try:
+            with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
+                response = client.post(url, data=data)
+                response.encoding = 'iso-8859-1'
+                response.raise_for_status()
+                
+                propos = GacetaParser.parse_proposiciones(response.text)
+                return propos
+        except httpx.RequestError as exc:
+            raise Exception(f"Error al conectar con la Gaceta (Proposiciones): {exc}")
+
+    def obtener_actas(self, legislatura: str = "66") -> List[DocumentoGaceta]:
+        url = f"https://gaceta.diputados.gob.mx/gp{legislatura}_actas.html"
+        res = self._get(url)
+        return GacetaParser.parse_documentos_gaceta(res.text, "https://gaceta.diputados.gob.mx")
+
+    def obtener_acuerdos(self, legislatura: str = "66") -> List[DocumentoGaceta]:
+        url = f"https://gaceta.diputados.gob.mx/gp{legislatura}_acuerdos.html"
+        res = self._get(url)
+        return GacetaParser.parse_documentos_gaceta(res.text, "https://gaceta.diputados.gob.mx")
+
+    def obtener_agendas(self) -> List[DocumentoGaceta]:
+        # El índice de agendas es histórico y principal
+        url = "https://gaceta.diputados.gob.mx/gp_agendas.html"
+        res = self._get(url)
+        return GacetaParser.parse_documentos_gaceta(res.text, "https://gaceta.diputados.gob.mx")
+
+    def obtener_asistencias(self) -> List[DocumentoGaceta]:
+        # El índice de asistencias es histórico y principal
+        url = "https://gaceta.diputados.gob.mx/gp_asistencias.html"
+        res = self._get(url)
+        return GacetaParser.parse_documentos_gaceta(res.text, "https://gaceta.diputados.gob.mx")
