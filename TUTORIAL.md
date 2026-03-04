@@ -265,6 +265,34 @@ print(df.head()) # Muestra las primeras 5 filas en la terminal
 
 ---
 
+## 🇲🇽 Paso 9: Diario Oficial de la Federación (DOF)
+
+El **Diario Oficial de la Federación** es el órgano del Gobierno Constitucional de los Estados Unidos Mexicanos, que tiene la función de publicar en el territorio nacional, leyes, reglamentos, acuerdos, circulares, órdenes y demás actos expedidos por los poderes de la Federación, a fin de que éstos sean observados y aplicados debidamente.
+
+Con `legismex.dof` puedes obtener la publicación diaria lista para analizarse, estructurada por dependencias y secciones.
+
+```python
+from legismex.dof import DofClient
+
+dof_client = DofClient()
+edicion_hoy = dof_client.obtener_edicion_del_dia()
+
+print(f"\n--- Diario Oficial de la Federación: {edicion_hoy.fecha} ---")
+print(f"Total de Documentos de Hoy: {len(edicion_hoy.documentos)}")
+
+# A diferencia de la Gaceta, el DOF agrupa por "Sección", "Organismo" y "Dependencia".
+# Busquemos los publicados por la Secretaría de Hacienda (u otras si están disponibles hoy):
+for doc in edicion_hoy.documentos[:3]: # Mostramos los 3 primeros en general
+    print(f"\n[{doc.seccion}] {doc.organismo}")
+    print(f"🏛️ {doc.dependencia}")
+    print(f"📝 Decreto/Acuerdo: {doc.titulo}")
+    print(f"🔗 URL: {doc.url}")
+```
+
+La tabla diaria del DOF separa visualmente en cascada la información, por lo que el objeto `DofDocumento` hereda a qué dependencia y sección pertenece al momento de extraerse de manera fidedigna.
+
+---
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.

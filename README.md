@@ -3,9 +3,10 @@
 > Biblioteca en Python para facilitar el acceso y análisis de información legislativa en México. 🇲🇽
 
 
-### 🏛️ Soporte Multi-Cámara
+### 🏛️ Soporte Multi-Cámara e Institucional
 *   **Cámara de Diputados:** Soporte robusto para la Gaceta Parlamentaria (`gaceta.diputados.gob.mx`), abstrayendo `framesets` antiguos en una API moderna.
 *   **Senado de la República (Beta):** Integración inicial con `www.senado.gob.mx` para extraer la gaceta diaria estructurada por categorías.
+*   **Diario Oficial de la Federación:** Integración con `dof.gob.mx` extrayendo el concentrado diario por secciones y dependencias federales.
 
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
@@ -136,6 +137,25 @@ gaceta_pasada = senado.obtener_gaceta_por_url(historicas[0].url)
 print(f"Edición histórica: {gaceta_pasada.titulo_edicion}")
 ```
 
+### 8. Diario Oficial de la Federación (DOF)
+El submódulo `legismex.dof` permite raspar e instanciar en tiempo real la publicación diaria del Diario Oficial de la Federación separada elegantemente por dependencias y secciones.
+
+```python
+from legismex.dof import DofClient
+
+dof_client = DofClient()
+edicion_hoy = dof_client.obtener_edicion_del_dia()
+
+print(f"Edición: {edicion_hoy.fecha}")
+print(f"Documentos publicados hoy: {len(edicion_hoy.documentos)}")
+
+# Primer decreto
+decreto1 = edicion_hoy.documentos[0]
+print(f"[{decreto1.organismo}] {decreto1.dependencia}")
+print(f"Decreto: {decreto1.titulo}")
+print(f"URL: {decreto1.url}")
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -187,6 +207,17 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `fecha`: str
     *   `url`: str
     *   `descripcion`: str
+
+#### Modelos del DOF
+*   **`DofEdicion`**: Concentrado con todos los decretos y acuerdos del día.
+    *   `fecha`: str
+    *   `documentos`: List[DofDocumento]
+*   **`DofDocumento`**: Instancia validada de una publicación gubernamental en el DOF.
+    *   `seccion`: str
+    *   `organismo`: str
+    *   `dependencia`: str
+    *   `titulo`: str
+    *   `url`: str
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.
