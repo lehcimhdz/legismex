@@ -9,6 +9,10 @@
 *   **Diario Oficial de la Federación:** Integración con `dof.gob.mx` extrayendo el concentrado diario por secciones y dependencias federales.
 *   **Congreso de la Ciudad de México:** Rastreador especializado para recuperar y descargar PDFs pesados directos de los Diarios de Debate con barra de progreso interactivos.
 *   **Consejería de la CDMX (Gaceta Oficial):** Extrae Gacetas evadiendo la ofuscación de *ZK Framework* a través de control headless nativo con Playwright.
+*   **Congreso del Estado de México**: Extrae Iniciativas, Puntos de Acuerdo, y Pronunciamientos de la Gaceta Parlamentaria.
+*   **Periódico Oficial del Estado de México**: Permite consultar tomos y extraer documentos o secciones de las Gacetas de Gobierno publicadas históricamente.
+*   **H. Congreso del Estado Libre y Soberano de Puebla**: Recupera las ediciones mensuales de la Gaceta Legislativa de Puebla resolviendo los retos de seguridad del portal.
+*   **Periódico Oficial del Estado de Puebla**: Realiza búsquedas avanzadas en las publicaciones históricas a través de la API del Estado.
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -312,6 +316,26 @@ gacetas = client.obtener_gacetas_recientes()
 for gaceta in gacetas[:2]:
     print(f"Gaceta de {gaceta.mes} ({gaceta.legislatura})")
     print(f"Enlace PDF: {gaceta.url_pdf}")
+```
+
+### 17. Periódico Oficial de Puebla
+
+Consulte la API del Periódico Oficial y págine entre los miles de resultados disponibles:
+
+```python
+from pprint import pprint
+from legismex.puebla_po import PueblaPoClient
+
+cliente = PueblaPoClient()
+
+# Consultar la última página de publicaciones (25 por página default)
+resultado = cliente.buscar_ediciones(rango=25, pagina=1)
+
+print(f"Total histórico: {resultado.cantidad_total}")
+for edicion in resultado.ediciones[:2]:
+    print(f"Tomo: {edicion.tomo} | Num: {edicion.numero} | Sec: {edicion.seccion}")
+    print(f"URL PDF: {edicion.url_pdf}")
+    print("---")
 ```
 
 ## Referencia de Modelos (Pydantic)

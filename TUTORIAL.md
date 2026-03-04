@@ -559,6 +559,33 @@ print(f"Tomos de {primer.mes} ({primer.numero})")
 print(f"Enlace PDF Oficial: {primer.url_pdf}")
 ```
 
+## 📰 Paso 19: Periódico Oficial del Estado de Puebla
+
+El portal del Periódico Oficial del Gobierno de Puebla está dotado de un motor de búsqueda interno poderoso. A través de `legismex.puebla_po` podemos evitar hacer *scraping* visual e interactuar directamente con la Base de Datos que alimenta este motor enviando la petición al backend en formato JSON.
+
+El cliente extrae inteligentemente las propiedades de Tomo, Sección y Número devolviéndolas parseadas:
+
+```python
+from legismex.puebla_po import PueblaPoClient
+
+print("Buscando las ediciones más recientes...")
+client = PueblaPoClient()
+
+# Consultamos los 10 documentos más recientes
+paginacion = client.buscar_ediciones(rango=10, pagina=1)
+
+print(f"La base de datos de Puebla cuenta con: {paginacion.cantidad_total} documentos resguardados.")
+
+# Iteramos los resultados parseados de la primera página
+for edicion in paginacion.ediciones[:3]:
+    print(f"\n[ID: {edicion.id_publicacion}] Fecha Relativa: {edicion.fecha}")
+    print(f"Edición: Tomo {edicion.tomo} | Número {edicion.numero} | Sección {edicion.seccion}")
+    print(f"Descripción: {edicion.descripcion[:100]}...")
+    print(f" -> Enlace Oficial PDF: {edicion.url_pdf}")
+```
+
+La ventaja de este método es su velocidad casi instantánea, obteniendo miles de documentos en menos de un par de segundos.
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
