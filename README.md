@@ -14,6 +14,7 @@
 *   **Congreso de Puebla**: Análisis de las resoluciones, iniciativas y puntos de acuerdo de la Gaceta Legislativa de Puebla.
 *   **Periódico Oficial del Estado de Puebla**: Integración para el raspado del POE, mapeando la estructura JSON subyacente de su motor de búsqueda avanzado.
 *   **Congreso de Querétaro**: Integración automatizada de todas las Gacetas Históricas desde las tablas proporcionadas en el portal de la Legislatura.
+*   **Periódico Oficial de Querétaro**: Extracción inteligente de "La Sombra de Arteaga", consolidando publicaciones fragmentadas iterando sobre calendarios dinámicos.
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -327,6 +328,22 @@ client = QueretaroClient()
 gacetas = client.obtener_gacetas()
 
 print(f"Total Gacetas: {len(gacetas)}")
+```
+
+### 🌳 Querétaro - Periódico Oficial
+
+"La Sombra de Arteaga" iterando a través del compendio del año.
+
+```python
+from legismex.queretaro_po import QueretaroPoClient
+
+client = QueretaroPoClient()
+# Descarga el calendario de un año
+ediciones = client.obtener_ediciones_por_ano(2025)
+
+for edicion in ediciones[:3]:
+    print(f"Fecha: {edicion.fecha}")
+    print(f"PDFs de ese día: {len(edicion.urls_pdf)}")
 ```
 
 ### 17. Periódico Oficial de Puebla

@@ -609,6 +609,33 @@ for idx, gaceta in enumerate(gacetas[:2], 1):
 
 La facilidad de este cliente te permite tener una lista enorme de URLs apuntando directamente a PDFs estáticos para su consumo masivo.
 
+## 🌳 Paso 21: Periódico Oficial de Querétaro (La Sombra de Arteaga)
+
+El legendario periódico "La Sombra de Arteaga" utiliza un layout web antiguo estructurado en `<frameset>` y subpáginas de calendarios visuales (ej. `2025.html`). A menudo, una sola edición diaria se publica fragmentada en docenas de PDFs (Parte 1, Parte 2...).
+
+Omitiendo esta fricción analítica, `legismex.queretaro_po` compila todas las partes de una fecha específica agrupándolas en una lista segura, consolidando el documento y evitando filtraciones de datos durante el resguardo:
+
+```python
+from legismex.queretaro_po import QueretaroPoClient
+
+print("Descargando el calendario anual 2025 de La Sombra de Arteaga...")
+client = QueretaroPoClient()
+ediciones = client.obtener_ediciones_por_ano(2025)
+
+print(f"Total de Días de Publicación encontrados: {len(ediciones)}")
+
+# Las ediciones vienen ordenadas de la más reciente a la más antigua
+for idx, edicion in enumerate(ediciones[:2], 1):
+    print(f"\nPublicación #{idx} - [Fecha Formato: {edicion.fecha}]")
+    print(f"Partes totales publicadas en este día: {len(edicion.urls_pdf)}")
+    
+    # Imprimiendo los URIs de descarga directa:
+    for idx_pdf, url_pdf in enumerate(edicion.urls_pdf, 1):
+        print(f"  └─ Parte {idx_pdf}: {url_pdf}")
+```
+
+Al utilizar este cliente, los científicos de datos obtienen URIs determinísticas listas para alimentar herramientas OCR de alto volumen.
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
