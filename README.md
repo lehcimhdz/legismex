@@ -10,14 +10,14 @@
 *   **Congreso de la Ciudad de México:** Rastreador especializado para recuperar y descargar PDFs pesados directos de los Diarios de Debate con barra de progreso interactivos.
 *   **Consejería de la CDMX (Gaceta Oficial):** Extrae Gacetas evadiendo la ofuscación de *ZK Framework* a través de control headless nativo con Playwright.
 *   **Congreso del Estado de México**: Extrae Iniciativas, Puntos de Acuerdo, y Pronunciamientos de la Gaceta Parlamentaria.
-*   **Periódico Oficial del Estado de México**: Permite consultar tomos y extraer documentos o secciones de las Gacetas de Gobierno publicadas históricamente.
-*   **H. Congreso del Estado Libre y Soberano de Puebla**: Recupera las ediciones mensuales de la Gaceta Legislativa de Puebla resolviendo los retos de seguridad del portal.
-*   **Periódico Oficial del Estado de Puebla**: Realiza búsquedas avanzadas en las publicaciones históricas a través de la API del Estado.
+*   **Periódico Oficial del Estado de México**: Permite consultar tomos y documentos oficiales publicados en la "Gaceta del Gobierno".
+*   **Congreso de Puebla**: Análisis de las resoluciones, iniciativas y puntos de acuerdo de la Gaceta Legislativa de Puebla.
+*   **Periódico Oficial del Estado de Puebla**: Integración para el raspado del POE, mapeando la estructura JSON subyacente de su motor de búsqueda avanzado.
+*   **Congreso de Querétaro**: Integración automatizada de todas las Gacetas Históricas desde las tablas proporcionadas en el portal de la Legislatura.
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
 *   **Gaceta Parlamentaria del Estado de México:** Obtiene el listado completo (histórico) de gacetas parlamentarias extrayendo fechas limpias y enlaces a PDFs originales.
-*   **Congreso de Puebla:** Extrae las Gacetas Legislativas mensuales sobrepasando protecciones anti-bots (Cloudflare) con automatización headless.
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
 *   **Motores de Búsqueda (HTDIG):** Conexión directa a buscadores internos para localizar iniciativas, proposiciones y dictámenes por palabra clave.
@@ -308,14 +308,25 @@ for gaceta in gacetas_edomex[:2]:
 El Congreso de Puebla protege la vista de su Gaceta Legislativa con Cloudflare, pero a través de `legismex.puebla` (que requiere la adición `[consejeria]` / instalación de `playwright`), puedes extraer los índices mensuales automáticamente esquivando la página de comprobación:
 
 ```python
-from legismex.puebla import PueblaClient
+from legismex.puebla_po import PueblaPoClient
 
-client = PueblaClient(headless=True)
-gacetas = client.obtener_gacetas_recientes()
+client = PueblaPoClient()
+resultado = client.buscar_ediciones(rango=10, pagina=1)
 
-for gaceta in gacetas[:2]:
-    print(f"Gaceta de {gaceta.mes} ({gaceta.legislatura})")
-    print(f"Enlace PDF: {gaceta.url_pdf}")
+for gaceta in resultado.ediciones:
+    print(f"Tomo: {gaceta.tomo} | Num: {gaceta.numero} | Sec: {gaceta.seccion} -> PDF: {gaceta.url_pdf}")
+```
+
+### 🪨 Querétaro - Congreso
+Gacetas Publicadas por la LXI Legislatura (entre otras) de Querétaro.
+
+```python
+from legismex.queretaro import QueretaroClient
+
+client = QueretaroClient()
+gacetas = client.obtener_gacetas()
+
+print(f"Total Gacetas: {len(gacetas)}")
 ```
 
 ### 17. Periódico Oficial de Puebla

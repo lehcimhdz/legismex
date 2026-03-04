@@ -586,6 +586,29 @@ for edicion in paginacion.ediciones[:3]:
 
 La ventaja de este método es su velocidad casi instantánea, obteniendo miles de documentos en menos de un par de segundos.
 
+## 🏛️ Paso 20: Congreso de Querétaro (Gaceta Legislativa)
+
+El portal de la Legislatura del Estado de Querétaro expone sus Gacetas Históricas organizadas por Legislatura usando el componente *Supsystic Data Tables* de WordPress. `legismex.queretaro` procesa el HTML interactuando directamente con las filas para entregarte todos los PDFs reportados:
+
+```python
+from legismex.queretaro import QueretaroClient
+
+print("Descargando historial de Gacetas de Querétaro...")
+client = QueretaroClient()
+gacetas = client.obtener_gacetas()
+
+print(f"Total de Gacetas Históricas disponibles: {len(gacetas)}")
+
+# Inspeccionemos las primeras dos:
+for idx, gaceta in enumerate(gacetas[:2], 1):
+    print(f"\n[{gaceta.legislatura}] Gaceta #{idx}")
+    print(f"Número: {gaceta.numero}")
+    print(f"Descripción: {gaceta.descripcion}")
+    print(f"Archivo PDF: {gaceta.url_pdf}")
+```
+
+La facilidad de este cliente te permite tener una lista enorme de URLs apuntando directamente a PDFs estáticos para su consumo masivo.
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
