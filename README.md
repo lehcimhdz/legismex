@@ -5,8 +5,9 @@
 
 ### 🏛️ Soporte Multi-Cámara e Institucional
 *   **Cámara de Diputados:** Soporte robusto para la Gaceta Parlamentaria (`gaceta.diputados.gob.mx`), abstrayendo `framesets` antiguos en una API moderna.
-*   **Senado de la República (Beta):** Integración inicial con `www.senado.gob.mx` para extraer la gaceta diaria estructurada por categorías.
+*   **Senado de la República:** Integración con `www.senado.gob.mx` para extraer la gaceta diaria estructurada por categorías y el histórico.
 *   **Diario Oficial de la Federación:** Integración con `dof.gob.mx` extrayendo el concentrado diario por secciones y dependencias federales.
+*   **Congreso de la Ciudad de México:** Rastreador especializado para recuperar y descargar PDFs pesados directos de los Diarios de Debate con barra de progreso interactivos.
 
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
@@ -156,6 +157,26 @@ print(f"Decreto: {decreto1.titulo}")
 print(f"URL: {decreto1.url}")
 ```
 
+### 9. Congreso CDMX (Descargas Dinámicas con tqdm)
+El submódulo `legismex.cdmx` facilita la interacción con el portal en Bootstrap del Congreso local, permitiendo iterar tomos y descargar archivos gigantes mostrando el progreso en tu terminal visualmente.
+
+```python
+from legismex.cdmx import CdmxClient
+
+cdmx_client = CdmxClient(use_tqdm=True)
+
+# Parsear un panel pre-renderizado del congreso
+url = "https://www.congresocdmx.gob.mx/gaceta-parlamentaria-206-4.html"
+documentos = cdmx_client.obtener_gacetas_por_url(url=url)
+
+# Descargar de forma segura con barra de progreso
+primer_doc = documentos[0]
+print(f"Preparando descarga de: {primer_doc.titulo} de tamaño: {primer_doc.peso_kb} kb")
+
+ruta_local = cdmx_client.descargar_pdf(primer_doc.url_pdf, "./gaceta_cdmx.pdf")
+print(f"Guardado en {ruta_local}")
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -218,6 +239,14 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `dependencia`: str
     *   `titulo`: str
     *   `url`: str
+
+#### Modelos de la CDMX
+*   **`DocumentoCdmx`**: Representa un documento del archivo parlamentario o debate de la Ciudad de México.
+    *   `titulo`: str
+    *   `fecha`: str
+    *   `peso_kb`: float
+    *   `peso_etiqueta`: str
+    *   `url_pdf`: str
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.

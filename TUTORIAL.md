@@ -293,6 +293,48 @@ La tabla diaria del DOF separa visualmente en cascada la información, por lo qu
 
 ---
 
+## 🏙️ Paso 10: Congreso de la CDMX y Descargas Masivas
+
+El portal del Congreso de la Ciudad de México publica los Diarios de Debates y Gacetas en grandes bloques de paginación o archivos PDF que comúnmente superan los **20-40 Megabytes** dificultando su consumo silencioso. 
+
+El módulo `legismex.cdmx` soluciona esto extrayendo el *peso real del archivo* antes de iniciar la solicitud, y usa una **barra de progreso nativa en terminal (`tqdm`)** para mejorar la Experiencia de Usuario durante iteraciones largas.
+
+```python
+from legismex.cdmx import CdmxClient
+
+# El cliente usa _tqdm_ por defecto si la librería está instalada 
+cliente_cdmx = CdmxClient()
+
+print("Consultando URL de la Gaceta Parlamentaria III Legislatura...")
+url_tomo = "https://www.congresocdmx.gob.mx/gaceta-parlamentaria-206-4.html"
+
+# Aquí estamos leyendo las etiquetas <div class="alert"> del sitio de CDMX
+documentos = cliente_cdmx.obtener_gacetas_por_url(url=url_tomo)
+
+print(f"Se encontraron: {len(documentos)} PDFs para descargar.\n")
+
+if documentos:
+    primer_doc = documentos[0]
+    print(f"Título: {primer_doc.titulo}")
+    print(f"Fecha: {primer_doc.fecha}")
+    
+    # ⚠️ ADVIRTIR AL USUARIO DEL PESO ⚠️
+    print(f"Tamaño reportado: {primer_doc.peso_etiqueta} ({primer_doc.peso_kb} kb)")
+    print(f"Obtenido desde: {primer_doc.url_pdf}")
+
+    print("\n--- INICIANDO DESCARGA ---")
+    
+    # Esta función renderizará una barra verde en la consola con la velocidad
+    # de descarga, tiempo restante estimado y tamaño en MB reales.
+    ruta_final = cliente_cdmx.descargar_pdf(
+        url_pdf=primer_doc.url_pdf, 
+        ruta_destino='./mi_gaceta_cdmx.pdf'
+    )
+    
+    if ruta_final:
+        print(f"¡El archivo pesado se guardó en {ruta_final}!")
+```
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
