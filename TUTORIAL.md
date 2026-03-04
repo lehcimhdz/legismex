@@ -220,6 +220,14 @@ if iniciativas_hoy:
     print("\n[EJEMPLO DE INICIATIVA EN SENADO]")
     print(f"Título: {primera_ini.titulo}")
     print(f"URL del documento: {primera_ini.url}")
+
+# Extraer del calendario histórico del Senado
+historicas = senado_client.get_calendario_gacetas(year=2021, month=10)
+print(f"\nSe publicaron {len(historicas)} Gacetas en Octubre de 2021.")
+
+# Descargar desde URL histórica
+gaceta_pasada = senado_client.obtener_gaceta_por_url(historicas[0].url)
+print(f"Edición histórica descargada: {gaceta_pasada.titulo_edicion}")
 ```
 
 ---

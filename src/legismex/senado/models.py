@@ -10,6 +10,15 @@ class DocumentoSenado(BaseModel):
     categoria: str = Field(description="Categoría en la que fue listado (ej. Iniciativas, Proposiciones, etc.)")
 
 
+class ReferenciaGaceta(BaseModel):
+    """
+    Referencia a una gaceta histórica extraída del calendario del Senado.
+    """
+    fecha: str = Field(description="Día del mes o título descriptivo de la gaceta")
+    url: str = Field(description="Enlace absoluto hacia la gaceta histórica")
+    descripcion: str = Field(description="Descripción adicional si existe (ej. Sesión #1 del 26 de octubre...)")
+
+
 class GacetaSenado(BaseModel):
     """
     Concentrado general de una publicación (día) de la Gaceta del Senado.

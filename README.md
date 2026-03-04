@@ -115,7 +115,7 @@ print(f"Total actas registradas: {len(actas)}")
 ```
 
 ### 7. Gaceta del Senado (Beta)
-El submódulo `legismex.senado` permite interactuar con el portal de la Cámara Alta, extrayendo los documentos de la gaceta del día estructurados por categorías.
+El submódulo `legismex.senado` permite interactuar con el portal de la Cámara Alta, extrayendo los documentos de la gaceta del día estructurados por categorías y consultando el archivo histórico.
 
 ```python
 from legismex.senado import SenadoClient
@@ -126,6 +126,14 @@ gaceta = senado.obtener_gaceta_del_dia(legislatura="66")
 print(f"Edición: {gaceta.titulo_edicion}")
 print(f"Total Documentos: {len(gaceta.documentos)}")
 print(gaceta.documentos[0].categoria) # ej. "Comunicaciones de Comisiones"
+
+# Extraer el calendario histórico
+historicas = senado.get_calendario_gacetas(year=2021, month=10)
+print(f"Gacetas en Oct 2021: {len(historicas)}")
+
+# Descargar gaceta específica desde el histórico
+gaceta_pasada = senado.obtener_gaceta_por_url(historicas[0].url)
+print(f"Edición histórica: {gaceta_pasada.titulo_edicion}")
 ```
 
 ## Referencia de Modelos (Pydantic)
@@ -168,13 +176,17 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `dictaminada`: bool
 
 #### Modelos del Senado
-*   **`GacetaSenado`**: Colección raíz de una gaceta diaria o de sesión.
+*   **`GacetaSenado`**: Colección raíz de una gaceta diaria o de sesión (histórica o reciente).
     *   `titulo_edicion`: str
     *   `documentos`: List[DocumentoSenado]
 *   **`DocumentoSenado`**: Instancia validada de un asunto publicado en Senado.
     *   `titulo`: str
     *   `url`: str
     *   `categoria`: str
+*   **`ReferenciaGaceta`**: Referencia obtenida a través del calendario histórico.
+    *   `fecha`: str
+    *   `url`: str
+    *   `descripcion`: str
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.
