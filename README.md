@@ -18,6 +18,7 @@
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   🐸 **Guanajuato**: Periódico Oficial del Estado
 *   🦋 **Michoacán**: Gaceta Parlamentaria del Congreso del Estado
+*   🦋 **Michoacán**: Periódico Oficial del Estado (archivo 1955–2025)
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -407,6 +408,25 @@ print(f"Total páginas: {total_pags}")
 for g in gacetas[:3]:
     print(f"[{g.fecha}] {g.titulo} - {g.descripcion[:60]}...")
     print(f"  PDF: {g.url_pdf}")
+```
+
+#### Michoacán - Periódico Oficial
+
+Navega el árbol WP-Filebase del Periódico Oficial de Michoacán (archivo 1955–2025) para listar años, meses, días y descargar PDFs directamente.
+
+```python
+from legismex import MichoacanPoClient
+
+po = MichoacanPoClient()
+
+# Ver años disponibles
+anios = po.obtener_anios()
+print(f"Años: {[a.nombre for a in anios[:5]]}")
+
+# Listar PDFs de Enero 2025
+archivos = po.obtener_archivos_por_fecha(2025, mes="Enero")
+for a in archivos[:3]:
+    print(f"[{a.dia}] {a.nombre} → {a.url_pdf}")
 ```
 
 ### 17. Periódico Oficial de Puebla

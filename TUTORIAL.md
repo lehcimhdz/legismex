@@ -709,3 +709,29 @@ for g in gacetas[:3]:
 ```
 
 Legislaturas disponibles: `lxxi`, `lxxii`, `lxxiii`, `lxxiv`, `lxxv`, `lxxvi`, `i-constituyente`.
+
+---
+
+## Paso 25: Periódico Oficial de Michoacán
+
+El portal `periodicooficial.michoacan.gob.mx` usa WordPress con el plugin WP-Filebase.  `MichoacanPoClient` navega el árbol AJAX (Año → Mes → Día → PDFs) cubriendo publicaciones desde 1955.
+
+```python
+from legismex import MichoacanPoClient
+
+po = MichoacanPoClient()
+
+# Listar años disponibles
+anios = po.obtener_anios()
+print(f"Años: {[a.nombre for a in anios[:5]]}")
+
+# Meses de un año
+meses = po.obtener_meses(anios[0].cat_id)  # más reciente
+print([m.nombre for m in meses])
+
+# Todos los PDFs de un mes
+archivos = po.obtener_archivos_por_fecha(2025, mes="Enero")
+for a in archivos[:3]:
+    print(f"[día {a.dia}] {a.nombre}")
+    print(f"  PDF: {a.url_pdf}")
+```
