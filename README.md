@@ -12,6 +12,7 @@
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
+*   **Gaceta Parlamentaria del Estado de México:** Obtiene el listado completo (histórico) de gacetas parlamentarias extrayendo fechas limpias y enlaces a PDFs originales.
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
 *   **Motores de Búsqueda (HTDIG):** Conexión directa a buscadores internos para localizar iniciativas, proposiciones y dictámenes por palabra clave.
@@ -283,6 +284,21 @@ for edicion in ediciones[:2]:
         print(f"URL de la Parte 1: {edicion.urls_pdf[0]}")
 ```
 
+### 15. Consultar Gaceta del Estado de México (Edomex)
+La LXI y LXII Legislatura del Estado de México aloja su gaceta en un portal moderno y unificado. Con un solo comando podemos extraer más de un centenar de ediciones:
+
+```python
+from legismex.edomex import EdomexClient
+
+client = EdomexClient()
+gacetas_edomex = client.obtener_gacetas()
+
+print(f"Total históricas: {len(gacetas_edomex)}")
+
+for gaceta in gacetas_edomex[:2]:
+    print(f"[{gaceta.fecha}] {gaceta.numero} -> {gaceta.url_pdf}")
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -401,6 +417,10 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `numero`: str
     *   `fecha`: str
     *   `urls_pdf`: List[str]
+*   **`EdomexGaceta`**: Número de Gaceta Parlamentaria del Estado de México.
+    *   `numero`: str
+    *   `fecha`: str
+    *   `url_pdf`: str
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.

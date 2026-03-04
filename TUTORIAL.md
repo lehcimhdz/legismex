@@ -486,6 +486,24 @@ for edicion in ediciones[:3]:
 
 Este encapsulamiento asegura que no pierdas secciones de un decreto que pudieran haber sido publicadas en el Apéndice o en la "Parte 04" de ese mismo día.
 
+## 🏛️ Paso 16: Histórico Extendido: Estado de México (Edomex)
+
+Las legislaturas recientes del Estado de México consolidan su estructura dentro del subdirectorio `/gacetaanteriores`, exponiendo cientos de ediciones del periodo con fechas desglosadas en múltiples nodos HTML.
+
+El submódulo simplifica todo dejándote el año, la fecha sanitizada y el enlace al PDF listo para ser almacenado:
+
+```python
+from legismex.edomex import EdomexClient
+
+client = EdomexClient()
+gacetas = client.obtener_gacetas()
+
+print(f"\nDescargados {len(gacetas)} volúmenes del Edomex.")
+reciente = gacetas[0]
+print(f"  Última Gaceta: {reciente.numero} (Publicada el {reciente.fecha})")
+print(f"  Descargar en: {reciente.url_pdf}")
+```
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
