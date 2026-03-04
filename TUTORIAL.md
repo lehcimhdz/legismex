@@ -735,3 +735,26 @@ for a in archivos[:3]:
     print(f"[día {a.dia}] {a.nombre}")
     print(f"  PDF: {a.url_pdf}")
 ```
+
+---
+
+## Paso 26: Congreso del Estado de Morelos (Documentos Legislativos)
+
+El portal del Congreso de Morelos (`congresomorelos.gob.mx`) usa WordPress con el tema Divi. Todos los documentos legislativos están en una sola página estática con enlaces PDF directos en módulos "blurb". `MorelosClient` raspa la página y categoriza los documentos por sección y periodo.
+
+```python
+from legismex import MorelosClient
+
+client = MorelosClient()
+
+# Obtener todos los documentos
+docs = client.obtener_documentos()
+print(f"Total: {len(docs)}")
+
+# Filtrar por sección
+ordenes = client.obtener_documentos(seccion="Orden-del-día")
+for o in ordenes[:3]:
+    print(f"[{o.periodo}] {o.titulo} → {o.url_pdf}")
+```
+
+Secciones disponibles: `Actas-de-sesiones-Solemnes`, `Públicas-Ordinarias`, `Diputación-Permanente`, `Orden-del-día`, `Versiones-estenográficas`, `Leyes-y-Códigos`.

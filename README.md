@@ -19,6 +19,7 @@
 *   🐸 **Guanajuato**: Periódico Oficial del Estado
 *   🦋 **Michoacán**: Gaceta Parlamentaria del Congreso del Estado
 *   🦋 **Michoacán**: Periódico Oficial del Estado (archivo 1955–2025)
+*   🌋 **Morelos**: Documentos Legislativos del Congreso (LVI Legislatura)
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -427,6 +428,26 @@ print(f"Años: {[a.nombre for a in anios[:5]]}")
 archivos = po.obtener_archivos_por_fecha(2025, mes="Enero")
 for a in archivos[:3]:
     print(f"[{a.dia}] {a.nombre} → {a.url_pdf}")
+```
+
+#### Morelos - Congreso del Estado
+
+Raspa la página de "Documentos Legislativos" del Congreso de Morelos (WordPress/Divi) extrayendo actas, órdenes del día, versiones estenográficas y legislación con sus enlaces PDF directos.
+
+```python
+from legismex import MorelosClient
+
+mor = MorelosClient()
+
+# Obtener todos los documentos legislativos (130+)
+docs = mor.obtener_documentos()
+print(f"Total: {len(docs)}")
+
+# Filtrar por sección: "Orden-del-día"
+ordenes = mor.obtener_documentos(seccion="Orden-del-día")
+for o in ordenes[:3]:
+    print(f"[{o.periodo}] {o.titulo}")
+    print(f"  PDF: {o.url_pdf}")
 ```
 
 ### 17. Periódico Oficial de Puebla
