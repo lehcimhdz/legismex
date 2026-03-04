@@ -1,19 +1,18 @@
-# legismex
+# 🏛️ legismex
 
-Biblioteca en Python para facilitar el trabajo legislativo en México. Extrae, estructura y provee acceso analítico a fuentes gubernamentales clásicas enfrentándose a retos técnicos (frames, SSL obsoletos). Pensado para monitoristas legislativos, analistas de datos y consultoras.
+> Biblioteca en Python para facilitar el acceso y análisis de información legislativa en México. 🇲🇽
 
-## Características Actuales (MVP: Gaceta Parlamentaria)
 
-Actualmente, `legismex` ofrece soporte para la **Gaceta Parlamentaria de la Cámara de Diputados** (`gaceta.diputados.gob.mx`), abstrayendo sus subpáginas y `framesets` antiguos en una API moderna de Pydantic.
+### 🏛️ Soporte Multi-Cámara
+*   **Cámara de Diputados:** Soporte robusto para la Gaceta Parlamentaria (`gaceta.diputados.gob.mx`), abstrayendo `framesets` antiguos en una API moderna.
+*   **Senado de la República (Beta):** Integración inicial con `www.senado.gob.mx` para extraer la gaceta diaria estructurada por categorías.
 
-*   **Periodos de Votación:** Lista todos los periodos (ordinarios y extraordinarios) históricos de la Gaceta.
-*   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo Actas, PDFs y la síntesis del texto, sumando los votos "A Favor", "En Contra" y "Abstenciones".
-*   **Buscador HTDIG Empotrado:** Se conecta al buscador interno de la Gaceta para extraer contextos, fechas y enlaces de PDF de una "palabra clave" masivamente en distintas legislaturas.
-*   **Iniciativas, Dictámenes y Proposiciones:** Accede al registro de asuntos presentados y en comisiones, obteniendo el estatus de trámite, promotores y links directos a su publicación.
-*   **Documentos Estáticos (Actas, Acuerdos, Agendas, Asistencias):** Escrapeo rápido y ordenado del listado general histórico de la Gaceta Parlamentaria de estos instrumentos.
+### 🛠️ Capacidades de Extracción
+*   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
+*   **Motores de Búsqueda (HTDIG):** Conexión directa a buscadores internos para localizar iniciativas, proposiciones y dictámenes por palabra clave.
+*   **Iniciativas y Seguimiento:** Obtiene el estatus de trámite, promotores y links directos (PDF/HTML) de asuntos en comisiones.
+*   **Instrumentos Legislativos:** Acceso a Actas, Acuerdos, Agendas y Asistencias de forma indexada.
 
-### Novedad: Gaceta del Senado (Beta)
-La biblioteca `legismex` ha comenzado a expandirse para soportar al **Senado de la República** (`www.senado.gob.mx`). Actualmente cuenta con un submódulo (`legismex.senado.SenadoClient`) para extraer la gaceta del día ordenada y categorizada (Iniciativas, Proposiciones, Comunicaciones, etc.).
 
 ## Instalación desde GitHub
 
