@@ -536,6 +536,29 @@ print(f"  Última Gaceta: {reciente.numero} (Publicada el {reciente.fecha})")
 print(f"  Descargar en: {reciente.url_pdf}")
 ```
 
+## 📜 Paso 18: Gaceta Legislativa de Puebla (Cloudflare Bypass)
+
+El Congreso de Puebla presenta un reto extra: la página de su gaceta cuenta con protecciones anti-bot de Cloudflare, que bloquean peticiones directas de código.
+
+`legismex` ofrece el submódulo `legismex.puebla`, que usa un navegador en el fondo (requiere tener instalada la variante de playwright) para resolver el reto de seguridad silenciosamente y entregarte la lista mensual de PDFs de la Gaceta de la LXI/LXII Legislatura:
+
+```python
+from legismex.puebla import PueblaClient
+
+client = PueblaClient(headless=True)
+
+# Esto abrirá brevemente un navegador en segundo plano (headless)
+# e interceptará automáticamente los enlaces a las gacetas mensuales.
+gacetas = client.obtener_gacetas_recientes()
+
+print(f"Se lograron extraer {len(gacetas)} meses de archivos de Gaceta.")
+
+primer = gacetas[0]
+print(f"Legislatura: {primer.legislatura} - Año: {primer.anio_legislativo}")
+print(f"Tomos de {primer.mes} ({primer.numero})")
+print(f"Enlace PDF Oficial: {primer.url_pdf}")
+```
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.

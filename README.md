@@ -13,6 +13,7 @@
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
 *   **Gaceta Parlamentaria del Estado de México:** Obtiene el listado completo (histórico) de gacetas parlamentarias extrayendo fechas limpias y enlaces a PDFs originales.
+*   **Congreso de Puebla:** Extrae las Gacetas Legislativas mensuales sobrepasando protecciones anti-bots (Cloudflare) con automatización headless.
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
 *   **Motores de Búsqueda (HTDIG):** Conexión directa a buscadores internos para localizar iniciativas, proposiciones y dictámenes por palabra clave.
@@ -299,6 +300,20 @@ for gaceta in gacetas_edomex[:2]:
     print(f"[{gaceta.fecha}] {gaceta.numero} -> {gaceta.url_pdf}")
 ```
 
+### 16. Consultar Gaceta de Puebla
+El Congreso de Puebla protege la vista de su Gaceta Legislativa con Cloudflare, pero a través de `legismex.puebla` (que requiere la adición `[consejeria]` / instalación de `playwright`), puedes extraer los índices mensuales automáticamente esquivando la página de comprobación:
+
+```python
+from legismex.puebla import PueblaClient
+
+client = PueblaClient(headless=True)
+gacetas = client.obtener_gacetas_recientes()
+
+for gaceta in gacetas[:2]:
+    print(f"Gaceta de {gaceta.mes} ({gaceta.legislatura})")
+    print(f"Enlace PDF: {gaceta.url_pdf}")
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -421,6 +436,15 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `numero`: str
     *   `fecha`: str
     *   `url_pdf`: str
+
+#### Modelos de Puebla
+*   **`PueblaGaceta`**: Gaceta legislativa mensual del Congreso de Puebla.
+    *   `mes`: str
+    *   `numero`: str
+    *   `fecha_texto`: str
+    *   `url_pdf`: HttpUrl
+    *   `legislatura`: str
+    *   `anio_legislativo`: Optional[str]
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.
