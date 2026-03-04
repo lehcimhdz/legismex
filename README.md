@@ -10,7 +10,7 @@
 *   **Congreso de la Ciudad de México:** Rastreador especializado para recuperar y descargar PDFs pesados directos de los Diarios de Debate con barra de progreso interactivos.
 *   **Consejería de la CDMX (Gaceta Oficial):** Extrae Gacetas evadiendo la ofuscación de *ZK Framework* a través de control headless nativo con Playwright.
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
-
+*   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
 *   **Motores de Búsqueda (HTDIG):** Conexión directa a buscadores internos para localizar iniciativas, proposiciones y dictámenes por palabra clave.
@@ -245,6 +245,25 @@ if resultados.items:
     print(f"URL de Descarga Directa: {detalle.link}")
 ```
 
+### 13. Consultar Iniciativas del Congreso de Nuevo León
+El H. Congreso de Nuevo León mantiene un listado ágil de las iniciativas presentadas, que `legismex.nuevoleon` consume íntegramente de una sola petición.
+
+```python
+from legismex.nuevoleon import NuevoLeonClient
+
+client = NuevoLeonClient()
+
+# Puedes obtener TODO el histórico... o filtrar por una Legislatura:
+iniciativas_lxxvii = client.obtener_iniciativas(legislatura="LXXVII")
+
+print(f"Total en LXXVII: {len(iniciativas_lxxvii)}")
+
+for ini in iniciativas_lxxvii[:2]:
+    print(f"[{ini.fecha}] Promueve: {ini.promovente}")
+    print(f"Asunto: {ini.asunto}")
+    print(f"Dictamen PDF: {ini.url_pdf}\n")
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -348,6 +367,17 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `id`: int
     *   `post_date`: str
     *   `link`: str (Enlace directo al PDF)
+
+#### Modelos de Nuevo León
+*   **`NuevoLeonIniciativa`**: Propuesta de ley de los diputados del H. Congreso de Nuevo León.
+    *   `expediente`: str
+    *   `legislatura`: str
+    *   `promovente`: str
+    *   `asunto`: str
+    *   `comision`: str
+    *   `fecha`: str
+    *   `estado`: str
+    *   `url_pdf`: Optional[str]
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.

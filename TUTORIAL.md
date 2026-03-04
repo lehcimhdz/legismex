@@ -435,6 +435,32 @@ for edicion_resumen in paginacion.items:
 
 La asombrosa velocidad de esta API te permite escanear la hemeroteca e indexar PDFs completos fácilmente.
 
+## 🤠 Paso 14: Extraer Iniciativas Históricas de Nuevo León
+
+El H. Congreso del Estado de Nuevo León alimenta su catálogo de iniciativas con un concentrado masivo. A través del submódulo `legismex.nuevoleon`, extraer los +2000 registros presentados desde legislaturas anteriores hasta la fecha toma tan solo un par de segundos, ya completamente limpios de etiquetas HTML.
+
+```python
+from legismex.nuevoleon import NuevoLeonClient
+
+print("Descargando corpus de Iniciativas de Nuevo León...")
+client = NuevoLeonClient()
+
+iniciativas = client.obtener_iniciativas()
+print(f"Se lograron mapear un total histórico de {len(iniciativas)} iniciativas.")
+
+# Si sólo nos interesa la actual legislatura "LXXVII":
+iniciativas_lxxvii = client.obtener_iniciativas(legislatura="LXXVII")
+
+for ini in iniciativas_lxxvii[:3]:
+    print(f"\nExpediente: {ini.expediente}")
+    print(f"Promovente: {ini.promovente}")
+    print(f"Asunto: {ini.asunto}")
+    print(f"Fue turnada a la comisión: {ini.comision}")
+    print(f"Enlace Oficial PDF: {ini.url_pdf}")
+```
+
+El modelo `NuevoLeonIniciativa` de Pydantic facilita su guardado inmediato en Pandas o Bases de Datos.
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
