@@ -18,6 +18,7 @@ from .guanajuato_po import GuanajuatoPoClient, GuanajuatoPoEdicion
 from .michoacan import MichoacanClient, MichoacanGaceta
 from .michoacan_po import MichoacanPoClient, MichoacanPoArchivo, MichoacanPoCategoria
 from .morelos import MorelosClient, MorelosDocumento
+from .morelos_po import MorelosPoClient, MorelosPoEjemplar
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -105,4 +106,8 @@ __all__ = [
     # Morelos - Congreso
     "MorelosClient",
     "MorelosDocumento",
+
+    # Morelos - PO
+    "MorelosPoClient",
+    "MorelosPoEjemplar",
 ]

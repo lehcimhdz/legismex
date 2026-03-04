@@ -758,3 +758,29 @@ for o in ordenes[:3]:
 ```
 
 Secciones disponibles: `Actas-de-sesiones-Solemnes`, `Públicas-Ordinarias`, `Diputación-Permanente`, `Orden-del-día`, `Versiones-estenográficas`, `Leyes-y-Códigos`.
+
+---
+
+## Paso 27: Periódico Oficial de Morelos (Tierra y Libertad)
+
+El portal `periodico.morelos.gob.mx` es una aplicación Laravel (con token CSRF) que usa DataTables server-side para listar los ejemplares del Periódico Oficial. `MorelosPoClient` maneja automáticamente el CSRF y pagina los resultados.
+
+```python
+from legismex import MorelosPoClient
+
+po = MorelosPoClient()
+
+# Ejemplares de Enero 2025
+items, total = po.obtener_ejemplares(anio=2025, mes=1)
+print(f"Total: {total}")
+for e in items[:3]:
+    print(f"#{e.numero} | {e.edicion} | {e.fecha_publicacion}")
+    print(f"  Sumario: {e.sumario[:80]}...")
+    print(f"  PDF: {e.url_pdf}")
+
+# Buscar por palabra en el sumario
+items, total = po.obtener_ejemplares(anio=2024, buscar_sumario="decreto")
+print(f"Resultados 'decreto' en 2024: {total}")
+```
+
+Endpoints internos: `POST ejemplaresFiltradosPublicoGeneral` con paginación DataTables y parámetros `anios`, `mes`, `buscarSumario`.
