@@ -38,37 +38,54 @@ class SenadoParser:
 
         lista_documentos = []
         
-        categorias = soup.find_all('div', style=re.compile(r'background-color:\s*#cfcfcf', re.I))
+        # En el Senado, los documentos están dentro de filas de la tabla principal
+        tabla = soup.select_one('section#mySection table.table-striped')
         
-        for cat_div in categorias:
-            categoria_nombre = cat_div.get_text(strip=True)
+        filas = []
+        if tabla:
+            filas = tabla.find_all('tr', recursive=False)
+            if not filas:
+                tbodys = tabla.find_all('tbody', recursive=False)
+                if tbodys:
+                    filas = tbodys[0].find_all('tr', recursive=False)
+
+        if not filas:
+            # Fallback en caso de que cambien la estructura: buscar por divs panel-body
+            filas = [div for div in soup.find_all('div', class_='panel-body') if div.find('a')]
+
+        categoria_actual = "Documento General"
+
+        for fila in filas:
+            # Si en esta fila se declara una nueva categoría, la actualizamos
+            cat_div = fila.find('div', style=re.compile(r'background-color:\s*#cfcfcf', re.I))
+            if cat_div:
+                categoria_actual = cat_div.get_text(strip=True)
             
-            cuerpo = cat_div.find_next_sibling('div', class_='panel-body')
-            if cuerpo:
-                # En el Senado, los documentos suelen estar anidados en tablas o directamente
-                enlaces = cuerpo.find_all('a', href=True)
-                for a in enlaces:
-                    url_original = a.get('href', '')
+            enlaces = fila.find_all('a', href=True)
+            for a in enlaces:
+                url_original = a.get('href', '')
+                
+                # Nos interesan principalmente los documentos de la gaceta que enlazan a 'documento/{id}'
+                if 'documento' not in url_original:
+                    continue
                     
-                    # Nos interesan principalmente los documentos de la gaceta que enlazan a 'documento/{id}'
-                    if 'documento' not in url_original:
-                        continue
-                        
-                    doc_nombre = a.get_text(strip=True)
-                    # A veces la etiqueta <a> envuelve otra etiqueta o no tiene texto directo
-                    if not doc_nombre:
-                        doc_nombre = a.parent.get_text(strip=True)
-                        
-                    url_absoluta = cls._limpiar_url(url_original)
+                doc_nombre = a.get_text(strip=True)
+                # A veces la etiqueta <a> envuelve otra etiqueta o no tiene texto directo
+                if not doc_nombre:
+                    parent = a.parent
+                    if parent:
+                        doc_nombre = parent.get_text(strip=True)
                     
-                    if doc_nombre and url_absoluta:
-                        lista_documentos.append(
-                            DocumentoSenado(
-                                titulo=doc_nombre,
-                                url=url_absoluta,
-                                categoria=categoria_nombre
-                            )
+                url_absoluta = cls._limpiar_url(url_original)
+                
+                if doc_nombre and url_absoluta:
+                    lista_documentos.append(
+                        DocumentoSenado(
+                            titulo=doc_nombre,
+                            url=url_absoluta,
+                            categoria=categoria_actual
                         )
+                    )
                         
         return GacetaSenado(
             titulo_edicion=titulo_edicion,
