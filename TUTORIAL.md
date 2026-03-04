@@ -195,7 +195,36 @@ print(f"Primer acta disponible: {actas[0].fecha_o_titulo} ({actas[0].url_documen
 
 ---
 
-## 💾 Paso 7: Exportando Datos para Análisis (con Pandas)
+## 🏛 Paso 7: La Gaceta del Senado (Beta)
+
+El Senado de la República maneja su Gaceta bajo una infraestructura web completamente distinta a la de Diputados. Para consultar la Gaceta diaria del Senado, `legismex` provee el submódulo `senado`.
+
+En la Gaceta del Senado, los documentos se agrupan por clasificaciones (ej. Iniciativas, Proposiciones, Comunicaciones, etc.).
+
+```python
+from legismex.senado import SenadoClient
+
+senado_client = SenadoClient()
+
+print("Consultando la Gaceta del Senado del día...")
+gaceta_senado = senado_client.obtener_gaceta_del_dia(legislatura="66")
+
+print(f"\nEdición Actual: {gaceta_senado.titulo_edicion}")
+print(f"Total de Documentos de Hoy: {len(gaceta_senado.documentos)}")
+
+# Mostrar el primer documento encontrado de la categoría "Iniciativas"
+iniciativas_hoy = [doc for doc in gaceta_senado.documentos if doc.categoria == 'Iniciativas']
+
+if iniciativas_hoy:
+    primera_ini = iniciativas_hoy[0]
+    print("\n[EJEMPLO DE INICIATIVA EN SENADO]")
+    print(f"Título: {primera_ini.titulo}")
+    print(f"URL del documento: {primera_ini.url}")
+```
+
+---
+
+## 💾 Paso 8: Exportando Datos para Análisis (con Pandas)
 
 Ya que `legismex` usa **Pydantic**, convertir las respuestas a formatos tabulares para machine learning o visualización de datos es increíblemente fácil.
 

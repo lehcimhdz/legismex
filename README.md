@@ -12,6 +12,9 @@ Actualmente, `legismex` ofrece soporte para la **Gaceta Parlamentaria de la Cám
 *   **Iniciativas, Dictámenes y Proposiciones:** Accede al registro de asuntos presentados y en comisiones, obteniendo el estatus de trámite, promotores y links directos a su publicación.
 *   **Documentos Estáticos (Actas, Acuerdos, Agendas, Asistencias):** Escrapeo rápido y ordenado del listado general histórico de la Gaceta Parlamentaria de estos instrumentos.
 
+### Novedad: Gaceta del Senado (Beta)
+La biblioteca `legismex` ha comenzado a expandirse para soportar al **Senado de la República** (`www.senado.gob.mx`). Actualmente cuenta con un submódulo (`legismex.senado.SenadoClient`) para extraer la gaceta del día ordenada y categorizada (Iniciativas, Proposiciones, Comunicaciones, etc.).
+
 ## Instalación desde GitHub
 
 Si deseas instalar y usar la biblioteca directamente en otro proyecto sin clonarla, puedes hacerlo instalándola mediante `pip` apuntando a tu repositorio de GitHub:
@@ -112,6 +115,20 @@ print(f"Total proposiciones de salud: {len(propos)}")
 print(f"Total actas registradas: {len(actas)}")
 ```
 
+### 7. Gaceta del Senado (Beta)
+El submódulo `legismex.senado` permite interactuar con el portal de la Cámara Alta, extrayendo los documentos de la gaceta del día estructurados por categorías.
+
+```python
+from legismex.senado import SenadoClient
+
+senado = SenadoClient()
+gaceta = senado.obtener_gaceta_del_dia(legislatura="66")
+
+print(f"Edición: {gaceta.titulo_edicion}")
+print(f"Total Documentos: {len(gaceta.documentos)}")
+print(gaceta.documentos[0].categoria) # ej. "Comunicaciones de Comisiones"
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -150,6 +167,15 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `url_gaceta`: Optional[str]
     *   `url_pdf`: Optional[str]
     *   `dictaminada`: bool
+
+#### Modelos del Senado
+*   **`GacetaSenado`**: Colección raíz de una gaceta diaria o de sesión.
+    *   `titulo_edicion`: str
+    *   `documentos`: List[DocumentoSenado]
+*   **`DocumentoSenado`**: Instancia validada de un asunto publicado en Senado.
+    *   `titulo`: str
+    *   `url`: str
+    *   `categoria`: str
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.
