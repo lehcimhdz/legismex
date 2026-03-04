@@ -662,3 +662,26 @@ for i in iniciativas[:3]:
 puntos = gto.obtener_puntos_de_acuerdo(page=2)
 print(f"Total encontrados: {len(puntos)}")
 ```
+
+---
+
+## Paso 23: Integrar el Periódico Oficial de Guanajuato
+
+El portal del Periódico Oficial de Guanajuato es una aplicación Angular que consulta una API REST en `backperiodico.guanajuato.gob.mx`. `GuanajuatoPoClient` consume esos endpoints directamente, sin necesidad de renderizar JavaScript.
+
+```python
+from legismex import GuanajuatoPoClient
+
+po = GuanajuatoPoClient()
+
+# Obtener el último ejemplar publicado
+ultimos = po.obtener_ultimo_ejemplar()
+for u in ultimos:
+    print(f"{u.descripcion}: {u.url_pdf}")
+
+# Buscar ediciones por año
+resultados = po.buscar(anio="2025", page=5)
+for r in resultados:
+    print(f"[{r.fecha}] Número {r.numero}, Parte {r.parte}")
+    print(f"  -> {r.url_pdf}")
+```

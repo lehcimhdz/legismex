@@ -16,6 +16,7 @@
 *   🏰 **Querétaro**: Gaceta Legislativa del Congreso del Estado
 *   ⚔️ **Querétaro**: Periódico Oficial "La Sombra de Arteaga"
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
+*   🐸 **Guanajuato**: Periódico Oficial del Estado
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -366,6 +367,26 @@ print(iniciativas[0].descripcion)
 print(iniciativas[0].url_detalle)
 
 print(puntos_de_acuerdo[0].expediente)
+```
+
+#### Guanajuato - Periódico Oficial del Estado
+
+Consulta y descarga las ediciones del Periódico Oficial a través de la API REST oculta en su portal Angular.
+
+```python
+from legismex import GuanajuatoPoClient
+
+po = GuanajuatoPoClient()
+
+# Último ejemplar publicado
+ultimos = po.obtener_ultimo_ejemplar()
+print(ultimos[0].descripcion, ultimos[0].url_pdf)
+
+# Búsqueda paginada
+resultados = po.buscar(anio="2025", page=5)
+for r in resultados:
+    print(f"[{r.fecha}] Num.{r.numero} Parte {r.parte} - {r.descripcion}")
+    print(f"  PDF: {r.url_pdf}")
 ```
 
 ### 17. Periódico Oficial de Puebla
