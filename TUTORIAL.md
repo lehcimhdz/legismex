@@ -137,6 +137,39 @@ Este tipo de listado resulta muy práctico para crear rastreadores que te notifi
 
 ---
 
+Este tipo de listado resulta muy práctico para crear rastreadores que te notifiquen cuando una iniciativa importante finalmente es votada y pasa de estar `Turnada` a ser declarada como `Dictaminada` e incorporada a la ley.
+
+---
+
+## 5. Consultar y Buscar Dictámenes
+
+La biblioteca también te permite buscar dictámenes presentados en la Gaceta Parlamentaria por palabra clave (buscando en sus títulos o descripciones).
+
+### Código de Ejemplo
+
+```python
+from legismex.gaceta import GacetaClient
+
+# Inicializar cliente
+cliente = GacetaClient()
+
+# Buscar dictámenes que contengan la palabra "ley" en la legislatura 66
+dictamenes = cliente.buscar_dictamenes(legislatura="66", palabra_clave="ley")
+
+print(f"Se encontraron {len(dictamenes)} dictámenes.")
+
+if dictamenes:
+    # Mostrar el primer resultado
+    d = dictamenes[0]
+    print(f"Fecha: {d.fecha}")
+    print(f"Dictamen: {d.titulo}")
+    print(f"Trámites: {d.tramites}")
+    if d.url_pdf:
+        print(f"Documento (PDF): {d.url_pdf}")
+```
+
+---
+
 ## 💾 Paso 6: Exportando Datos para Análisis (con Pandas)
 
 Ya que `legismex` usa **Pydantic**, convertir las respuestas a formatos tabulares para machine learning o visualización de datos es increíblemente fácil.

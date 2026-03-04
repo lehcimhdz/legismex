@@ -32,3 +32,16 @@ class Iniciativa(BaseModel):
     url_pdf: Optional[str] = None
     dictaminada: bool = False
 
+class BaseDictamenes(BaseModel):
+    legislatura: int
+    titulo: str
+    periodo: str
+    url_base: str
+
+class Dictamen(BaseModel):
+    fecha: str
+    titulo: str
+    tramites: str
+    url_gaceta: Optional[str] = None
+    url_pdf: Optional[str] = None
+

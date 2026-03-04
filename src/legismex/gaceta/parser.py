@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import re
 from typing import List
-from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa
+from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa, BaseDictamenes, Dictamen
 
 class GacetaParser:
     """
@@ -217,3 +217,100 @@ class GacetaParser:
                 ))
                 
         return iniciativas
+
+    @staticmethod
+    def parse_bases_dictamenes(html: str) -> List[BaseDictamenes]:
+        """
+        Extrae el índice de las bases de datos de dictámenes por legislatura.
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        bases = []
+        
+        # Buscar todos los enlaces <a href="/base/dictas/...">LXVI Legislatura</a>
+        links = soup.find_all('a', href=re.compile(r'/base/dictas/\d+/'))
+        
+        for a in links:
+            url = a.get('href', '')
+            titulo = a.text.strip()
+            
+            # Buscar el hermano siguiente que es un <br> y luego el <font size="-1">
+            periodo = ""
+            nxt = a.find_next_sibling('font')
+            if nxt:
+                periodo = nxt.text.strip()
+                
+            # Extraer número de legislatura de la URL (e.g. /base/dictas/66/...)
+            m = re.search(r'/dictas/(\d+)/', url)
+            leg_num = int(m.group(1)) if m else 0
+            
+            if titulo and leg_num:
+                bases.append(BaseDictamenes(
+                    legislatura=leg_num,
+                    titulo=titulo,
+                    periodo=periodo,
+                    url_base=url
+                ))
+                
+        return bases
+
+    @staticmethod
+    def parse_dictamenes(html: str) -> List[Dictamen]:
+        """
+        Extrae los dictámenes desde la página de resultados de la Gaceta.
+        (Ej: búsqueda por palabra en los dictámenes).
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        dictamenes = []
+        html_str = str(soup)
+        
+        # Separar estrictamente por la cadena "Fecha: " ya que la Gaceta a veces no anida bien los <p>
+        chunks = html_str.split('Fecha: ')
+        for chunk in chunks[1:]: 
+            # Tolerar variaciones de saltos de línea
+            partes = re.split(r'(?i)<br\s*/?>', chunk)
+            if not partes: continue
+            
+            # Extraer fecha
+            fecha = BeautifulSoup(partes[0], "html.parser").get_text().strip().split('<')[0].strip()
+            
+            titulo = ""
+            tramites = ""
+            url_gaceta = None
+            url_pdf = None
+            
+            for idx, linea in enumerate(partes[1:]):
+                linea_soup = BeautifulSoup(linea, "html.parser")
+                texto_limpio = linea_soup.get_text().strip()
+                
+                if (texto_limpio.startswith("De la") or texto_limpio.startswith("Minuta") or texto_limpio.startswith("Iniciativa") or texto_limpio.startswith("Dictamen")):
+                    if not titulo:
+                        titulo = texto_limpio
+                elif texto_limpio and not texto_limpio.startswith("<!--") and "Fecha:" not in texto_limpio:
+                    if not tramites:
+                        tramites = texto_limpio
+                    else:
+                        tramites += f" | {texto_limpio}"
+
+                for a in linea_soup.find_all('a'):
+                    href = a.get('href', '')
+                    if href:
+                        if href.lower().endswith('.pdf') or 'PDF' in href:
+                            url_pdf = href
+                        elif 'Gaceta' in a.text or '.html' in href or '.php3' in href:
+                            if not url_gaceta or ('Gaceta' in a.text and '.pdf' not in href):
+                                url_gaceta = href
+
+            if fecha and titulo:
+                tramites = re.sub(r'<!--.*?-->', '', tramites).strip()
+                # Asegurar que no pasen etiquetas HTML
+                tramites = BeautifulSoup(tramites, "html.parser").get_text()
+                
+                dictamenes.append(Dictamen(
+                    fecha=fecha,
+                    titulo=titulo,
+                    tramites=tramites if tramites else "Sin trámite registrado",
+                    url_gaceta=url_gaceta,
+                    url_pdf=url_pdf
+                ))
+                
+        return dictamenes

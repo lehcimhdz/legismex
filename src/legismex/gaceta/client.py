@@ -1,6 +1,8 @@
 import httpx
 from typing import Optional, Dict, List
-from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa
+from bs4 import BeautifulSoup
+
+from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa, BaseDictamenes, Dictamen
 from .parser import GacetaParser
 
 class GacetaClient:
@@ -119,3 +121,57 @@ class GacetaClient:
                     i.url_pdf = f"{self.BASE_URL}{i.url_pdf}"
                     
             return iniciativas
+
+    def obtener_bases_dictamenes(self) -> List[BaseDictamenes]:
+        """
+        Obtiene la lista de bases de datos de dictámenes disponibles por legislatura.
+        """
+        url = f"{self.BASE_URL}/base/dictas/gp_dictamenes.html"
+        res = self._get(url)
+        bases = GacetaParser.parse_bases_dictamenes(res.text)
+        
+        # Corregir URLs
+        for b in bases:
+            if b.url_base.startswith("/"):
+                b.url_base = f"{self.BASE_URL}{b.url_base}"
+                
+        return bases
+
+    def buscar_dictamenes(self, legislatura: str = "66", palabra_clave: str = "") -> List[Dictamen]:
+        """
+        Busca dictámenes en la Gaceta Parlamentaria por palabra clave en su título.
+        
+        Args:
+            legislatura (str): Número de la legislatura (ej. "66" o "65").
+            palabra_clave (str): Texto a buscar en el título de los dictámenes.
+            
+        Returns:
+            List[Dictamen]: Lista de objetos Dictamen extraídos de los resultados.
+        """
+        url = f"https://gaceta.diputados.gob.mx/base/dictas/{legislatura}/gp{legislatura}_bd_encuentra.php3"
+        
+        # El formulario de la gaceta manda el parámetro 'texto'
+        data = {
+            "texto": palabra_clave
+        }
+        
+        try:
+            with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
+                response = client.post(url, data=data)
+                response.encoding = 'iso-8859-1'
+                response.raise_for_status()
+                
+                # Parsear el HTML a la lista de dictámenes
+                dictamenes = GacetaParser.parse_dictamenes(response.text)
+                
+                # Arreglar URLs relativas
+                for d in dictamenes:
+                    if d.url_gaceta and d.url_gaceta.startswith('/'):
+                        d.url_gaceta = "https://gaceta.diputados.gob.mx" + d.url_gaceta
+                    if d.url_pdf and d.url_pdf.startswith('/'):
+                        d.url_pdf = "https://gaceta.diputados.gob.mx" + d.url_pdf
+                        
+                return dictamenes
+                
+        except httpx.RequestError as exc:
+            raise Exception(f"Error de red al conectar con el buscador de dictámenes de la Gaceta: {exc}")

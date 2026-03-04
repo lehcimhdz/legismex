@@ -83,6 +83,19 @@ for ini in iniciativas[:3]:
 ```
 *   **Retorna:** Una lista de objetos `Iniciativa`.
 
+### 5. Buscar Dictámenes
+Busca dictámenes en la base de datos de la Gaceta y devuelve detalles como a favor y en contra, usando un término de búsqueda.
+
+```python
+dictamenes = client.buscar_dictamenes(legislatura="66", palabra_clave="ley")
+
+for d in dictamenes[:2]:
+    print(f"[{d.fecha}] {d.titulo}")
+    print(f"Trámites: {d.tramites}")
+    print(f"PDF: {d.url_pdf}")
+```
+*   **Retorna:** Una lista de objetos `Dictamen`.
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -98,6 +111,13 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `url_pdf`: Optional[str]
     *   `votos_favor`: Optional[int]
     *   `votos_contra`: Optional[int]
+    *   `abstenciones`: Optional[int]
+*   **`Dictamen`**: Representa el resultado de búsqueda de un dictamen.
+    *   `fecha`: str
+    *   `titulo`: str
+    *   `tramites`: str
+    *   `url_gaceta`: Optional[str]
+    *   `url_pdf`: Optional[str]
     *   `abstenciones`: Optional[int]
 *   **`ResultadoBusqueda`**: Un hit devuelto por el buscador interno.
     *   `palabra_clave`: str
