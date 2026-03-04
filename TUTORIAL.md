@@ -784,3 +784,27 @@ print(f"Resultados 'decreto' en 2024: {total}")
 ```
 
 Endpoints internos: `POST ejemplaresFiltradosPublicoGeneral` con paginación DataTables y parámetros `anios`, `mes`, `buscarSumario`.
+
+---
+
+## Paso 28: Gaceta Parlamentaria del Congreso de Guerrero
+
+La Gaceta Parlamentaria de Guerrero está en `sialgro.dcrsoft.com.mx/gacetaparlamentaria`. Es una app paginada con lista de gacetas y páginas de detalle con tablas de documentos PDF. `GuerreroClient` recorre ambas capas.
+
+```python
+from legismex import GuerreroClient
+
+gro = GuerreroClient()
+
+# Listar gacetas
+gacetas, total = gro.obtener_gacetas(pagina=1)
+print(f"Total: {total}")
+
+# Documentos de una gaceta específica
+docs = gro.obtener_documentos(230)
+for d in docs[:3]:
+    print(f"[{d.tipo}] {d.descripcion[:60]}")
+    print(f"  PDF: {d.url_pdf}")
+```
+
+Tipos de documento: Actas, Comunicados, Iniciativas, Proyectos de leyes/decretos, Intervenciones, Orden del día.
