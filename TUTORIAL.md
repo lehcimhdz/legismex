@@ -498,6 +498,38 @@ from legismex.edomex import EdomexClient
 client = EdomexClient()
 gacetas = client.obtener_gacetas()
 
+# Obtén la gaceta deseada (ej. número índice de la tabla).
+primer = gacetas[0]
+print(f"[{primer.anio}] Gaceta del: {primer.fecha}")
+
+for idx, pdf in enumerate(primer.urls_pdf, 1):
+    print(f"   Parte {idx}: {pdf}")
+
+## 📜 Paso 17: Periódico Oficial "Gaceta del Gobierno" (EdoMéx)
+
+A través del portal `LEGISTEL`, el gobierno estatal publica su periódico oficial organizando los bandos y oficios categorizados por las distintas secretarías o dependencias de gobierno.
+
+```python
+from legismex.edomex_po import EdomexPoClient
+
+client = EdomexPoClient()
+
+# Trae hasta 1000 ediciones oficiales.
+ediciones = client.obtener_ediciones_recientes()
+
+primer = ediciones[0]
+print(f"Gaceta del Gobierno: {primer.fecha}")
+
+# Muchas veces incluyen el compendio total
+if primer.url_completa:
+    print(f"Descarga Gaceta Completa: {primer.url_completa}")
+
+# Documentos unitarios clasificados por dependencia
+for doc in primer.documentos[:3]:
+    print(f"[{doc.seccion}] {doc.titulo[:60]} -> {doc.url_pdf}")
+```
+
+
 print(f"\nDescargados {len(gacetas)} volúmenes del Edomex.")
 reciente = gacetas[0]
 print(f"  Última Gaceta: {reciente.numero} (Publicada el {reciente.fecha})")
