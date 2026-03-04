@@ -11,6 +11,7 @@
 *   **Consejería de la CDMX (Gaceta Oficial):** Extrae Gacetas evadiendo la ofuscación de *ZK Framework* a través de control headless nativo con Playwright.
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
+*   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
 *   **Motores de Búsqueda (HTDIG):** Conexión directa a buscadores internos para localizar iniciativas, proposiciones y dictámenes por palabra clave.
@@ -264,6 +265,24 @@ for ini in iniciativas_lxxvii[:2]:
     print(f"Dictamen PDF: {ini.url_pdf}\n")
 ```
 
+### 14. Consultar Periódico Oficial de Nuevo León
+El Gobierno de NL divide las ediciones del periódico en archivos fragmentados. `legismex` simplifica el proceso extrayendo todos los enlaces vinculados a un solo día.
+
+```python
+from legismex.nuevoleon_po import NuevoLeonPoClient
+
+po_client = NuevoLeonPoClient()
+ediciones = po_client.obtener_ediciones_recientes()
+
+for edicion in ediciones[:2]:
+    print(f"\nFecha: {edicion.fecha}")
+    print(f"No. de Ejemplar: {edicion.numero}")
+    print(f"Partes o tomos PDF: {len(edicion.urls_pdf)}")
+    
+    if edicion.urls_pdf:
+        print(f"URL de la Parte 1: {edicion.urls_pdf[0]}")
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -378,6 +397,10 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `fecha`: str
     *   `estado`: str
     *   `url_pdf`: Optional[str]
+*   **`NuevoLeonPoEdicion`**: Registro agrupado del Periódico Oficial (Estado de Nuevo León).
+    *   `numero`: str
+    *   `fecha`: str
+    *   `urls_pdf`: List[str]
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.

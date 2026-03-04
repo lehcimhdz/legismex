@@ -461,6 +461,31 @@ for ini in iniciativas_lxxvii[:3]:
 
 El modelo `NuevoLeonIniciativa` de Pydantic facilita su guardado inmediato en Pandas o Bases de Datos.
 
+## 📰 Paso 15: Periódico Oficial de Nuevo León y Fragmentación
+
+Otra asimetría clásica gubernamental es que el portal principal (`sistec.nl.gob.mx`) del Periódico Oficial divide cada edición impresa diaria en múltiples archivos PDF, a menudo listando "Parte 1", "Parte 2", o "Parte 3" dentro de la misma casilla bajo una tabla clásica de ASP.NET sin etiquetado de clases moderno.
+
+Para simplificarlo, usa el cliente web `NuevoLeonPoClient`. A diferencia de otras entidades, el cliente ya inyecta los *User-Agents* necesarios para burlar el Firewall y devuelve el modelo consolidado:
+
+```python
+from legismex.nuevoleon_po import NuevoLeonPoClient
+
+print("Descargando la tabla principal del Periódico Oficial de N.L.")
+po_client = NuevoLeonPoClient()
+
+ediciones = po_client.obtener_ediciones_recientes()
+
+for edicion in ediciones[:3]:
+    print(f"\n[{edicion.fecha}] Ejemplar No. {edicion.numero}")
+    print(f"⚠️ ¡Esta edición se divide en {len(edicion.urls_pdf)} fragmentos!")
+    
+    # Podemos listar los PDFs subidos en esa celda
+    for idx, pdf in enumerate(edicion.urls_pdf, 1):
+        print(f"   Parte {idx}: {pdf}")
+```
+
+Este encapsulamiento asegura que no pierdas secciones de un decreto que pudieran haber sido publicadas en el Apéndice o en la "Parte 04" de ese mismo día.
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
