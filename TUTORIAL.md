@@ -335,6 +335,43 @@ if documentos:
         print(f"¡El archivo pesado se guardó en {ruta_final}!")
 ```
 
+## ⚖️ Paso 11: Extraer Gacetas de la Consejería CDMX (ZK Framework)
+
+La Consejería Jurídica de la CDMX es la única fuente de información que bloquea el scraping HTTP tradicional utilizando la arquitectura AJAX cifrada del enrutador *ZK Framework*, por lo que los archivos están enterrados detrás de "UUIDs" aleatorios y botones que no indican su enlace web ("src").
+
+Para solucionar esto, si realizas la instalación extendida con el tag `[consejeria]` y usas `playwright install chromium`, el submódulo nativo `legismex.consejeria` piloteará automatizadamente una pestaña invisible. 
+
+```python
+from legismex.consejeria import ConsejeriaClient
+
+print("Abriendo sesión de Playwright con ZK Framework...")
+cliente_consejeria = ConsejeriaClient(headless=True)
+
+# Buscar todas las Gacetas históricas que correspondan al folio o término 1811 
+gacetas = cliente_consejeria.buscar_gacetas(criterio="1811")
+
+# Si requerimos buscar el concentrado por fecha, sería:
+# gacetas = cliente_consejeria.buscar_gacetas(fecha="2026-03-03")
+
+print(f"Se encontraron: {len(gacetas)} PDFs de Gacetas Históricas.")
+
+if gacetas:
+    primera_gaceta = gacetas[0]
+    print(f"Descrip: {primera_gaceta.descripcion}")
+    print(f"Fecha: {primera_gaceta.fecha}")
+    print(f"Número: {primera_gaceta.numero}")
+    
+    # ⚠️ AVISO PARA DESCARGAR PDF ⚠️
+    if primera_gaceta.tiene_pdf:
+        print("Manejando click invisible al PDF para interceptar flujo de Bytes...")
+        ruta_absoluta = cliente_consejeria.descargar_gaceta(
+            gaceta=primera_gaceta, 
+            criterio="1811", 
+            ruta_destino='./gaceta_consejeria.pdf'
+        )
+        print(f"¡El PDF oculto se interceptó exitosamente a {ruta_absoluta}!")
+```
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.

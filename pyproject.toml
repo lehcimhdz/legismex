@@ -26,6 +26,9 @@ dev = [
     "pytest-cov",
     "ruff",
 ]
+consejeria = [
+    "playwright>=1.40.0"
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/legismex"]

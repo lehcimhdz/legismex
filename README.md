@@ -8,6 +8,7 @@
 *   **Senado de la República:** Integración con `www.senado.gob.mx` para extraer la gaceta diaria estructurada por categorías y el histórico.
 *   **Diario Oficial de la Federación:** Integración con `dof.gob.mx` extrayendo el concentrado diario por secciones y dependencias federales.
 *   **Congreso de la Ciudad de México:** Rastreador especializado para recuperar y descargar PDFs pesados directos de los Diarios de Debate con barra de progreso interactivos.
+*   **Consejería de la CDMX (Gaceta Oficial):** Extrae Gacetas evadiendo la ofuscación de *ZK Framework* a través de control headless nativo con Playwright.
 
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
@@ -22,6 +23,12 @@ Si deseas instalar y usar la biblioteca directamente en otro proyecto sin clonar
 
 ```bash
 pip install git+https://github.com/lehcimhdz/legismex.git
+```
+
+*Nota: Si deseas extraer archivos de la Gaceta Oficial de la Consejería de la CDMX, requieres usar la "instalación avanzada" con `playwright`:*
+```bash
+pip install "legismex[consejeria] @ git+https://github.com/lehcimhdz/legismex.git"
+playwright install chromium
 ```
 
 *Nota: Asegúrate de tener Git instalado en el ambiente donde vas a ejecutar el comando `pip install`.*
@@ -177,6 +184,32 @@ ruta_local = cdmx_client.descargar_pdf(primer_doc.url_pdf, "./gaceta_cdmx.pdf")
 print(f"Guardado en {ruta_local}")
 ```
 
+### 10. Consultar la Consejería Jurídica de la CDMX (Gaceta Oficial)
+
+El portal de la Consejería oculta los vínculos a sus archivos mediante tecnología *ZK Framework*. Para habilitar la descarga, Legismex controla dinámicamente el navegador en el fondo. Se requiere instalar la adición `[consejeria]`.
+
+```python
+from legismex.consejeria import ConsejeriaClient
+
+client = ConsejeriaClient(headless=True)
+
+# Buscar todas las gacetas que hablen sobre la palabra o folio "1811"
+gacetas = client.buscar_gacetas(criterio="1811")
+
+for g in gacetas:
+    print(f"Gaceta del {g.fecha} No. {g.numero}:\n {g.descripcion}")
+
+# Para interceptar la descarga del archivo:
+if gacetas and gacetas[0].tiene_pdf:
+    print("Interceptando archivo originado por ZK Framework...")
+    ruta = client.descargar_gaceta(
+        gaceta=gacetas[0], 
+        criterio="1811", 
+        ruta_destino="./gaceta_cdmx_consejeria.pdf"
+    )
+    print("Guardado en:", ruta)
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -247,6 +280,13 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `peso_kb`: float
     *   `peso_etiqueta`: str
     *   `url_pdf`: str
+*   **`GacetaConsejeria`**: Instancia local del portal de la Consejería operado bajo ZK Framework.
+    *   `descripcion`: str
+    *   `fecha`: str
+    *   `numero`: str
+    *   `tiene_pdf`: bool
+    *   `tiene_indice`: bool
+    *   `index_absoluto`: int
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.
