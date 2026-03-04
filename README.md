@@ -9,6 +9,7 @@
 *   **Diario Oficial de la Federación:** Integración con `dof.gob.mx` extrayendo el concentrado diario por secciones y dependencias federales.
 *   **Congreso de la Ciudad de México:** Rastreador especializado para recuperar y descargar PDFs pesados directos de los Diarios de Debate con barra de progreso interactivos.
 *   **Consejería de la CDMX (Gaceta Oficial):** Extrae Gacetas evadiendo la ofuscación de *ZK Framework* a través de control headless nativo con Playwright.
+*   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
@@ -210,6 +211,24 @@ if gacetas and gacetas[0].tiene_pdf:
     print("Guardado en:", ruta)
 ```
 
+### 11. Consultar el Congreso de Jalisco
+El portal de la Gaceta Parlamentaria de Jalisco carga la información mediante recuadros interactivos vía AJAX. El submódulo `legismex.jalisco` provee un cliente que itera esta cascada jerárquica automáticamente, devolviendo los Eventos, el Orden del Día y los Documentos nativos (por ejemplo `.docx` y `.pdf`).
+
+```python
+from legismex.jalisco import JaliscoClient
+
+client = JaliscoClient()
+eventos = client.obtener_eventos_por_fecha("2025-10-06")
+
+for evt in eventos:
+    print(f"Evento: {evt.titulo}")
+    for pt in evt.puntos_orden:
+        print(f"  Punto: {pt.titulo}")
+        for doc in pt.documentos:
+            print(f"    Adjunto: {doc.titulo}")
+            print(f"    URL: {doc.url}")
+```
+
 ## Referencia de Modelos (Pydantic)
 
 La librería serializa la información escrapeada en los siguientes modelos fuertemente tipados:
@@ -287,6 +306,20 @@ La librería serializa la información escrapeada en los siguientes modelos fuer
     *   `tiene_pdf`: bool
     *   `tiene_indice`: bool
     *   `index_absoluto`: int
+
+#### Modelos de Jalisco
+*   **`JaliscoEvento`**: Evento registrado en el calendario (ej. Sesión de Pleno, Comisiones).
+    *   `fecha`: str
+    *   `titulo`: str
+    *   `tipo`: int
+    *   `id_evento`: int
+    *   `puntos_orden`: List[JaliscoPunto]
+*   **`JaliscoPunto`**: Punto individual dentro del orden del día de un evento.
+    *   `titulo`: str
+    *   `documentos`: List[JaliscoDocumento]
+*   **`JaliscoDocumento`**: Documento final adjunto o embebido (pdf, docx).
+    *   `titulo`: str
+    *   `url`: str
 
 ## Hoja de Ruta
 *   Mejorar la extracción per-se del texto interno de los `PDFs` descargados desde Gaceta usando OCR o PyMuPDF.

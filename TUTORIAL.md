@@ -372,6 +372,41 @@ if gacetas:
         print(f"¡El PDF oculto se interceptó exitosamente a {ruta_absoluta}!")
 ```
 
+## 🌮 Paso 12: Extraer Gacetas del Congreso de Jalisco
+
+El Congreso de Jalisco organiza su plataforma de Gaceta Parlamentaria a través de un calendario dinámico que utiliza peticiones web (AJAX) para cargar de manera modular sus datos. Gracias al submódulo `legismex.jalisco`, podemos obtener los Eventos, el Orden del Día y los archivos adjuntos (Word, PDFs) listos para descargas directas.
+
+```python
+from legismex.jalisco import JaliscoClient
+
+print("Conectando con la Gaceta de Jalisco...")
+client = JaliscoClient()
+
+# 1. Podemos obtener el calendario completo para saber de qué fechas podemos extraer info
+calendario = client.obtener_calendario_eventos()
+print(f"Hay {len(calendario)} fechas históricas y programadas registradas.")
+
+# 2. Requerir una fecha específica
+fecha = "2025-10-06"
+print(f"\nConsultando eventos del {fecha}...")
+
+eventos = client.obtener_eventos_por_fecha(fecha)
+
+# 3. Iteramos todos los puntos y documentos adjuntos de dicho evento en cascada
+for evt in eventos:
+    print(f"\n[EVENTO {evt.tipo} - ID {evt.id_evento}]: {evt.titulo}")
+    
+    for pt in evt.puntos_orden:
+        print(f"  Punto: {pt.titulo}")
+        
+        for doc in pt.documentos:
+            # Documento de Microsoft Word (.docx) o Google Docs
+            print(f"    ├─ Adjunto: {doc.titulo}")
+            print(f"    └─ Enlace Directo: {doc.url}")
+```
+
+La estructura en árbol (`Evento -> Puntos -> Documentos`) de Pydantic facilita cruzar los documentos contra su acta u orden respectivo.
+
 ## Siguientes Pasos
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
