@@ -12,9 +12,10 @@
 *   **Congreso del Estado de México**: Extrae Iniciativas, Puntos de Acuerdo, y Pronunciamientos de la Gaceta Parlamentaria.
 *   **Periódico Oficial del Estado de México**: Permite consultar tomos y documentos oficiales publicados en la "Gaceta del Gobierno".
 *   **Congreso de Puebla**: Análisis de las resoluciones, iniciativas y puntos de acuerdo de la Gaceta Legislativa de Puebla.
-*   **Periódico Oficial del Estado de Puebla**: Integración para el raspado del POE, mapeando la estructura JSON subyacente de su motor de búsqueda avanzado.
-*   **Congreso de Querétaro**: Integración automatizada de todas las Gacetas Históricas desde las tablas proporcionadas en el portal de la Legislatura.
-*   **Periódico Oficial de Querétaro**: Extracción inteligente de "La Sombra de Arteaga", consolidando publicaciones fragmentadas iterando sobre calendarios dinámicos.
+*   🌋 **Puebla**: Periódico Oficial del Estado
+*   🏰 **Querétaro**: Gaceta Legislativa del Congreso del Estado
+*   ⚔️ **Querétaro**: Periódico Oficial "La Sombra de Arteaga"
+*   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -337,13 +338,34 @@ print(f"Total Gacetas: {len(gacetas)}")
 ```python
 from legismex.queretaro_po import QueretaroPoClient
 
-client = QueretaroPoClient()
-# Descarga el calendario de un año
-ediciones = client.obtener_ediciones_por_ano(2025)
+qro_po_client = QueretaroPoClient()
 
-for edicion in ediciones[:3]:
+# Get issues from 2025
+ediciones_2025 = qro_po_client.obtener_ediciones_por_ano(2025)
+
+for edicion in ediciones_2025[:3]:
     print(f"Fecha: {edicion.fecha}")
-    print(f"PDFs de ese día: {len(edicion.urls_pdf)}")
+    for url in edicion.urls_pdf:
+        print(f"  -> {url}")
+```
+
+#### Guanajuato - Congreso del Estado
+
+Extracts initiatives and points of agreement that legislators present inside the state parliament.
+
+```python
+from legismex import GuanajuatoClient
+
+gto_client = GuanajuatoClient()
+
+iniciativas = gto_client.obtener_iniciativas(page=1)
+puntos_de_acuerdo = gto_client.obtener_puntos_de_acuerdo(page=2)
+
+print(iniciativas[0].expediente)
+print(iniciativas[0].descripcion)
+print(iniciativas[0].url_detalle)
+
+print(puntos_de_acuerdo[0].expediente)
 ```
 
 ### 17. Periódico Oficial de Puebla

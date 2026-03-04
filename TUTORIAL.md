@@ -640,3 +640,25 @@ Al utilizar este cliente, los científicos de datos obtienen URIs determinístic
 
 * Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
 * Si te interesa descargar los PDFs masivamente y extraer su texto interno, revisa bibliotecas como `PyMuPDF` (`fitz`) combinadas con las URL devueltas por nuestro cliente.
+
+---
+
+## Paso 22: Integrar el Congreso de Guanajuato (Gaceta Parlamentaria)
+
+Guanajuato expone Iniciativas y Puntos de Acuerdo en listas paginadas. El `GuanajuatoClient` esquiva los errores SSL de certificados caducos locales y extrae las publicaciones indicando la página que se desea procesar.
+
+```python
+from legismex import GuanajuatoClient
+
+gto = GuanajuatoClient()
+
+# Consultar la página 1 de iniciativas
+iniciativas = gto.obtener_iniciativas(page=1)
+for i in iniciativas[:3]:
+    print(f"[{i.expediente}] - {i.descripcion[:50]}...")
+    print(f"Link: {i.url_detalle}")
+
+# Consultar puntos de acuerdo
+puntos = gto.obtener_puntos_de_acuerdo(page=2)
+print(f"Total encontrados: {len(puntos)}")
+```
