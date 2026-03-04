@@ -685,3 +685,27 @@ for r in resultados:
     print(f"[{r.fecha}] Número {r.numero}, Parte {r.parte}")
     print(f"  -> {r.url_pdf}")
 ```
+
+---
+
+## Paso 24: Congreso de Michoacán (Gaceta Parlamentaria)
+
+El portal del Congreso de Michoacán usa WordPress con el plugin Themify PTB. `MichoacanClient` raspa el buscador de gacetas con soporte de paginación (10 resultados por página) y filtros por legislatura, título del número, texto y rango de fechas.
+
+```python
+from legismex import MichoacanClient
+
+client = MichoacanClient()
+
+# Obtener gacetas de la LXXVI legislatura
+gacetas = client.obtener_gacetas(legislatura="lxxvi", page=1)
+total = client.obtener_total_paginas(legislatura="lxxvi")
+
+print(f"Total de páginas: {total}")
+for g in gacetas[:3]:
+    print(f"[{g.fecha}] {g.titulo}")
+    print(f"  Desc: {g.descripcion[:80]}...")
+    print(f"  PDF: {g.url_pdf}")
+```
+
+Legislaturas disponibles: `lxxi`, `lxxii`, `lxxiii`, `lxxiv`, `lxxv`, `lxxvi`, `i-constituyente`.

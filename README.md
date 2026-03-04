@@ -17,6 +17,7 @@
 *   ⚔️ **Querétaro**: Periódico Oficial "La Sombra de Arteaga"
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   🐸 **Guanajuato**: Periódico Oficial del Estado
+*   🦋 **Michoacán**: Gaceta Parlamentaria del Congreso del Estado
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -387,6 +388,25 @@ resultados = po.buscar(anio="2025", page=5)
 for r in resultados:
     print(f"[{r.fecha}] Num.{r.numero} Parte {r.parte} - {r.descripcion}")
     print(f"  PDF: {r.url_pdf}")
+```
+
+#### Michoacán - Congreso del Estado
+
+Extrae las gacetas parlamentarias del Congreso de Michoacán iterando sobre el buscador PTB de WordPress con soporte de paginación y filtros por legislatura, título y fecha.
+
+```python
+from legismex import MichoacanClient
+
+mich = MichoacanClient()
+
+# Obtener gacetas de la legislatura LXXVI
+gacetas = mich.obtener_gacetas(legislatura="lxxvi", page=1)
+total_pags = mich.obtener_total_paginas(legislatura="lxxvi")
+print(f"Total páginas: {total_pags}")
+
+for g in gacetas[:3]:
+    print(f"[{g.fecha}] {g.titulo} - {g.descripcion[:60]}...")
+    print(f"  PDF: {g.url_pdf}")
 ```
 
 ### 17. Periódico Oficial de Puebla

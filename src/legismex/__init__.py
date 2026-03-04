@@ -15,6 +15,7 @@ from .queretaro import QueretaroClient, QueretaroGaceta
 from .queretaro_po import QueretaroPoClient, QueretaroPoEdicion
 from .guanajuato import GuanajuatoClient, GuanajuatoAsunto
 from .guanajuato_po import GuanajuatoPoClient, GuanajuatoPoEdicion
+from .michoacan import MichoacanClient, MichoacanGaceta
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -89,4 +90,8 @@ __all__ = [
     # Guanajuato - PO
     "GuanajuatoPoClient",
     "GuanajuatoPoEdicion",
+
+    # Michoacán - Congreso
+    "MichoacanClient",
+    "MichoacanGaceta",
 ]
