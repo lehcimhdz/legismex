@@ -24,6 +24,7 @@
 *   🌴 **Guerrero**: Gaceta Parlamentaria del Congreso (LXIV Legislatura, 185+ gacetas)
 *   🌴 **Guerrero**: Periódico Oficial del Estado (30 categorías, desde 1987)
 *   🌋 **Tlaxcala**: Trabajo Legislativo del Congreso LXV (Decretos, Iniciativas, Acuerdos, Dictámenes, y 8 categorías más, 2024–2026)
+*   🌋 **Tlaxcala**: Periódico Oficial del Estado (1000+ registros/año, desde 2011)
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -528,6 +529,26 @@ for d in docs[:3]:
 
 # Solo Decretos 2025
 decretos = tlx.obtener_documentos(categoria='Decretos', anio=2025)
+```
+
+#### Tlaxcala - Periódico Oficial
+
+El portal Joomla embeds un `<iframe>` apuntando a `publicaciones.tlaxcala.gob.mx/indices/YYYY.php`. Este cliente lee esa URL directamente, extrayendo la tabla con fecha, número de edición, contenido y enlace PDF para todos los años 2011–2026 (1000+ registros anuales).
+
+```python
+from legismex import TlaxcalaPoClient
+
+po = TlaxcalaPoClient()
+
+# Índice 2026 (136 registros)
+eds = po.obtener_ediciones(2026)
+for e in eds[:3]:
+    print(f"[{e.fecha}] No.{e.numero}: {e.contenido[:60]}")
+    print(f"  PDF: {e.url_pdf}")
+
+# Índice 2025 (1008 registros)
+eds25 = po.obtener_ediciones(2025)
+print(f"Total 2025: {len(eds25)}")
 ```
 
 ### 17. Periódico Oficial de Puebla

@@ -861,3 +861,25 @@ for d in decretos[:3]:
 ```
 
 Categorías disponibles: Programa Legislativo, Decretos, Orden del día, Iniciativas, Asistencia, Diario de debates, Acuerdos, Correspondencia, Dictámenes, Votaciones, Versiones estenográficas, Actas de Sesión.
+
+---
+
+## Paso 31: Periódico Oficial del Estado de Tlaxcala
+
+El portal Joomla `periodico.tlaxcala.gob.mx` muestra cada año dentro de un `<iframe>` apuntando a `publicaciones.tlaxcala.gob.mx/indices/YYYY.php`. `TlaxcalaPoClient` lee esa URL directamente.
+
+```python
+from legismex import TlaxcalaPoClient
+
+po = TlaxcalaPoClient()
+
+# Obtener todos los registros de un año
+eds = po.obtener_ediciones(2026)
+print(f"Registros 2026: {len(eds)}")  # 136
+
+for e in eds[:3]:
+    print(f"[{e.fecha}] No.{e.numero}: {e.contenido[:60]}")
+    print(f"  PDF: {e.url_pdf}")
+```
+
+Columnas: `fecha` (YYYY-MM-DD), `numero` (e.g. "Ex", "1Ex", "1-1ª SECC"), `contenido` (descripción), `url_pdf`. Años disponibles: 2011–2026.
