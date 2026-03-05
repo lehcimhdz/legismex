@@ -834,3 +834,30 @@ decretos = po.obtener_publicaciones(buscar="decreto")
 ```
 
 Categorías: ACTAS, ACUERDOS, AVISOS, BANDOS, CODIGOS, CONVENIOS, CONVOCATORIAS, DECLARATORIAS, DECRETOS, EDICTOS, FE DE ERRATAS, LEYES, LINEAMIENTOS, NORMAS, REGLAMENTOS, RESOLUCIONES, SENTENCIAS, y más (30 en total).
+
+---
+
+## Paso 30: Congreso del Estado de Tlaxcala (LXV Legislatura)
+
+El portal `congresodetlaxcala.gob.mx/trabajo-legislativo65/` presenta el trabajo legislativo de la LXV Legislatura en una sola página con 12 pestañas (mpc-tabs de Visual Composer) subdividas por año (2024, 2025, 2026).
+
+```python
+from legismex import TlaxcalaClient
+
+tlx = TlaxcalaClient()
+
+# Todos los documentos (todos los tabs y años)
+docs = tlx.obtener_documentos()
+print(f"Total documentos: {len(docs)}")
+
+# Filtrar por categoría
+decretos = tlx.obtener_documentos(categoria='Decretos')
+iniciativas = tlx.obtener_documentos(categoria='Iniciativas', anio=2025)
+
+# Inspeccionar
+for d in decretos[:3]:
+    print(f"[{d.anio}] #{d.numero} {d.fecha} — {d.titulo[:60]}")
+    print(f"  PDF: {d.url_pdf}")
+```
+
+Categorías disponibles: Programa Legislativo, Decretos, Orden del día, Iniciativas, Asistencia, Diario de debates, Acuerdos, Correspondencia, Dictámenes, Votaciones, Versiones estenográficas, Actas de Sesión.

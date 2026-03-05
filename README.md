@@ -23,6 +23,7 @@
 *   🌋 **Morelos**: Periódico Oficial del Estado (archivo 1970–2026, 6,400+ ejemplares)
 *   🌴 **Guerrero**: Gaceta Parlamentaria del Congreso (LXIV Legislatura, 185+ gacetas)
 *   🌴 **Guerrero**: Periódico Oficial del Estado (30 categorías, desde 1987)
+*   🌋 **Tlaxcala**: Trabajo Legislativo del Congreso LXV (Decretos, Iniciativas, Acuerdos, Dictámenes, y 8 categorías más, 2024–2026)
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -507,6 +508,26 @@ for p in pubs[:3]:
 
 # Filtrar por año y categoría LEYES (id=25)
 leyes = po.obtener_publicaciones(anio=2025, categoria=25)
+```
+
+#### Tlaxcala - Congreso LXV
+
+Raspa el portal del Congreso de Tlaxcala extrayendo las 12 categorías documentales (Decretos, Iniciativas, Orden del día, Acuerdos, Dictámenes, Votaciones, etc.) por año de ejercicio.
+
+```python
+from legismex import TlaxcalaClient
+
+tlx = TlaxcalaClient()
+
+# Todos los documentos
+docs = tlx.obtener_documentos()
+for d in docs[:3]:
+    print(f"[{d.anio}] [{d.categoria}] #{d.numero} {d.fecha}")
+    print(f"  {d.titulo[:70]}")
+    print(f"  PDF: {d.url_pdf}")
+
+# Solo Decretos 2025
+decretos = tlx.obtener_documentos(categoria='Decretos', anio=2025)
 ```
 
 ### 17. Periódico Oficial de Puebla
