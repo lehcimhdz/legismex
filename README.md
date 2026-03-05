@@ -27,6 +27,7 @@
 *   🌋 **Tlaxcala**: Periódico Oficial del Estado (1000+ registros/año, desde 2011)
 *   🏛️ **Oaxaca**: Gaceta Parlamentaria del Congreso LXVI (179+ sesiones, PDFs por punto del orden del día)
 *   🏛️ **Oaxaca**: Periódico Oficial del Gobierno del Estado (12,000+ ediciones desde 2010 — Ordinario, Extraordinario, Secciones)
+*   🌵 **Aguascalientes**: Agenda Legislativa del Congreso LXVI/LXV/LXIV (1,861+ promociones — 14 tipos: Iniciativas, Decretos, Gaceta Parlamentaria, Actas y más)
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -597,6 +598,32 @@ exts_mar  = po.obtener_ediciones(tipo="Extraordinario", ano=2026, mes=3)
 resultados = po.buscar("salinas")
 for e in resultados:
     print(f"{e.tipo} | {e.fecha} -> {e.url_pdf}")
+```
+
+#### Aguascalientes - Agenda Legislativa
+
+API REST DataTables en `congresoags.gob.mx` para 3 legislaturas (LXVI=66, LXV=65, LXIV=64) y 14 tipos de promoción. PDFs vía `/LegislativeAgenda/Download?id=`. 1,861+ registros en la LXVI.
+
+```python
+from legismex import AguascalientesClient, TIPOS_PROMOCION
+
+c = AguascalientesClient()
+
+# Todas las promociones LXVI (paginado)
+result = c.obtener_promociones(legislatura="LXVI", pagina=1, tamaño_pagina=100)
+print(f"Total: {result['total']}")   # 1861
+
+# Obtener todas de un tipo (iniciativas)
+iniciativas = c.listar_todas(legislatura="LXVI", tipo_promocion_id=3)
+for ini in iniciativas[:3]:
+    print(f"[{ini.numero_agenda}] {ini.contenido[:80]}")
+    print(f"  PDF: {ini.url_pdf}")
+
+# Búsqueda libre
+resultados = c.listar_todas(legislatura="LXVI", busqueda="educación")
+
+# Legislaturas anteriores
+decretos_lxv = c.listar_todas(legislatura="LXV", tipo_promocion_id=9)
 ```
 
 ### 17. Periódico Oficial de Puebla

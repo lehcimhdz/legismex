@@ -937,3 +937,39 @@ resultados = po.buscar('salinas')
 ```
 
 Modelos: `OaxacaPoEdicion` (tipo, fecha, nombre, url_pdf).
+
+---
+
+## Paso 34: Agenda Legislativa del Congreso de Aguascalientes
+
+El Congreso de Aguascalientes expone una API DataTables REST en `/LegislativeAgenda/GetPagedData`. Tiene 14 tipos de promoción (Iniciativas, Decretos, Gaceta Parlamentaria, Actas, etc.) para 3 legislaturas (LXIV, LXV, LXVI). Los PDFs se descargan de `/LegislativeAgenda/Download?id={id}`.
+
+```python
+from legismex import AguascalientesClient
+
+c = AguascalientesClient()
+
+# Todas las promociones LXVI (1,861+ registros)
+result = c.obtener_promociones(legislatura='LXVI', tamaño_pagina=100)
+print(f"Total: {result['total']}")
+
+# Solo iniciativas (tipo_promocion_id=3)
+iniciativas = c.listar_todas(legislatura='LXVI', tipo_promocion_id=3)
+for ini in iniciativas[:3]:
+    print(f"[{ini.numero_agenda}] {ini.contenido[:80]}")
+    print(f"  PDF: {ini.url_pdf}")
+
+# Búsqueda por keyword
+resultados = c.listar_todas(legislatura='LXVI', busqueda='educación')
+
+# Otras legislaturas
+lxv = c.listar_todas(legislatura='LXV', tipo_promocion_id=9)  # Decretos LXV
+```
+
+Modelos: `AgsPromocion` (id, numero_agenda, tipo_promocion, contenido, comisiones, url_pdf, resolucion, ...), `AgsComision`.
+
+Tipos de promocion disponibles (import `TIPOS_PROMOCION`):
+- 1: ACUERDO LEGISLATIVO, 2: CUENTA PÚBLICA, 3: INICIATIVA, 4: MINUTA
+- 5: NOMBRAMIENTO, 6: PUNTO DE ACUERDO, 7: SOLICITUD, 9: DECRETO
+- 10: DICTÁMEN, 11: VERSIONES ESTENOGRÁFICAS, 12: ACTAS
+- 13: DIARIO DE DEBATES, 14: GACETA PARLAMENTARIA
