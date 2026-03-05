@@ -25,6 +25,7 @@
 *   🌴 **Guerrero**: Periódico Oficial del Estado (30 categorías, desde 1987)
 *   🌋 **Tlaxcala**: Trabajo Legislativo del Congreso LXV (Decretos, Iniciativas, Acuerdos, Dictámenes, y 8 categorías más, 2024–2026)
 *   🌋 **Tlaxcala**: Periódico Oficial del Estado (1000+ registros/año, desde 2011)
+*   🏛️ **Oaxaca**: Gaceta Parlamentaria del Congreso LXVI (179+ sesiones, PDFs por punto del orden del día)
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -551,7 +552,31 @@ eds25 = po.obtener_ediciones(2025)
 print(f"Total 2025: {len(eds25)}")
 ```
 
+#### Oaxaca - Gaceta Parlamentaria LXVI
+
+Raspa el índice de la Gaceta Parlamentaria del Congreso de Oaxaca (LXVI Legislatura) y desglosa cada sesión en sus puntos del orden del día con sus PDFs individuales almacenados en `docs66.congresooaxaca.gob.mx`.
+
+```python
+from legismex import OaxacaClient
+
+oax = OaxacaClient()
+
+# Listar todas las gacetas (sin documentos)
+gacetas = oax.listar_gacetas()
+print(f"Total gacetas: {len(gacetas)}")  # 179+
+
+for g in gacetas[:3]:
+    print(f"[{g.id}] {g.numero} | {g.tipo} | {g.fecha}")
+
+# Obtener una gaceta con todos sus documentos
+gaceta = oax.obtener_gaceta(179)
+for doc in gaceta.documentos[:3]:
+    print(f"  #{doc.numero}: {doc.descripcion[:60]}")
+    print(f"    PDFs: {doc.url_pdfs}")
+```
+
 ### 17. Periódico Oficial de Puebla
+
 
 Consulte la API del Periódico Oficial y págine entre los miles de resultados disponibles:
 

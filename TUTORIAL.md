@@ -883,3 +883,29 @@ for e in eds[:3]:
 ```
 
 Columnas: `fecha` (YYYY-MM-DD), `numero` (e.g. "Ex", "1Ex", "1-1ª SECC"), `contenido` (descripción), `url_pdf`. Años disponibles: 2011–2026.
+
+---
+
+## Paso 32: Gaceta Parlamentaria del Congreso de Oaxaca (LXVI Legislatura)
+
+El portal `congresooaxaca.gob.mx` lista las gacetas en `parlaments.html` y almacena el detalle de cada sesión en `parlamento/{id}.html`. Los PDFs por punto del orden del día están en el subdominio `docs66.congresooaxaca.gob.mx`.
+
+```python
+from legismex import OaxacaClient
+
+oax = OaxacaClient()
+
+# Solo el índice (rápido, 1 request)
+gacetas = oax.listar_gacetas()  # 179+ gacetas
+g = gacetas[0]  # más reciente
+print(f"{g.numero} | {g.tipo} | {g.fecha}")
+
+# Detalle completo con documentos (1 request adicional)
+gaceta = oax.obtener_gaceta(179)
+for doc in gaceta.documentos:
+    print(f"#{doc.numero}: {doc.descripcion[:50]}")
+    for pdf in doc.url_pdfs:
+        print(f"  {pdf}")
+```
+
+Modelos: `OaxacaGaceta` (id, numero, tipo, fecha, url_detalle, documentos) · `OaxacaDocumento` (numero, descripcion, url_pdfs).
