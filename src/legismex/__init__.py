@@ -26,6 +26,7 @@ from .tlaxcala_po import TlaxcalaPoClient, TlaxcalaPoEdicion
 from .oaxaca import OaxacaClient, OaxacaGaceta, OaxacaDocumento
 from .oaxaca_po import OaxacaPoClient, OaxacaPoEdicion
 from .aguascalientes import AguascalientesClient, AgsPromocion, AgsComision
+from .aguascalientes_po import AguascalientesPoClient, AgsPoEdicion, AgsPoPublicacionCalendario
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -148,4 +149,9 @@ __all__ = [
     "AguascalientesClient",
     "AgsPromocion",
     "AgsComision",
+
+    # Aguascalientes - PO
+    "AguascalientesPoClient",
+    "AgsPoEdicion",
+    "AgsPoPublicacionCalendario",
 ]

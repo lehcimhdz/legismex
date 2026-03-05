@@ -28,6 +28,7 @@
 *   🏛️ **Oaxaca**: Gaceta Parlamentaria del Congreso LXVI (179+ sesiones, PDFs por punto del orden del día)
 *   🏛️ **Oaxaca**: Periódico Oficial del Gobierno del Estado (12,000+ ediciones desde 2010 — Ordinario, Extraordinario, Secciones)
 *   🌵 **Aguascalientes**: Agenda Legislativa del Congreso LXVI/LXV/LXIV (1,861+ promociones — 14 tipos: Iniciativas, Decretos, Gaceta Parlamentaria, Actas y más)
+*   🌵 **Aguascalientes**: Periódico Oficial del Estado (8,991+ ediciones desde los 90s — Ordinario, Extraordinario, Vespertina — con calendario de 5,458 fechas)
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -624,6 +625,39 @@ resultados = c.listar_todas(legislatura="LXVI", busqueda="educación")
 
 # Legislaturas anteriores
 decretos_lxv = c.listar_todas(legislatura="LXV", tipo_promocion_id=9)
+```
+
+#### Aguascalientes - Periódico Oficial
+
+ASP.NET PageMethods (ASMX) en `eservicios2.aguascalientes.gob.mx/periodicooficial`. Sirve 8,991+ ediciones (Ordinario, Extraordinario, Vespertina) desde los 90s, con un calendario de 5,458 fechas de publicación. PDF directo: `Archivos/{IdPeriodico}.pdf`.
+
+```python
+from legismex import AguascalientesPoClient
+
+po = AguascalientesPoClient()
+
+# Página 1 (500 items por página, 18 páginas en total)
+result = po.obtener_ediciones(pagina=1)
+print(f"Total: {result['total']}")  # 8991
+
+# Todas las ediciones (18 requests automáticos)
+todas = po.listar_todas()
+
+# Filtrar por tipo de edición
+ordinarias = po.listar_todas(edicion_id=1)        # ORDINARIO
+extraordinarias = po.listar_todas(edicion_id=2)   # EXTRAORDINARIO
+
+# Buscar por nombre de documento
+decretos = po.listar_todas(nombre_documento="decreto")
+for e in decretos[:3]:
+    print(f"{e.fecha_publicacion[:10]} | {e.edicion} | {e.seccion}")
+    print(f"  PDF: {e.url_pdf}")
+
+# Calendario completo (5,458 fechas, una request)
+calendario = po.calendario()
+print(f"Total fechas: {len(calendario)}")
+for fecha in sorted(calendario, key=lambda x: x.fecha_publicacion, reverse=True)[:5]:
+    print(f"  {fecha.fecha_publicacion[:10]} | {fecha.num_secciones} secciones | {fecha.ediciones}")
 ```
 
 ### 17. Periódico Oficial de Puebla
