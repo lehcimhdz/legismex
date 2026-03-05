@@ -909,3 +909,31 @@ for doc in gaceta.documentos:
 ```
 
 Modelos: `OaxacaGaceta` (id, numero, tipo, fecha, url_detalle, documentos) · `OaxacaDocumento` (numero, descripcion, url_pdfs).
+
+---
+
+## Paso 33: Periódico Oficial del Gobierno del Estado de Oaxaca
+
+El sitio `periodicooficial.oaxaca.gob.mx` sirve tres tipos de publicaciones: Ordinario, Extraordinario y Secciones. Cada tipo se obtiene en un solo request desde `busquedadoc.php?type=<Tipo>`. Los PDFs están en `files/YYYY/MM/filename.pdf`. Datos disponibles desde 2010.
+
+```python
+from legismex import OaxacaPoClient
+
+po = OaxacaPoClient()
+
+# Todo (12,000+ ediciones)
+todas = po.obtener_ediciones()
+
+# Solo Ordinarios de 2026
+ords = po.obtener_ediciones(tipo='Ordinario', ano=2026)
+
+# Extraordinarios de marzo 2026
+exts = po.obtener_ediciones(tipo='Extraordinario', ano=2026, mes=3)
+for e in exts:
+    print(f"{e.fecha} | {e.nombre} -> {e.url_pdf}")
+
+# Buscar por keyword en nombre de archivo
+resultados = po.buscar('salinas')
+```
+
+Modelos: `OaxacaPoEdicion` (tipo, fecha, nombre, url_pdf).

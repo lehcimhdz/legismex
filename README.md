@@ -26,6 +26,7 @@
 *   🌋 **Tlaxcala**: Trabajo Legislativo del Congreso LXV (Decretos, Iniciativas, Acuerdos, Dictámenes, y 8 categorías más, 2024–2026)
 *   🌋 **Tlaxcala**: Periódico Oficial del Estado (1000+ registros/año, desde 2011)
 *   🏛️ **Oaxaca**: Gaceta Parlamentaria del Congreso LXVI (179+ sesiones, PDFs por punto del orden del día)
+*   🏛️ **Oaxaca**: Periódico Oficial del Gobierno del Estado (12,000+ ediciones desde 2010 — Ordinario, Extraordinario, Secciones)
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -573,6 +574,29 @@ gaceta = oax.obtener_gaceta(179)
 for doc in gaceta.documentos[:3]:
     print(f"  #{doc.numero}: {doc.descripcion[:60]}")
     print(f"    PDFs: {doc.url_pdfs}")
+```
+
+#### Oaxaca - Periódico Oficial
+
+Portal legado del Periódico Oficial del Gobierno del Estado de Oaxaca (desde 2010). Tres tipos de publicaciones servidos en `busquedadoc.php?type=<Tipo>`, con PDFs en `files/YYYY/MM/`. El cliente hace un máximo de 3 requests y devuelve 12,000+ ediciones.
+
+```python
+from legismex import OaxacaPoClient
+
+po = OaxacaPoClient()
+
+# Todas las ediciones combinadas (Ord+Ext+Sec)
+todas = po.obtener_ediciones()
+print(f"Total: {len(todas)}")   # ~12,000+
+
+# Filtros por tipo, año y mes
+ords_2026 = po.obtener_ediciones(tipo="Ordinario", ano=2026)
+exts_mar  = po.obtener_ediciones(tipo="Extraordinario", ano=2026, mes=3)
+
+# Búsqueda por keyword en nombre de archivo
+resultados = po.buscar("salinas")
+for e in resultados:
+    print(f"{e.tipo} | {e.fecha} -> {e.url_pdf}")
 ```
 
 ### 17. Periódico Oficial de Puebla
