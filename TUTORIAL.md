@@ -808,3 +808,29 @@ for d in docs[:3]:
 ```
 
 Tipos de documento: Actas, Comunicados, Iniciativas, Proyectos de leyes/decretos, Intervenciones, Orden del día.
+
+---
+
+## Paso 29: Periódico Oficial de Guerrero
+
+El portal `periodicooficial.guerrero.gob.mx` es un sitio WordPress con publicaciones paginadas (50/página). `GuerreroPoClient` raspa las tarjetas de publicaciones con filtros opcionales.
+
+```python
+from legismex import GuerreroPoClient
+
+po = GuerreroPoClient()
+
+# Todas las publicaciones recientes
+pubs = po.obtener_publicaciones()
+for p in pubs[:3]:
+    print(f"[{p.categoria}] {p.titulo} | {p.fecha}")
+    print(f"  PDF: {p.url_pdf}")
+
+# Filtrar por año y categoría
+leyes = po.obtener_publicaciones(anio=2025, categoria=25)  # LEYES
+
+# Buscar por palabra clave
+decretos = po.obtener_publicaciones(buscar="decreto")
+```
+
+Categorías: ACTAS, ACUERDOS, AVISOS, BANDOS, CODIGOS, CONVENIOS, CONVOCATORIAS, DECLARATORIAS, DECRETOS, EDICTOS, FE DE ERRATAS, LEYES, LINEAMIENTOS, NORMAS, REGLAMENTOS, RESOLUCIONES, SENTENCIAS, y más (30 en total).

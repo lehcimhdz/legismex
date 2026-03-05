@@ -22,6 +22,7 @@
 *   🌋 **Morelos**: Documentos Legislativos del Congreso (LVI Legislatura)
 *   🌋 **Morelos**: Periódico Oficial del Estado (archivo 1970–2026, 6,400+ ejemplares)
 *   🌴 **Guerrero**: Gaceta Parlamentaria del Congreso (LXIV Legislatura, 185+ gacetas)
+*   🌴 **Guerrero**: Periódico Oficial del Estado (30 categorías, desde 1987)
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -487,6 +488,25 @@ docs = gro.obtener_documentos(gaceta_id=230)
 for d in docs[:3]:
     print(f"[{d.tipo}] {d.descripcion[:60]}...")
     print(f"  PDF: {d.url_pdf}")
+```
+
+#### Guerrero - Periódico Oficial
+
+Raspa el portal WordPress del Periódico Oficial de Guerrero con filtros por palabra clave, año, mes, día y categoría (30 categorías: Leyes, Decretos, Acuerdos, etc.).
+
+```python
+from legismex import GuerreroPoClient
+
+po = GuerreroPoClient()
+
+# Publicaciones recientes (50 por página)
+pubs = po.obtener_publicaciones()
+for p in pubs[:3]:
+    print(f"[{p.categoria}] {p.titulo} | {p.fecha}")
+    print(f"  PDF: {p.url_pdf}")
+
+# Filtrar por año y categoría LEYES (id=25)
+leyes = po.obtener_publicaciones(anio=2025, categoria=25)
 ```
 
 ### 17. Periódico Oficial de Puebla
