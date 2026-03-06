@@ -51,6 +51,14 @@ from .veracruz import VeracruzClient, VeracruzSesion, VeracruzDocumento
 from .veracruz_po import VeracruzPoClient, VeracruzPoEdicion
 from .nayarit_congreso import NayaritCongresoClient, NayaritIniciativa
 from .nayarit_po import NayaritPoClient, NayaritPoPublicacion, NayaritPoResultado
+from .sinaloa import (
+    SinaloaClient,
+    SinaloaIniciativa,
+    SinaloadDictamen,
+    SinaloaAcuerdo,
+    SinaloaDecreto,
+    SinaloaLegislatura,
+)
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -270,4 +278,12 @@ __all__ = [
     "NayaritPoClient",
     "NayaritPoPublicacion",
     "NayaritPoResultado",
+
+    # Sinaloa - Congreso
+    "SinaloaClient",
+    "SinaloaIniciativa",
+    "SinaloadDictamen",
+    "SinaloaAcuerdo",
+    "SinaloaDecreto",
+    "SinaloaLegislatura",
 ]

@@ -1343,3 +1343,62 @@ if __name__ == "__main__":
 todos = await client.a_buscar_por_palabra("decreto", all_pages=True)
 print(f"Total descargados: {len(todos.publicaciones)}")
 ```
+
+---
+
+## Paso 49: H. Congreso del Estado de Sinaloa
+
+Este módulo extrae la actividad legislativa completa del **H. Congreso del Estado de Sinaloa** (`gaceta.congresosinaloa.gob.mx`). El portal es una SPA Vue.js que carga todos los datos de cada legislatura en **una sola petición JSON**; el filtrado y la paginación son del lado del cliente.
+
+Legislaturas disponibles: **LX–LXV** (números `"60"` al `"65"`).
+
+Datos disponibles:
+- **Iniciativas** — combinadas de 3 grupos (individual, conjunto, grupo)
+- **Dictámenes**
+- **Acuerdos**
+- **Decretos**
+
+```python
+import asyncio
+from legismex import SinaloaClient
+
+async def main():
+    client = SinaloaClient()
+
+    # Consultar legislaturas disponibles
+    legs = await client.a_obtener_legislaturas()
+    for l in legs:
+        print(f"  {l.id} — {l.nombre}")
+
+    # Iniciativas de la LXV Legislatura (actual = "65")
+    iniciativas = await client.a_obtener_iniciativas("65")
+    print(f"\nIniciativas (LXV): {len(iniciativas)}")
+    for ini in iniciativas[:3]:
+        print(f"  [{ini.id}] {ini.fecha} | {(ini.presentada or '')[:40]}")
+        print(f"        {(ini.iniciativa or '')[:80]}...")
+
+    # Dictámenes, Acuerdos y Decretos en paralelo
+    dictamenes, acuerdos, decretos = await asyncio.gather(
+        client.a_obtener_dictamenes("65"),
+        client.a_obtener_acuerdos("65"),
+        client.a_obtener_decretos("65"),
+    )
+
+    print(f"\nDictámenes: {len(dictamenes)} | Acuerdos: {len(acuerdos)} | Decretos: {len(decretos)}")
+
+    print(f"\nÚltimo decreto: [{decretos[0].id}] {decretos[0].fecha}")
+    print(f"  {(decretos[0].asunto or '')[:80]}...")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+**Versión síncrona:**
+```python
+from legismex import SinaloaClient
+
+client = SinaloaClient()
+# Legislatura anterior (LXIV = 64)
+iniciativas_64 = client.obtener_iniciativas("64")
+print(f"LXIV — Iniciativas: {len(iniciativas_64)}")
+```
