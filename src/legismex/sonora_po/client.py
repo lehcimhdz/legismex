@@ -1,5 +1,4 @@
 import re
-import asyncio
 from datetime import datetime, date
 from typing import List, Optional, Dict
 import httpx
@@ -132,11 +131,11 @@ class SonoraPoClient:
             "id": page_id
         }
         
-        with httpx.Client(timeout=self.timeout, follow_redirects=True) as client:
+        with httpx.Client(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             resp = client.get(self.BASE_URL, params=params)
             resp.raise_for_status()
-            
-        ediciones = self._extraer_ediciones_html(resp.text, anio, mes)
+            ediciones = self._extraer_ediciones_html(resp.text, anio, mes)
+
         return SonoraPoResultado(anio=anio, mes=mes, ediciones=ediciones)
 
     async def a_obtener_ediciones(self, anio: int, mes: Optional[int] = None) -> SonoraPoResultado:
@@ -151,9 +150,9 @@ class SonoraPoClient:
             "id": page_id
         }
         
-        async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True) as client:
+        async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             resp = await client.get(self.BASE_URL, params=params)
             resp.raise_for_status()
-            
-        ediciones = self._extraer_ediciones_html(resp.text, anio, mes)
+            ediciones = self._extraer_ediciones_html(resp.text, anio, mes)
+
         return SonoraPoResultado(anio=anio, mes=mes, ediciones=ediciones)

@@ -61,6 +61,7 @@ class SinaloaPoClient:
         self.client_kwargs = {
             "timeout": 30.0,
             "follow_redirects": True,
+            "verify": False,
             **kwargs,
         }
 
