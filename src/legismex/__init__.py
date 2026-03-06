@@ -66,6 +66,7 @@ from .sonora import (
     SonoraLegislatura,
     SonoraGacetaMedia,
 )
+from .sonora_po import SonoraPoClient, SonoraPoEdicion, SonoraPoResultado
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -303,4 +304,9 @@ __all__ = [
     "SonoraGaceta",
     "SonoraLegislatura",
     "SonoraGacetaMedia",
+
+    # Sonora - Periódico Oficial
+    "SonoraPoClient",
+    "SonoraPoEdicion",
+    "SonoraPoResultado",
 ]

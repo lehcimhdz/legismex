@@ -23,7 +23,7 @@
 *   **Veracruz** (Congreso `veracruz`)
 *   🌊 **Nayarit** (Congreso Iniciativas `nayarit_congreso` y Periódico Oficial `nayarit_po` — API REST interna, 3 tipos de búsqueda)
 *   🌊 **Sinaloa** (Congreso `sinaloa` — Iniciativas, Dictámenes, Acuerdos y Decretos vía API REST, legislaturas LX–LXV; Periódico Oficial `sinaloa_po` — ediciones ordinarias y vespertinas con PDF directo)
-*   🌵 **Sonora** (Gaceta Parlamentaria `sonora` — API REST, 7 legislaturas de LVIII a LXIV, búsqueda por keyword y fecha, PDF adjunto)
+*   🌵 **Sonora**: Gaceta Parlamentaria `sonora` (REST API, 7 legislaturas) y Periódico Oficial `sonora_po` (Joomla Scraping, archivo 1981–2026).
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   🐸 **Guanajuato**: Periódico Oficial del Estado
 *   🦋 **Michoacán**: Gaceta Parlamentaria del Congreso del Estado
@@ -391,7 +391,7 @@ El Periódico Oficial de Veracruz utiliza un motor basado en envíos de formular
 ```python
 from legismex.veracruz_po import VeracruzPoClient
 
-client = VeracruzPoClient()
+client = VeracruzClient()
 # Recuperando todas las ediciones publicadas en Enero (1) de 2024
 ediciones = client.obtener_ediciones(anio=2024, mes=1)
 
