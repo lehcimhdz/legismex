@@ -41,6 +41,7 @@
 *   🌊 **San Luis Potosí**: Gaceta Parlamentaria (Procesa el histórico simultáneo global de legislaturas renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
 *   🐆 **Chiapas**: Periódico Oficial del Estado (Extrae masivamente publicaciones abarcando décadas usando los endpoints del sexenio y parseando la paginación de respuestas).
 *   🍫 **Tabasco**: Gaceta Parlamentaria (Procesa el histórico simultáneo global renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
+*   🏝️ **Quintana Roo**: Gaceta Parlamentaria (Integración masiva a la API REST subyacente de su SPA Nuxt.js extrayendo metadatos y documentos concatenados saltando el parseo de HTML).
 *   🍫 **Tabasco**: Periódico Oficial del Estado (Extractor paginado que permite búsquedas por término y año mediante una redirección GET simplificada).
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
@@ -749,7 +750,29 @@ eds25 = po.obtener_ediciones(2025)
 print(f"Total 2025: {len(eds25)}")
 ```
 
-#### Oaxaca - Gaceta Parlamentaria LXVI
+### 🏝️ Quintana Roo - Gaceta Parlamentaria
+El portal del Congreso de Q. Roo está construido con Nuxt; sin embargo, no requiere simulación de navegador, pues el cliente interconecta directamente con su API REST obteniendo respuestas compactas en formato JSON y resolviendo asincrónicamente el subárbol de documentos anidados por cada edición recabada en un periodo.
+
+```python
+from legismex import QrooClient
+import asyncio
+
+async def test_qroo():
+    client = QrooClient()
+    
+    # Extraer gacetas de un mes incluyendo los links y actas de cada una en paralelo.
+    gacetas = await client.a_obtener_gacetas(anio=2026, mes=3, extraer_documentos=True)
+    
+    for g in gacetas:
+        print(f"[{g.fecha_publicacion}] {g.titulo}")
+        for doc in g.documentos[:2]:
+            print(f"  - {doc.tipo_doc} : {doc.titulo}")
+            print(f"    {doc.url}")
+
+asyncio.run(test_qroo())
+```
+
+### 🍫 Tabasco - Gaceta Parlamentaria LXVI
 
 Raspa el índice de la Gaceta Parlamentaria del Congreso de Oaxaca (LXVI Legislatura) y desglosa cada sesión en sus puntos del orden del día con sus PDFs individuales almacenados en `docs66.congresooaxaca.gob.mx`.
 

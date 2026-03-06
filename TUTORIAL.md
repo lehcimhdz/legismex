@@ -1210,3 +1210,32 @@ asyncio.run(get_po())
 ```
 
 Modelo devuelto: `CampechePoPublicacion` (titulo, fecha, url_pdf).
+
+---
+
+## Paso 44: Gaceta Parlamentaria de Quintana Roo
+
+El Congreso del Estado de Quintana Roo basa su gaceta en la tecnología Nuxt bajo un modelo de consumo de APIs en formato JSON. El integrador permite orquestar de manera nativa la obtención tanto de los IDs mensuales como del arbol de documentos adheridos (y sus URLs en crudo correspondientes) sin depender de scraping de HTML pesado ni navegadores en tiempo real.
+
+```python
+from legismex import QrooClient
+import asyncio
+
+async def test_qroo():
+    client = QrooClient()
+    
+    # Obtener todas las gacetas publicadas en el mes 3 del año 2026.
+    # El flag "extraer_documentos=True" (por defecto) encadenará peticiones asyncio 
+    #   para traer el anexo y los archivos de cada boletín devuelto.
+    gacetas = await client.a_obtener_gacetas(anio=2026, mes=3)
+    
+    for g in gacetas:
+        print(f"[{g.fecha_publicacion}] {g.nomenclatura} - {g.titulo}")
+        for doc in g.documentos:
+            print(f"  - ({doc.tipo_doc}) {doc.titulo}")
+            print(f"    URL: {doc.url}")
+
+asyncio.run(test_qroo())
+```
+
+Modelo devuelto: `QrooGaceta` el cual contiene localmente una lista tipada del modelo esclavo `QrooDocumento`.
