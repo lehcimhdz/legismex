@@ -35,6 +35,7 @@
 *   🌴 **Veracruz**: Periódico Oficial del Estado (Traducción de requests de formulario a extracción en masa de gacetas anuales con tomos vinculados)
 *   🌺 **Tamaulipas**: Gaceta Parlamentaria del Congreso (Obtiene en volumen el registro íntegro de la legislatura vigente extraído de tabla HTML).
 *   🌺 **Tamaulipas**: Periódico Oficial del Estado (Raspa el calendario en formato WordPress recuperando enlaces de Ediciones Vespertinas/Legislativas/Judiciales por mes).
+*   🐆 **Chiapas**: Periódico Oficial del Estado (Extrae masivamente publicaciones abarcando décadas usando los endpoints del sexenio y parseando la paginación de respuestas).
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -408,6 +409,22 @@ for edicion in ediciones[:2]:
     print(f"\nFecha: {edicion.fecha} - Tomo: {edicion.tomo}")
     for doc in edicion.documentos:
          print(f" -> [{doc.titulo}] {doc.url_pdf}")
+```
+
+### 🐆 Chiapas - Periódico Oficial
+Descarga la totalidad de registros paginados y publicados por sexenio de manera consolidada.
+```python
+from legismex import ChiapasPoClient, ChiapasAdministracion
+
+client = ChiapasPoClient()
+ediciones = client.obtener_ediciones(
+    admin=ChiapasAdministracion.ADMIN_2024_2030,
+    anio=2024,
+    mes=12
+)
+
+for edicion in ediciones[:2]:
+    print(f"[{edicion.fecha}] Núm: {edicion.numero} - Sección: {edicion.seccion} -> {edicion.url_pdf}")
 ```
 
 ### 16. Consultar Gaceta del Estado de México (Edomex)

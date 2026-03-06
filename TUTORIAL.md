@@ -1082,3 +1082,31 @@ for edicion in ediciones[:3]:
 ```
 
 Modelos: `TamaulipasPoEdicion` (fecha, tomo, numero, documentos), `TamaulipasPoDocumento` (titulo, url_pdf).
+
+---
+
+## Paso 39: Periódico Oficial del Estado de Chiapas
+
+El Periódico Oficial de Chiapas aloja sus publicaciones segregadas por sexenios (`periodico0612` hasta `periodico2430`). El cliente de `legismex.chiapas_po` gestiona la segmentación, extrayendo las páginas automáticamente. 
+
+```python
+from legismex import ChiapasPoClient, ChiapasAdministracion
+
+client = ChiapasPoClient()
+
+# Consultamos los diarios publicados en Diciembre de 2024 del sexenio entrante
+ediciones = client.obtener_ediciones(
+    admin=ChiapasAdministracion.ADMIN_2024_2030,
+    anio=2024,
+    mes=12
+)
+
+print(f"Total de registros encontrados: {len(ediciones)}")
+
+for edicion in ediciones[:3]:
+    print(f"Num: {edicion.numero} | Fecha: {edicion.fecha}")
+    print(f"Sección: {edicion.seccion} | Parte: {edicion.parte}")
+    print(f"Descargar PDF: {edicion.url_pdf}\n")
+```
+
+Modelos: `ChiapasPoEdicion` (numero, fecha, seccion, parte, url_pdf), `ChiapasAdministracion` (Endpoints por quinquenio).
