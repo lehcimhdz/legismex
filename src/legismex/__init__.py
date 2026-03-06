@@ -59,6 +59,7 @@ from .sinaloa import (
     SinaloaDecreto,
     SinaloaLegislatura,
 )
+from .sinaloa_po import SinaloaPoClient, SinaloaPoEdicion
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -286,4 +287,8 @@ __all__ = [
     "SinaloaAcuerdo",
     "SinaloaDecreto",
     "SinaloaLegislatura",
+
+    # Sinaloa - Periódico Oficial
+    "SinaloaPoClient",
+    "SinaloaPoEdicion",
 ]

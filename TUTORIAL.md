@@ -1402,3 +1402,53 @@ client = SinaloaClient()
 iniciativas_64 = client.obtener_iniciativas("64")
 print(f"LXIV — Iniciativas: {len(iniciativas_64)}")
 ```
+
+---
+
+## Paso 50: Periódico Oficial del Estado de Sinaloa (POES)
+
+Este módulo extrae las ediciones del **Periódico Oficial del Estado de Sinaloa** desde `strc.transparenciasinaloa.gob.mx/poes/`. El sitio es WordPress con *The Events Calendar* plugin; cada edición es un «evento» con fecha, número, índice de contenido y un PDF descargable en `media.transparencia.sinaloa.gob.mx`.
+
+Características:
+- **Ediciones ordinarias** y **vespertinas** (detectadas automáticamente).
+- **PDF directo** extraído del HTML de la descripción.
+- **Índice en texto plano** de la edición.
+- Búsqueda por **fecha**, **mes** o **año completo**.
+
+```python
+import asyncio
+from legismex import SinaloaPoClient
+
+async def main():
+    client = SinaloaPoClient()
+
+    # Mes específico
+    marzo = await client.a_buscar_mes(2026, 3)
+    print(f"Marzo 2026: {len(marzo)} ediciones")
+    for e in marzo:
+        flag = " [VESP]" if e.vespertina else ""
+        print(f"  {e.fecha} | {e.titulo}{flag}")
+        print(f"           PDF: {e.pdf_url}")
+
+    # Año completo (descarga todas las páginas en paralelo)
+    ediciones_2025 = await client.a_buscar_anio(2025)
+    vesp = [e for e in ediciones_2025 if e.vespertina]
+    print(f"\n2025: {len(ediciones_2025)} ediciones ({len(vesp)} vespertinas)")
+
+    # Rango personalizado
+    q1 = await client.a_buscar(start_date="2025-01-01", end_date="2025-03-31")
+    print(f"Q1 2025: {len(q1)} ediciones")
+
+asyncio.run(main())
+```
+
+**Versión síncrona:**
+```python
+from legismex import SinaloaPoClient
+
+client = SinaloaPoClient()
+enero = client.buscar_mes(2026, 1)
+print(f"Enero 2026: {len(enero)} ediciones")
+for e in enero[:3]:
+    print(f"  {e.fecha} | {e.titulo} → {e.pdf_url}")
+```
