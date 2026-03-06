@@ -35,6 +35,9 @@
 *   🌴 **Veracruz**: Periódico Oficial del Estado (Traducción de requests de formulario a extracción en masa de gacetas anuales con tomos vinculados)
 *   🌺 **Tamaulipas**: Gaceta Parlamentaria del Congreso (Obtiene en volumen el registro íntegro de la legislatura vigente extraído de tabla HTML).
 *   🌺 **Tamaulipas**: Periódico Oficial del Estado (Raspa el calendario en formato WordPress recuperando enlaces de Ediciones Vespertinas/Legislativas/Judiciales por mes).
+*   🏛️ **Veracruz**: Sesiones del Congreso (Transita el listado en formato tabla, obteniendo enlaces relativos de actas, diario de los debates, audios, síntesis y el orden del día de las asambleas).
+*   🏺 **Campeche**: Gaceta Parlamentaria (Procesa el histórico simultáneo global de legislaturas extrayendo más de 800 gacetas en una petición estática basada en pestañas).
+*   🌊 **San Luis Potosí**: Gaceta Parlamentaria (Procesa el histórico simultáneo global de legislaturas renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
 *   🐆 **Chiapas**: Periódico Oficial del Estado (Extrae masivamente publicaciones abarcando décadas usando los endpoints del sexenio y parseando la paginación de respuestas).
 *   🍫 **Tabasco**: Gaceta Parlamentaria (Procesa el histórico simultáneo global renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
 *   🍫 **Tabasco**: Periódico Oficial del Estado (Extractor paginado que permite búsquedas por término y año mediante una redirección GET simplificada).
@@ -411,6 +414,23 @@ for edicion in ediciones[:2]:
     print(f"\nFecha: {edicion.fecha} - Tomo: {edicion.tomo}")
     for doc in edicion.documentos:
          print(f" -> [{doc.titulo}] {doc.url_pdf}")
+```
+
+### 🏺 Campeche - Gaceta Parlamentaria
+Campeche provee su inventario de las Gacetas de forma unificada e indexada por los bloques que en la UI se muestran en un menú de pestañas, exponiendo las legislaturas recientes de una sola vez.
+
+```python
+from legismex import CampecheClient
+
+client = CampecheClient()
+
+# Devuelve TODO el acervo (ej. +800 documentos)
+gacetas = client.obtener_gacetas()
+print("Gacetas encontradas:", len(gacetas))
+
+for gaceta in gacetas[:3]:
+    print(f"[{gaceta.legislatura}] Título: {gaceta.titulo}")
+    print(f"URL: {gaceta.url_pdf}\n")
 ```
 
 ### 🐆 Chiapas - Periódico Oficial

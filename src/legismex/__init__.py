@@ -27,6 +27,7 @@ from .oaxaca import OaxacaClient, OaxacaGaceta, OaxacaDocumento
 from .oaxaca_po import OaxacaPoClient, OaxacaPoEdicion
 from .aguascalientes import AguascalientesClient, AgsPromocion, AgsComision
 from .aguascalientes_po import AguascalientesPoClient, AgsPoEdicion, AgsPoPublicacionCalendario
+from .campeche import CampecheClient, CampecheGaceta
 from .chiapas_po import ChiapasPoClient, ChiapasPoEdicion, ChiapasAdministracion
 from .sanluis import SanLuisClient, SanLuisGaceta
 from .tabasco_iniciativas import TabascoIniciativasClient, TabascoIniciativa
@@ -162,6 +163,10 @@ __all__ = [
     "AguascalientesPoClient",
     "AgsPoEdicion",
     "AgsPoPublicacionCalendario",
+
+    # Campeche - Gaceta
+    "CampecheClient",
+    "CampecheGaceta",
 
     # Chiapas - PO
     "ChiapasPoClient",

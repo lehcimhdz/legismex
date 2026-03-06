@@ -1159,3 +1159,29 @@ pubs_2025 = client.obtener_publicaciones(busqueda="2025", paginas=1)
 ```
 
 Modelos: `TabascoPoPublicacion` (fecha, numero, tipo, suplemento, descripcion, url_pdf).
+
+---
+
+## Paso 42: Gaceta Parlamentaria de Campeche
+
+El Congreso de Campeche aglutina las últimas cuatro legislaturas en una única vista organizada por pestañas UI. La integración explota esta base para brindar un listado masivo en una sola petición a gran velocidad.
+
+```python
+from legismex import CampecheClient
+import asyncio
+
+async def main():
+    client = CampecheClient()
+    
+    # Obtener el acumulado histórico (sincrónico o asincrónico)
+    gacetas = await client.a_obtener_gacetas()
+    
+    # Listar las 5 revistas agregadas más recientes
+    for gaceta in gacetas[:5]:
+        print(f"[{gaceta.legislatura}] : {gaceta.titulo}")
+        print(f" Enlace: {gaceta.url_pdf}\n")
+
+asyncio.run(main())
+```
+
+Modelo devuelto: `CampecheGaceta` (titulo, legislatura, url_pdf).
