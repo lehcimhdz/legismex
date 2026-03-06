@@ -60,6 +60,12 @@ from .sinaloa import (
     SinaloaLegislatura,
 )
 from .sinaloa_po import SinaloaPoClient, SinaloaPoEdicion
+from .sonora import (
+    SonoraClient,
+    SonoraGaceta,
+    SonoraLegislatura,
+    SonoraGacetaMedia,
+)
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -291,4 +297,10 @@ __all__ = [
     # Sinaloa - Periódico Oficial
     "SinaloaPoClient",
     "SinaloaPoEdicion",
+
+    # Sonora - Gaceta Parlamentaria
+    "SonoraClient",
+    "SonoraGaceta",
+    "SonoraLegislatura",
+    "SonoraGacetaMedia",
 ]

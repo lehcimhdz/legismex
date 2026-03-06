@@ -1452,3 +1452,59 @@ print(f"Enero 2026: {len(enero)} ediciones")
 for e in enero[:3]:
     print(f"  {e.fecha} | {e.titulo} → {e.pdf_url}")
 ```
+
+---
+
+## Paso 51: Gaceta Parlamentaria del H. Congreso del Estado de Sonora
+
+El módulo `sonora` extrae las Gacetas Parlamentarias del [Congreso del Estado de Sonora](https://congresoson.gob.mx/gacetas). El sitio es una SPA en Astro/React que consume la API REST `gestion.api.congresoson.gob.mx/publico/` — sin autenticación.
+
+Características:
+- **7 legislaturas** disponibles de LVIII (2006) a LXIV (2024–2027).
+- Tipos de sesión: **PLENO** y **COMISION**.
+- **PDF adjunto** recuperable vía detalle con `expand=mediaGaceta.media`.
+- Búsqueda por **palabra clave** y **rango de fechas**.
+- Paginación automática con descargas paralelas (async).
+
+```python
+import asyncio
+from legismex import SonoraClient
+
+async def main():
+    client = SonoraClient()
+
+    # Legislaturas disponibles
+    legs = await client.a_obtener_legislaturas()
+    for l in legs:
+        print(f"{l.nombre}: {l.descripcion}")
+
+    # Todas las gacetas de la legislatura actual (LXIV)
+    gacetas = await client.a_buscar(legislatura="LXIV")
+    print(f"LXIV: {len(gacetas)} gacetas")
+    pleno = [g for g in gacetas if g.tipo == "PLENO"]
+    print(f"  Pleno: {len(pleno)} | Comisión: {len(gacetas)-len(pleno)}")
+
+    # Filtrar por fecha
+    enero = await client.a_buscar(
+        legislatura="LXIV",
+        fecha_inicio="2026-01-01",
+        fecha_fin="2026-01-31",
+    )
+    print(f"Enero 2026: {len(enero)} gacetas")
+
+    # Detalle con PDF
+    detalle = await client.a_obtener_detalle(gacetas[0].id)
+    print(f"PDF: {detalle.pdf_urls[0] if detalle.pdf_urls else 'N/A'}")
+
+asyncio.run(main())
+```
+
+**Versión síncrona:**
+```python
+from legismex import SonoraClient
+
+client = SonoraClient()
+# Legislatura anterior (LXIII)
+lxiii = client.buscar(legislatura="LXIII")
+print(f"LXIII: {len(lxiii)} gacetas")
+```

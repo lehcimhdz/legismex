@@ -23,6 +23,7 @@
 *   **Veracruz** (Congreso `veracruz`)
 *   🌊 **Nayarit** (Congreso Iniciativas `nayarit_congreso` y Periódico Oficial `nayarit_po` — API REST interna, 3 tipos de búsqueda)
 *   🌊 **Sinaloa** (Congreso `sinaloa` — Iniciativas, Dictámenes, Acuerdos y Decretos vía API REST, legislaturas LX–LXV; Periódico Oficial `sinaloa_po` — ediciones ordinarias y vespertinas con PDF directo)
+*   🌵 **Sonora** (Gaceta Parlamentaria `sonora` — API REST, 7 legislaturas de LVIII a LXIV, búsqueda por keyword y fecha, PDF adjunto)
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   🐸 **Guanajuato**: Periódico Oficial del Estado
 *   🦋 **Michoacán**: Gaceta Parlamentaria del Congreso del Estado
