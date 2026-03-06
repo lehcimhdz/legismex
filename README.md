@@ -37,6 +37,7 @@
 *   🌺 **Tamaulipas**: Periódico Oficial del Estado (Raspa el calendario en formato WordPress recuperando enlaces de Ediciones Vespertinas/Legislativas/Judiciales por mes).
 *   🐆 **Chiapas**: Periódico Oficial del Estado (Extrae masivamente publicaciones abarcando décadas usando los endpoints del sexenio y parseando la paginación de respuestas).
 *   🍫 **Tabasco**: Gaceta Parlamentaria (Procesa el histórico simultáneo global renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
+*   🍫 **Tabasco**: Periódico Oficial del Estado (Extractor paginado que permite búsquedas por término y año mediante una redirección GET simplificada).
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -440,6 +441,21 @@ iniciativas_2024 = client.obtener_iniciativas(anio=2024)
 print(f"Total iniciativas del 2024 halladas: {len(iniciativas_2024)}")
 for ini in iniciativas_2024[:2]:
     print(f"[{ini.fecha}] {ini.titulo} \n -> Emitida por {ini.presentada_por} \n -> PDF: {ini.url_pdf}\n")
+
+### 🌴 Tabasco - Periódico Oficial
+Permite la extracción pagina a página de las ediciones del estado, soportando búsquedas directas.
+
+```python
+from legismex import TabascoPoClient
+
+client = TabascoPoClient()
+
+# Buscar publicaciones del 2025 (2 páginas)
+publicaciones = client.obtener_publicaciones(busqueda="2025", paginas=2)
+
+for pub in publicaciones[:3]:
+    print(f"[{pub.fecha}] Núm: {pub.numero} | {pub.tipo}")
+    print(f"Enlace: {pub.url_pdf}\n")
 ```
 
 ### 16. Consultar Gaceta del Estado de México (Edomex)

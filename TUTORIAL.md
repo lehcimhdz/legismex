@@ -1134,3 +1134,28 @@ for ini in iniciativas_febrero[:3]:
 ```
 
 Modelos devueltos: `TabascoIniciativa` (numero, titulo, comision, presentada_por, fecha, trimestre, anio, url_pdf).
+
+---
+
+## Paso 41: Periódico Oficial del Estado de Tabasco
+
+El Periódico Oficial de Tabasco se extrae de forma paginada. El cliente `TabascoPoClient` permite realizar búsquedas específicas o simplemente navegar por las últimas ediciones publicadas.
+
+```python
+from legismex import TabascoPoClient
+
+client = TabascoPoClient()
+
+# Obtener las últimas 20 publicaciones (2 páginas de 10 c/u)
+publicaciones = client.obtener_publicaciones(paginas=2)
+
+for pub in publicaciones:
+    print(f"[{pub.fecha}] Edición: {pub.numero} ({pub.tipo})")
+    print(f"Descripción: {pub.descripcion}")
+    print(f"PDF: {pub.url_pdf}\n")
+
+# También soporta búsquedas por texto (ej. un año o institución)
+pubs_2025 = client.obtener_publicaciones(busqueda="2025", paginas=1)
+```
+
+Modelos: `TabascoPoPublicacion` (fecha, numero, tipo, suplemento, descripcion, url_pdf).

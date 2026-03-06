@@ -30,6 +30,7 @@ from .aguascalientes_po import AguascalientesPoClient, AgsPoEdicion, AgsPoPublic
 from .chiapas_po import ChiapasPoClient, ChiapasPoEdicion, ChiapasAdministracion
 from .sanluis import SanLuisClient, SanLuisGaceta
 from .tabasco_iniciativas import TabascoIniciativasClient, TabascoIniciativa
+from .tabasco_po import TabascoPoClient, TabascoPoPublicacion
 from .tamaulipas import TamaulipasClient, TamaulipasGaceta
 from .tamaulipas_po import TamaulipasPoClient, TamaulipasPoEdicion, TamaulipasPoDocumento
 from .veracruz import VeracruzClient, VeracruzSesion, VeracruzDocumento
@@ -177,6 +178,10 @@ __all__ = [
     # Tabasco - Iniciativas
     "TabascoIniciativasClient",
     "TabascoIniciativa",
+
+    # Tabasco - PO
+    "TabascoPoClient",
+    "TabascoPoPublicacion",
 
     # Tamaulipas - Congreso
     "TamaulipasClient",
