@@ -1508,3 +1508,35 @@ client = SonoraClient()
 lxiii = client.buscar(legislatura="LXIII")
 print(f"LXIII: {len(lxiii)} gacetas")
 ```
+
+---
+
+### Paso 52: Periódico Oficial del Estado de Sonora (sonora_po)
+
+El módulo `sonora_po` permite obtener las ediciones del Boletín Oficial de Sonora navegando por años y meses (archivo histórico 1981–2026).
+
+```python
+from legismex import SonoraPoClient
+
+client = SonoraPoClient()
+
+# Obtener ediciones de un mes específico (Enero 2026)
+resultado = client.obtener_ediciones(anio=2026, mes=1)
+print(f"Ediciones en {resultado.anio}-{resultado.mes}: {len(resultado.ediciones)}")
+
+for ed in resultado.ediciones:
+    print(f"[{ed.fecha}] {ed.edicion_tipo} No. {ed.numero} - PDF: {ed.url_pdf}")
+
+# Obtener todas las ediciones de un año
+resultado_2025 = client.obtener_ediciones(anio=2025)
+print(f"Total ediciones en 2025: {len(resultado_2025.ediciones)}")
+
+# Versión asíncrona
+import asyncio
+
+async def fetch():
+    res = await client.a_obtener_ediciones(2026, mes=2)
+    print(f"Febrero 2026: {len(res.ediciones)} ediciones")
+
+asyncio.run(fetch())
+```
