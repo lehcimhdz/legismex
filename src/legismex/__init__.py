@@ -32,6 +32,16 @@ from .campeche_po import CampechePoClient, CampechePoPublicacion
 from .chiapas_po import ChiapasPoClient, ChiapasPoEdicion, ChiapasAdministracion
 from .qroo import QrooClient, QrooGaceta, QrooDocumento
 from .qroo_po import QrooPoClient, QrooPoPublicacion
+from .colima import (
+    ColimaDocumentoBase,
+    ColimaDecreto,
+    ColimaAcuerdo,
+    ColimaActa,
+    ColimaDiarioDebate,
+    ColimaIniciativa,
+    ColimaClient
+)
+from .colima_po import ColimaPoEdicion, ColimaPoDocumento, ColimaPoClient
 from .sanluis import SanLuisClient, SanLuisGaceta
 from .tabasco_iniciativas import TabascoIniciativasClient, TabascoIniciativa
 from .tabasco_po import TabascoPoClient, TabascoPoPublicacion
@@ -39,6 +49,7 @@ from .tamaulipas import TamaulipasClient, TamaulipasGaceta
 from .tamaulipas_po import TamaulipasPoClient, TamaulipasPoEdicion, TamaulipasPoDocumento
 from .veracruz import VeracruzClient, VeracruzSesion, VeracruzDocumento
 from .veracruz_po import VeracruzPoClient, VeracruzPoEdicion
+from .nayarit_congreso import NayaritCongresoClient, NayaritIniciativa
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -189,9 +200,39 @@ __all__ = [
     "QrooPoClient",
     "QrooPoPublicacion",
 
+    # Colima
+    "ColimaDocumentoBase",
+    "ColimaDecreto",
+    "ColimaAcuerdo",
+    "ColimaActa",
+    "ColimaDiarioDebate",
+    "ColimaIniciativa",
+    "ColimaClient",
+
+    # Colima - PO
+    "ColimaPoEdicion",
+    "ColimaPoDocumento",
+    "ColimaPoClient",
+
     # San Luis Potosí - Congreso y PO
     "SanLuisClient",
     "SanLuisGaceta",
+    # The instruction's snippet for San Luis Potosí was incomplete and seemed to introduce new items.
+    # I will keep the existing San Luis Potosí items and add the new ones if they were intended.
+    # Based on the instruction, it seems SanLuisPoClient, SanLuisPoEdicion, SanLuisPoDocumento are new for San Luis Potosí.
+    # However, the instruction only provides `SanLuisPoClient` and then `{{ ... }}`.
+    # I will add the new Colima items and keep the existing San Luis Potosí items as they are in the original document.
+    # If SanLuisPoClient, SanLuisPoEdicion, SanLuisPoDocumento were meant to be added, they should be explicitly listed.
+    # For now, I will only add the Colima items and ensure the existing San Luis Potosí items are preserved.
+    # Re-reading the instruction, the San Luis Potosí section in the instruction's `__all__` snippet is:
+    #     # San Luis Potosí - Congreso y PO
+    #     "SanLuisClient",
+    #     "SanLuisGaceta",
+    #     "SanLuisPoClient",
+    #     "SanLuisPoEdicion",
+    #     "SanLuisPoDocumento",
+    # This implies adding these three to the San Luis Potosí section.
+    # Let's add them.
     "SanLuisPoClient",
     "SanLuisPoEdicion",
     "SanLuisPoDocumento",
@@ -219,4 +260,8 @@ __all__ = [
     # Veracruz - PO
     "VeracruzPoClient",
     "VeracruzPoEdicion",
+
+    # Nayarit - Congreso (Iniciativas)
+    "NayaritCongresoClient",
+    "NayaritIniciativa",
 ]

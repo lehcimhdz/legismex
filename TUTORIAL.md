@@ -1266,3 +1266,31 @@ asyncio.run(test_qroo_po())
 ```
 
 Modelo devuelto: `QrooPoPublicacion` (fecha, tipo, numero, tomo, url_pdf).
+
+---
+
+## Paso 46: H. Congreso del Estado de Colima
+
+Este módulo extrae la información de la **Gaceta Parlamentaria del Congreso del Estado de Colima**. Obtiene decretos, actas, diario de debates e iniciativas conectándose a su endpoint por AJAX interactuando con su vista centralizada, discriminando correctamente entre cabeceras y devolviendo resultados estructurados según el tipo resolutivo.
+
+```python
+import asyncio
+from legismex.colima import ColimaClient, ColimaDecreto, ColimaIniciativa
+
+async def main():
+    client = ColimaClient()
+    
+    # Extraemos Decretos e Iniciativas para la Legislatura "LXI Legislatura" (id=61)
+    decretos = await client.a_obtener_decretos(legislatura_id=61, legislatura_nombre="LXI Legislatura")
+    print(f"Total Decretos: {len(decretos)}")
+    if decretos:
+        print(decretos[0].numero, "-", decretos[0].descripcion, "->", decretos[0].url_pdf)
+        
+    iniciativas = await client.a_obtener_iniciativas(legislatura_id=61, legislatura_nombre="LXI Legislatura")
+    print(f"Total Iniciativas: {len(iniciativas)}")
+    if iniciativas:
+        print(iniciativas[0].numero, "- Estatus:", iniciativas[0].status)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```

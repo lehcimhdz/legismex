@@ -15,6 +15,13 @@
 *   🌋 **Puebla**: Periódico Oficial del Estado
 *   🏰 **Querétaro**: Gaceta Legislativa del Congreso del Estado
 *   ⚔️ **Querétaro**: Periódico Oficial "La Sombra de Arteaga"
+*   **Quintana Roo** (Gaceta Parlamentaria `qroo` y Periódico Oficial `qroo_po`)
+*   **San Luis Potosí** (Congreso `sanluis` y Periódico Oficial `sanluis_po`)
+*   **Colima** (Gaceta Parlamentaria `colima` y Periódico Oficial `colima_po`)
+*   **Tabasco** (Congreso Iniciativas `tabasco_iniciativas` y Periódico Oficial `tabasco_po`)
+*   **Tamaulipas** (Congreso `tamaulipas` y Periódico Oficial `tamaulipas_po`)
+*   **Veracruz** (Congreso `veracruz`)
+*   🌊 **Nayarit** (Congreso Iniciativas `nayarit_congreso` — consume la API REST interna, 5 legislaturas disponibles)
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   🐸 **Guanajuato**: Periódico Oficial del Estado
 *   🦋 **Michoacán**: Gaceta Parlamentaria del Congreso del Estado
@@ -788,6 +795,25 @@ async def test_qroo_po():
         print(f"[{pub.fecha}] {pub.tipo} Num.{pub.numero} {pub.url_pdf}")
 
 asyncio.run(test_qroo_po())
+```
+
+### 🌋 Colima - Periódico Oficial del Estado
+Recupera los suplementos y anexos publicados concurrentemente desgranando la API de portadas iterativas que componen su marco mensual.
+
+```python
+from legismex import ColimaPoClient
+import asyncio
+
+async def test_colima_po():
+    client = ColimaPoClient()
+    ediciones = await client.a_obtener_ediciones_mes(2026, 2)
+    
+    for e in ediciones[:3]:
+        print(f"[{e.fecha}] Portada: {e.url_portada}")
+        for p in e.documentos:
+            print(f"   -> {p.titulo}: {p.url_descarga}")
+
+asyncio.run(test_colima_po())
 ```
 
 ### 🍫 Tabasco - Gaceta Parlamentaria LXVI
