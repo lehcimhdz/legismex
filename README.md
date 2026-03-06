@@ -42,6 +42,7 @@
 *   🐆 **Chiapas**: Periódico Oficial del Estado (Extrae masivamente publicaciones abarcando décadas usando los endpoints del sexenio y parseando la paginación de respuestas).
 *   🍫 **Tabasco**: Gaceta Parlamentaria (Procesa el histórico simultáneo global renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
 *   🏝️ **Quintana Roo**: Gaceta Parlamentaria (Integración masiva a la API REST subyacente de su SPA Nuxt.js extrayendo metadatos y documentos concatenados saltando el parseo de HTML).
+*   🏝️ **Quintana Roo**: Periódico Oficial del Estado (Extrae masivamente publicaciones mediante rangos interpolados de principio a fin del mes dado resolviendo peticiones de GET iterativas asíncronas).
 *   🍫 **Tabasco**: Periódico Oficial del Estado (Extractor paginado que permite búsquedas por término y año mediante una redirección GET simplificada).
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
@@ -770,6 +771,23 @@ async def test_qroo():
             print(f"    {doc.url}")
 
 asyncio.run(test_qroo())
+```
+
+### 🏝️ Quintana Roo - Periódico Oficial del Estado
+Extrae históricamente los boletines emitidos por la Secretaría de Gobierno utilizando su formulario de búsqueda avanzada resolviéndolo a través de la paginación programática iterando fechas `YYYY-MM-DD`.
+
+```python
+from legismex import QrooPoClient
+import asyncio
+
+async def test_qroo_po():
+    client = QrooPoClient()
+    pubs = await client.a_obtener_publicaciones(anio=2026, mes=2)
+    
+    for pub in pubs[:3]:
+        print(f"[{pub.fecha}] {pub.tipo} Num.{pub.numero} {pub.url_pdf}")
+
+asyncio.run(test_qroo_po())
 ```
 
 ### 🍫 Tabasco - Gaceta Parlamentaria LXVI

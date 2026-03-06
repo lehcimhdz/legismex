@@ -1239,3 +1239,30 @@ asyncio.run(test_qroo())
 ```
 
 Modelo devuelto: `QrooGaceta` el cual contiene localmente una lista tipada del modelo esclavo `QrooDocumento`.
+
+---
+
+## Paso 45: Periódico Oficial del Estado de Quintana Roo
+
+El Periódico Oficial del Estado de Quintana Roo exhibe un buscador histórico de avanzada. Esta integración procesa todo por el sistema de fechas, solicitando el equivalente a todo un mes del calendario y resolviendo la paginación de los registros descubiertos que tengan un documento PDF adjunto.
+
+```python
+from legismex import QrooPoClient
+import asyncio
+
+async def test_qroo_po():
+    client = QrooPoClient()
+    
+    # Extraer todas las publicaciones del mes de Febrero del 2026.
+    # El motor rastrea el "1 de Feb" hasta "28 de Feb" internamente iterando sus páginas.
+    pubs = await client.a_obtener_publicaciones(anio=2026, mes=2)
+    
+    print(f"Total: {len(pubs)}")
+    for pub in pubs[:5]:
+        print(f"[{pub.fecha}] {pub.tipo} Num.{pub.numero} Tomo {pub.tomo}")
+        print(f"  URL: {pub.url_pdf}")
+
+asyncio.run(test_qroo_po())
+```
+
+Modelo devuelto: `QrooPoPublicacion` (fecha, tipo, numero, tomo, url_pdf).

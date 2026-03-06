@@ -31,6 +31,7 @@ from .campeche import CampecheClient, CampecheGaceta
 from .campeche_po import CampechePoClient, CampechePoPublicacion
 from .chiapas_po import ChiapasPoClient, ChiapasPoEdicion, ChiapasAdministracion
 from .qroo import QrooClient, QrooGaceta, QrooDocumento
+from .qroo_po import QrooPoClient, QrooPoPublicacion
 from .sanluis import SanLuisClient, SanLuisGaceta
 from .tabasco_iniciativas import TabascoIniciativasClient, TabascoIniciativa
 from .tabasco_po import TabascoPoClient, TabascoPoPublicacion
@@ -183,6 +184,10 @@ __all__ = [
     "QrooClient",
     "QrooGaceta",
     "QrooDocumento",
+
+    # Quintana Roo - PO
+    "QrooPoClient",
+    "QrooPoPublicacion",
 
     # San Luis Potosí - Congreso y PO
     "SanLuisClient",
