@@ -1294,3 +1294,52 @@ async def main():
 if __name__ == "__main__":
     asyncio.run(main())
 ```
+
+---
+
+## Paso 48: Periódico Oficial del Estado de Nayarit
+
+Este módulo extrae publicaciones del **Periódico Oficial del Gobierno del Estado de Nayarit** (`periodicooficial.nayarit.gob.mx`). Soporta tres tipos de búsqueda enviando peticiones POST al endpoint PHP del portal, con paginación automática opcional.
+
+Tipos de búsqueda disponibles:
+
+| Método | descripción |
+|---|---|
+| `buscar_por_fecha("YYYY-MM-DD")` | Todas las publicaciones de una fecha |
+| `buscar_por_palabra("término")` | Búsqueda de texto libre en sumarios |
+| `buscar_avanzada("término", "fecha_inicio", "fecha_fin")` | Combina palabra clave + rango de fechas |
+
+```python
+import asyncio
+from legismex import NayaritPoClient
+
+async def main():
+    client = NayaritPoClient()
+
+    # 1. Por fecha
+    resultado = await client.a_buscar_por_fecha("2026-03-05")
+    print(f"Publicaciones del 2026-03-05: {resultado.total}")
+    for pub in resultado.publicaciones:
+        print(f"  [{pub.seccion}] {pub.tipo}: {(pub.sumario or '')[:60]}...")
+        print(f"  PDF: {pub.url_pdf}")
+
+    # 2. Por palabra (página 1 de muchas)
+    decreto = await client.a_buscar_por_palabra("decreto")
+    print(f"\n'decreto' → {decreto.total} registros ({decreto.total_paginas} páginas)")
+
+    # 3. Búsqueda avanzada con rango de fechas
+    avanzada = await client.a_buscar_avanzada("ley", "2026-01-01", "2026-03-01")
+    print(f"\nLeyes (ene–mar 2026): {avanzada.total} resultados")
+    for pub in avanzada.publicaciones[:3]:
+        print(f"  {pub.fecha_publicacion} | {pub.tipo}: {(pub.sumario or '')[:60]}...")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+**Paginación automática** (descarga todas las páginas en paralelo):
+```python
+# Obtiene los 2,114 decretos históricos en un solo llamado
+todos = await client.a_buscar_por_palabra("decreto", all_pages=True)
+print(f"Total descargados: {len(todos.publicaciones)}")
+```

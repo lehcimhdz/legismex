@@ -50,6 +50,7 @@ from .tamaulipas_po import TamaulipasPoClient, TamaulipasPoEdicion, TamaulipasPo
 from .veracruz import VeracruzClient, VeracruzSesion, VeracruzDocumento
 from .veracruz_po import VeracruzPoClient, VeracruzPoEdicion
 from .nayarit_congreso import NayaritCongresoClient, NayaritIniciativa
+from .nayarit_po import NayaritPoClient, NayaritPoPublicacion, NayaritPoResultado
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -264,4 +265,9 @@ __all__ = [
     # Nayarit - Congreso (Iniciativas)
     "NayaritCongresoClient",
     "NayaritIniciativa",
+
+    # Nayarit - PO
+    "NayaritPoClient",
+    "NayaritPoPublicacion",
+    "NayaritPoResultado",
 ]
