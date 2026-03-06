@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from .models import (
     SinaloaIniciativa,
-    SinaloadDictamen,
+    SinaloaDictamen,
     SinaloaAcuerdo,
     SinaloaDecreto,
     SinaloaLegislatura,
@@ -115,7 +115,7 @@ class SinaloaClient:
                     resultados.append(SinaloaIniciativa(**item))
             return sorted(resultados, key=lambda x: x.id)
 
-    def obtener_dictamenes(self, legislatura: str = LEGISLATURA_ACTUAL) -> List[SinaloadDictamen]:
+    def obtener_dictamenes(self, legislatura: str = LEGISLATURA_ACTUAL) -> List[SinaloaDictamen]:
         """Obtiene todos los dictámenes de la legislatura indicada."""
         with httpx.Client(**self.client_kwargs) as client:
             resp = client.post(
@@ -124,7 +124,7 @@ class SinaloaClient:
                 headers=_HEADERS,
             )
             resp.raise_for_status()
-            return [SinaloadDictamen(**item) for item in resp.json()]
+            return [SinaloaDictamen(**item) for item in resp.json()]
 
     def obtener_acuerdos(self, legislatura: str = LEGISLATURA_ACTUAL) -> List[SinaloaAcuerdo]:
         """Obtiene todos los acuerdos de la legislatura indicada."""
@@ -179,7 +179,7 @@ class SinaloaClient:
                     resultados.append(SinaloaIniciativa(**item))
             return sorted(resultados, key=lambda x: x.id)
 
-    async def a_obtener_dictamenes(self, legislatura: str = LEGISLATURA_ACTUAL) -> List[SinaloadDictamen]:
+    async def a_obtener_dictamenes(self, legislatura: str = LEGISLATURA_ACTUAL) -> List[SinaloaDictamen]:
         """Versión asíncrona de :meth:`obtener_dictamenes`."""
         async with httpx.AsyncClient(**self.client_kwargs) as client:
             resp = await client.post(
@@ -188,7 +188,7 @@ class SinaloaClient:
                 headers=_HEADERS,
             )
             resp.raise_for_status()
-            return [SinaloadDictamen(**item) for item in resp.json()]
+            return [SinaloaDictamen(**item) for item in resp.json()]
 
     async def a_obtener_acuerdos(self, legislatura: str = LEGISLATURA_ACTUAL) -> List[SinaloaAcuerdo]:
         """Versión asíncrona de :meth:`obtener_acuerdos`."""

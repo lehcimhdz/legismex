@@ -43,7 +43,7 @@ class SinaloaIniciativa(BaseModel):
     """Tipo de proponente (ej. 'diputado', 'ejecutivo')."""
 
 
-class SinaloadDictamen(BaseModel):
+class SinaloaDictamen(BaseModel):
     """Representa un dictamen del H. Congreso del Estado de Sinaloa."""
     model_config = ConfigDict(populate_by_name=True)
 

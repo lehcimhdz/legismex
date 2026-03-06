@@ -1,5 +1,5 @@
 import re
-from datetime import datetime, date
+from datetime import date
 from typing import List, Optional, Dict
 import httpx
 from bs4 import BeautifulSoup

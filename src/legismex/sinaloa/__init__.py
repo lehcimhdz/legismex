@@ -1,6 +1,6 @@
 from .models import (
     SinaloaIniciativa,
-    SinaloadDictamen,
+    SinaloaDictamen,
     SinaloaAcuerdo,
     SinaloaDecreto,
     SinaloaLegislatura,
@@ -10,7 +10,7 @@ from .client import SinaloaClient
 __all__ = [
     "SinaloaClient",
     "SinaloaIniciativa",
-    "SinaloadDictamen",
+    "SinaloaDictamen",
     "SinaloaAcuerdo",
     "SinaloaDecreto",
     "SinaloaLegislatura",
