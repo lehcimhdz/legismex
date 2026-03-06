@@ -27,6 +27,11 @@ from .oaxaca import OaxacaClient, OaxacaGaceta, OaxacaDocumento
 from .oaxaca_po import OaxacaPoClient, OaxacaPoEdicion
 from .aguascalientes import AguascalientesClient, AgsPromocion, AgsComision
 from .aguascalientes_po import AguascalientesPoClient, AgsPoEdicion, AgsPoPublicacionCalendario
+from .sanluis import SanLuisClient, SanLuisGaceta
+from .tamaulipas import TamaulipasClient, TamaulipasGaceta
+from .tamaulipas_po import TamaulipasPoClient, TamaulipasPoEdicion, TamaulipasPoDocumento
+from .veracruz import VeracruzClient, VeracruzSesion, VeracruzDocumento
+from .veracruz_po import VeracruzPoClient, VeracruzPoEdicion
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -154,4 +159,27 @@ __all__ = [
     "AguascalientesPoClient",
     "AgsPoEdicion",
     "AgsPoPublicacionCalendario",
+
+    # San Luis Potosí - Congreso y PO
+    "SanLuisClient",
+    "SanLuisGaceta",
+    "SanLuisPoClient",
+    "SanLuisPoEdicion",
+    "SanLuisPoDocumento",
+
+    # Tamaulipas - Congreso
+    "TamaulipasClient",
+    "TamaulipasGaceta",
+    # Tamaulipas - PO
+    "TamaulipasPoClient",
+    "TamaulipasPoEdicion",
+    "TamaulipasPoDocumento",
+
+    # Veracruz - Congreso
+    "VeracruzClient",
+    "VeracruzSesion",
+    "VeracruzDocumento",
+    # Veracruz - PO
+    "VeracruzPoClient",
+    "VeracruzPoEdicion",
 ]

@@ -973,3 +973,112 @@ Tipos de promocion disponibles (import `TIPOS_PROMOCION`):
 - 5: NOMBRAMIENTO, 6: PUNTO DE ACUERDO, 7: SOLICITUD, 9: DECRETO
 - 10: DICTÁMEN, 11: VERSIONES ESTENOGRÁFICAS, 12: ACTAS
 - 13: DIARIO DE DEBATES, 14: GACETA PARLAMENTARIA
+
+---
+
+## Paso 35: Gaceta Legislativa del Congreso de Veracruz
+
+El Congreso de Veracruz publica su Gaceta Legislativa en un listado indexado por "Año de Ejercicio Constitucional". El extracto combina la sesión principal con todos los anexos (leyes, decretos) en tablas dinámicas.
+
+`legismex.veracruz` extrae y anida inteligentemente todo en un solo request.
+
+```python
+from legismex.veracruz import VeracruzClient
+
+client = VeracruzClient()
+gacetas = client.obtener_gacetas()
+
+print(f"Total de sesiones extraídas: {len(gacetas)}")
+
+# Explorar la sesión más reciente
+sesion = gacetas[0]
+print(f"[{sesion.fecha}] {sesion.tipo_sesion} | {sesion.anio_ejercicio}")
+print(f"Gaceta PDF: {sesion.gaceta_pdf}")
+print(f"Versión Estenográfica: {sesion.version_estenografica_pdf}")
+
+# Listar los anexos que fueron adjuntados a esta sesión
+print(f"Total Anexos (Leyes/Decretos): {len(sesion.anexos)}")
+for anexo in sesion.anexos:
+    print(f"  -> {anexo.titulo[:50]}... | {anexo.url_pdf}")
+
+# Mostrar todos los audios y videos de la sesión
+for mp3 in sesion.audio_urls:
+    print(f"  🎵 Audio: {mp3}")
+for mp4 in sesion.video_urls:
+    print(f"  🎥 Video: {mp4}")
+```
+
+Modelos: `VeracruzSesion` (fecha, tipo_sesion, periodo, anio_ejercicio, gaceta_pdf, acta_pdf, version_estenografica_pdf, audio_urls, video_urls, anexos), `VeracruzDocumento` (titulo, url_pdf, es_anexo).
+
+---
+
+## Paso 36: Gaceta Oficial del Estado de Veracruz (Periódico Oficial)
+
+El Periódico Oficial de Veracruz utiliza un mecanismo antiguo enviando el año y mes a un formulario y respondiendo con un listado que incluye cada edición y sus respectivos tomos extraordinarios.
+
+`legismex.veracruz_po` interroga el endpoint de búsqueda y extrae todos los enlaces expuestos construyendo objetos listos para consultar:
+
+```python
+from legismex.veracruz_po import VeracruzPoClient
+
+po = VeracruzPoClient()
+
+# Consultar las publicaciones de Febrero (2) del 2024
+ediciones = po.obtener_ediciones(anio=2024, mes=2)
+
+print(f"Total de ediciones: {len(ediciones)}")
+
+for edicion in ediciones[:3]:
+    print(f" -> {edicion.nombre} | {edicion.fecha_textual}")
+    print(f"    Descarga directa: {edicion.url_pdf}")
+```
+
+Modelos: `VeracruzPoEdicion` (nombre, fecha_textual, url_pdf).
+
+---
+
+## Paso 37: Gaceta Parlamentaria de Tamaulipas
+
+El Congreso del Estado de Tamaulipas concentra sus Gacetas Parlamentarias en una sola vista para la legislatura vigente. `legismex.tamaulipas` extrae todos los enlaces expuestos construyendo objetos listos para consultar:
+
+```python
+from legismex import TamaulipasClient
+
+client = TamaulipasClient()
+
+# Extrae la lista completa de la 66 Legislatura
+gacetas = client.obtener_gacetas()
+
+print(f"Total de Gacetas de Tamaulipas: {len(gacetas)}")
+
+for gaceta in gacetas[:3]:
+    print(f"[{gaceta.fecha_gaceta}] Sesión {gaceta.sesion} - {gaceta.url_pdf}")
+```
+
+Modelos: `TamaulipasGaceta` (legislatura, publicado_el, numero, tomo, fecha_gaceta, fecha_sesion, sesion, url_pdf).
+
+---
+
+## Paso 38: Periódico Oficial del Estado de Tamaulipas
+
+El Periódico Oficial de Tamaulipas distribuye sus ediciones interactivamente a través de un calendario web en WordPress. Con `legismex.tamaulipas_po`, iteramos y mapeamos los días habilitados reconstruyendo los enlaces a las secciones PDF (ej. Extraordinario, Legislativo, Judicial).
+
+```python
+from legismex import TamaulipasPoClient
+
+po = TamaulipasPoClient()
+
+# Consultamos Marzo (3) de 2026
+ediciones = po.obtener_ediciones(anio=2026, mes=3)
+
+print(f"Total de días de publicación en el mes: {len(ediciones)}")
+
+for edicion in ediciones[:3]:
+    print(f"[{edicion.fecha}] Tomo {edicion.tomo} | Núm. {edicion.numero}")
+    
+    # Cada edición diaria puede contener n anexos
+    for documento in edicion.documentos:
+        print(f"   -> {documento.titulo}: {documento.url_pdf}")
+```
+
+Modelos: `TamaulipasPoEdicion` (fecha, tomo, numero, documentos), `TamaulipasPoDocumento` (titulo, url_pdf).

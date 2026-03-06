@@ -29,6 +29,12 @@
 *   🏛️ **Oaxaca**: Periódico Oficial del Gobierno del Estado (12,000+ ediciones desde 2010 — Ordinario, Extraordinario, Secciones)
 *   🌵 **Aguascalientes**: Agenda Legislativa del Congreso LXVI/LXV/LXIV (1,861+ promociones — 14 tipos: Iniciativas, Decretos, Gaceta Parlamentaria, Actas y más)
 *   🌵 **Aguascalientes**: Periódico Oficial del Estado (8,991+ ediciones desde los 90s — Ordinario, Extraordinario, Vespertina — con calendario de 5,458 fechas)
+*   🌵 **San Luis Potosí**: Gaceta Parlamentaria del Congreso del Estado (Sesiones Ordinarias y Extraordinarias desde la LXII Legislatura, un solo request)
+*   🌵 **San Luis Potosí**: Periódico Oficial del Estado (Consumo directo de la API JSON de VueJS mapeando Disposiciones y Avisos Judiciales)
+*   🌴 **Veracruz**: Gaceta Legislativa del Congreso del Estado (Extracción anidada de sesiones, periodos, anexos, actas, audios y videos en un solo compilado)
+*   🌴 **Veracruz**: Periódico Oficial del Estado (Traducción de requests de formulario a extracción en masa de gacetas anuales con tomos vinculados)
+*   🌺 **Tamaulipas**: Gaceta Parlamentaria del Congreso (Obtiene en volumen el registro íntegro de la legislatura vigente extraído de tabla HTML).
+*   🌺 **Tamaulipas**: Periódico Oficial del Estado (Raspa el calendario en formato WordPress recuperando enlaces de Ediciones Vespertinas/Legislativas/Judiciales por mes).
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -267,7 +273,64 @@ if resultados.items:
     print(f"URL de Descarga Directa: {detalle.link}")
 ```
 
-### 13. Consultar Iniciativas del Congreso de Nuevo León
+### 13. Consultar la Gaceta Parlamentaria del Estado de San Luis Potosí
+El Congreso de SLP publica sus sesiones ordinarias y extraordinarias en un portal moderno. `legismex.sanluis` extrae el listado completo de gacetas con sus enlaces directos a PDF.
+
+```python
+from legismex.sanluis import SanLuisClient
+
+client = SanLuisClient()
+gacetas = client.obtener_gacetas()
+
+print(f"Total Gacetas: {len(gacetas)}")
+
+for gaceta in gacetas[:2]:
+    print(f"[{gaceta.mes}] {gaceta.nombre} | {gaceta.fecha_iso[:10]}")
+    for url in gaceta.urls_pdf:
+        print(f"  PDF: {url}")
+```
+
+### 14. Consultar el Periódico Oficial del Estado de San Luis Potosí
+El sistema del Periódico Oficial de SLP está diseñado en VueJS y segmenta sus respuestas en *Disposiciones Oficiales* y *Avisos Judiciales y Diversos*. `legismex.sanluis_po` fusiona ambos en una sola edición estructurada e inyecta los enlaces directos a los PDFs.
+
+```python
+from legismex.sanluis_po import SanLuisPoClient
+
+client = SanLuisPoClient()
+edicion = client.obtener_edicion_por_fecha("2026-03-05")
+
+print(f"Edición del {edicion.fecha} - Total docs: {len(edicion.documentos)}")
+
+for doc in edicion.documentos:
+    if doc.es_aviso:
+        print(f"[AVISO] {doc.titulo} - PDF: {doc.url_pdf}")
+    else:
+        print(f"[{doc.nivel_gobierno}] {doc.autoridad_emisora} | {doc.titulo[:50]}...")
+```
+
+### 15. Consultar Gacetas de Veracruz (legisver)
+El H. Congreso del Estado de Veracruz publica un índice cronológico de su Gaceta Legislativa. `legismex.veracruz` extrae en un solo llamado todo el histórico agrupando las sesiones por año de ejercicio y anidando inteligentemente resoluciones anexas y multimedia.
+
+```python
+from legismex.veracruz import VeracruzClient
+
+client = VeracruzClient()
+gacetas = client.obtener_gacetas()
+
+print(f"Total de sesiones extraídas: {len(gacetas)}")
+
+# Explorar la sesión más reciente
+sesion = gacetas[0]
+print(f"[{sesion.fecha}] {sesion.tipo_sesion} | {sesion.anio_ejercicio}")
+print(f"Gaceta PDF: {sesion.gaceta_pdf}")
+print(f"Multimedia: {len(sesion.video_urls)} Videos | {len(sesion.audio_urls)} Audios")
+print(f"Total Anexos (Leyes/Decretos): {len(sesion.anexos)}")
+
+for anexo in sesion.anexos:
+    print(f"  -> {anexo.titulo[:50]}... | {anexo.url_pdf}")
+```
+
+### 16. Consultar Iniciativas del Congreso de Nuevo León
 El H. Congreso de Nuevo León mantiene un listado ágil de las iniciativas presentadas, que `legismex.nuevoleon` consume íntegramente de una sola petición.
 
 ```python
@@ -304,7 +367,50 @@ for edicion in ediciones[:2]:
         print(f"URL de la Parte 1: {edicion.urls_pdf[0]}")
 ```
 
-### 15. Consultar Gaceta del Estado de México (Edomex)
+### 15. Consultar Gaceta Oficial del Estado de Veracruz (PO)
+El Periódico Oficial de Veracruz utiliza un motor basado en envíos de formulario. Con `legismex`, solo necesitas invocar el año y mes para rescatar todo un periodo de una sola vez.
+
+```python
+from legismex.veracruz_po import VeracruzPoClient
+
+client = VeracruzPoClient()
+# Recuperando todas las ediciones publicadas en Enero (1) de 2024
+ediciones = client.obtener_ediciones(anio=2024, mes=1)
+
+for edicion in ediciones[:3]:
+    print(f"Publicación: {edicion.nombre} [{edicion.fecha_textual}]")
+    print(f"Enlace Directo: {edicion.url_pdf}")
+```
+
+### 🌺 Tamaulipas - Congreso
+En Tamaulipas, todo el concentrado documental de la legislatura actual (66) está resguardado en una página. Con este módulo, extraemos cada URL.
+```python
+from legismex import TamaulipasClient
+
+cliente = TamaulipasClient()
+gacetas_tam = cliente.obtener_gacetas()
+
+print(f"Total históricas encontradas: {len(gacetas_tam)}")
+for gaceta in gacetas_tam[:3]:
+    print(f"[{gaceta.fecha_gaceta}] {gaceta.sesion} - Num. {gaceta.numero}")
+    print(f"Descargar: {gaceta.url_pdf}")
+```
+
+### 🌺 Tamaulipas - Periódico Oficial
+Descarga el concentrado de tomos diarios y sus sub-secciones extrayendo directamente desde el frontend en formato calendario de WordPress del Periódico Oficial.
+```python
+from legismex import TamaulipasPoClient
+
+po_client = TamaulipasPoClient()
+ediciones = po_client.obtener_ediciones(anio=2026, mes=3)
+
+for edicion in ediciones[:2]:
+    print(f"\nFecha: {edicion.fecha} - Tomo: {edicion.tomo}")
+    for doc in edicion.documentos:
+         print(f" -> [{doc.titulo}] {doc.url_pdf}")
+```
+
+### 16. Consultar Gaceta del Estado de México (Edomex)
 La LXI y LXII Legislatura del Estado de México aloja su gaceta en un portal moderno y unificado. Con un solo comando podemos extraer más de un centenar de ediciones:
 
 ```python
