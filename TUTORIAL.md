@@ -1110,3 +1110,27 @@ for edicion in ediciones[:3]:
 ```
 
 Modelos: `ChiapasPoEdicion` (numero, fecha, seccion, parte, url_pdf), `ChiapasAdministracion` (Endpoints por quinquenio).
+
+---
+
+## Paso 40: Iniciativas del Congreso del Estado de Tabasco
+
+La extracción de datos de Tabasco resuelve la totalidad de los cientos de entradas de una legislatura en una sola llamada (el sitio no pagina los requests HTML del lado del servidor). El cliente `TabascoIniciativasClient` hace el filtro por mes y año localmente antes de devolver el arreglo acotado en memoria.
+
+```python
+from legismex import TabascoIniciativasClient
+
+client = TabascoIniciativasClient()
+
+# Extraemos las iniciativas del mes de Febrero 2026
+iniciativas_febrero = client.obtener_iniciativas(anio=2026, mes=2)
+print("Total de iniciativas de ese mes:", len(iniciativas_febrero))
+
+for ini in iniciativas_febrero[:3]:
+    print(f"[{ini.fecha}] Num {ini.numero}")
+    print(f"Título: {ini.titulo}")
+    print(f"Turnada a comisión: {ini.comision}")
+    print(f"PDF: {ini.url_pdf}\n")
+```
+
+Modelos devueltos: `TabascoIniciativa` (numero, titulo, comision, presentada_por, fecha, trimestre, anio, url_pdf).

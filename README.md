@@ -36,6 +36,7 @@
 *   🌺 **Tamaulipas**: Gaceta Parlamentaria del Congreso (Obtiene en volumen el registro íntegro de la legislatura vigente extraído de tabla HTML).
 *   🌺 **Tamaulipas**: Periódico Oficial del Estado (Raspa el calendario en formato WordPress recuperando enlaces de Ediciones Vespertinas/Legislativas/Judiciales por mes).
 *   🐆 **Chiapas**: Periódico Oficial del Estado (Extrae masivamente publicaciones abarcando décadas usando los endpoints del sexenio y parseando la paginación de respuestas).
+*   🍫 **Tabasco**: Gaceta Parlamentaria (Procesa el histórico simultáneo global renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
 *   **Congreso de Jalisco:** Extrae el calendario de eventos y desgrana las agendas y subpuntos con documentos adjuntos iterando sobre la estructura interna de la Gaceta Parlamentaria.
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
@@ -425,6 +426,20 @@ ediciones = client.obtener_ediciones(
 
 for edicion in ediciones[:2]:
     print(f"[{edicion.fecha}] Núm: {edicion.numero} - Sección: {edicion.seccion} -> {edicion.url_pdf}")
+```
+
+### 🍫 Tabasco - Iniciativas
+Ahorra iteraciones por AJAX filtrando y procesando la totalidad de la legislatura desde las estructuras DOM renderizadas estáticamente de la tabla provista.
+
+```python
+from legismex import TabascoIniciativasClient
+
+client = TabascoIniciativasClient()
+iniciativas_2024 = client.obtener_iniciativas(anio=2024)
+
+print(f"Total iniciativas del 2024 halladas: {len(iniciativas_2024)}")
+for ini in iniciativas_2024[:2]:
+    print(f"[{ini.fecha}] {ini.titulo} \n -> Emitida por {ini.presentada_por} \n -> PDF: {ini.url_pdf}\n")
 ```
 
 ### 16. Consultar Gaceta del Estado de México (Edomex)
