@@ -1185,3 +1185,28 @@ asyncio.run(main())
 ```
 
 Modelo devuelto: `CampecheGaceta` (titulo, legislatura, url_pdf).
+
+---
+
+## Paso 43: Periódico Oficial de Campeche
+
+El SIPOEC del Estado de Campeche permite buscar el catálogo de edictos u oficios periódicos según el año. El integrador permite leer N páginas de un año y descifrar la ruta lógica que el propio portal emplea usando el nombre y el mes de publicación, previniendo sobrecargas del API REST.
+
+```python
+from legismex import CampechePoClient
+import asyncio
+
+async def get_po():
+    client = CampechePoClient()
+    
+    # Consultamos las primeras 2 pags de 2026
+    documentos = await client.a_obtener_publicaciones(anio=2026, paginas=2)
+    
+    for d in documentos:
+        print(f"[{d.fecha}] {d.titulo}")
+        print(f"Link de Recuperación: {d.url_pdf}")
+
+asyncio.run(get_po())
+```
+
+Modelo devuelto: `CampechePoPublicacion` (titulo, fecha, url_pdf).

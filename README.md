@@ -37,6 +37,7 @@
 *   🌺 **Tamaulipas**: Periódico Oficial del Estado (Raspa el calendario en formato WordPress recuperando enlaces de Ediciones Vespertinas/Legislativas/Judiciales por mes).
 *   🏛️ **Veracruz**: Sesiones del Congreso (Transita el listado en formato tabla, obteniendo enlaces relativos de actas, diario de los debates, audios, síntesis y el orden del día de las asambleas).
 *   🏺 **Campeche**: Gaceta Parlamentaria (Procesa el histórico simultáneo global de legislaturas extrayendo más de 800 gacetas en una petición estática basada en pestañas).
+*   🏺 **Campeche**: Periódico Oficial del Estado (Lee y pagina el listado HTML de la biblioteca virtual del SIPOEC, infiriendo velozmente la URL de descarga local del PDF a partir del título y fecha sin consultar el API de expedición).
 *   🌊 **San Luis Potosí**: Gaceta Parlamentaria (Procesa el histórico simultáneo global de legislaturas renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
 *   🐆 **Chiapas**: Periódico Oficial del Estado (Extrae masivamente publicaciones abarcando décadas usando los endpoints del sexenio y parseando la paginación de respuestas).
 *   🍫 **Tabasco**: Gaceta Parlamentaria (Procesa el histórico simultáneo global renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
@@ -431,6 +432,25 @@ print("Gacetas encontradas:", len(gacetas))
 for gaceta in gacetas[:3]:
     print(f"[{gaceta.legislatura}] Título: {gaceta.titulo}")
     print(f"URL: {gaceta.url_pdf}\n")
+```
+
+### 🏺 Campeche - Periódico Oficial
+La consulta y descarga del archivo histórico y reciente del PO de Campeche está indexada por año a través de su paginador nativo SIPOEC, extrayendo dinámicamente el URL final del documento.
+
+```python
+from legismex import CampechePoClient
+import asyncio
+
+async def test_campeche_po():
+    client = CampechePoClient()
+    
+    # Extraer las primeras 5 páginas del año 2026 asincrónicamente
+    pubs = await client.a_obtener_publicaciones(anio=2026, paginas=5)
+    
+    for pub in pubs[:3]:
+        print(f"[{pub.fecha}] Doc: {pub.titulo} | Enlace: {pub.url_pdf}")
+
+asyncio.run(test_campeche_po())
 ```
 
 ### 🐆 Chiapas - Periódico Oficial
