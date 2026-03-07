@@ -68,6 +68,7 @@ from .sonora import (
     SonoraGacetaMedia,
 )
 from .sonora_po import SonoraPoClient, SonoraPoEdicion, SonoraPoResultado
+from .bc_po import BcPoClient, BcPoEdicion, BcPoResultado
 from .bcs_congreso import (
     BcsCongresoClient,
     BcsSesion,
@@ -304,6 +305,11 @@ __all__ = [
     "SonoraPoClient",
     "SonoraPoEdicion",
     "SonoraPoResultado",
+
+    # Baja California - PO
+    "BcPoClient",
+    "BcPoEdicion",
+    "BcPoResultado",
 
     # Baja California Sur - Congreso
     "BcsCongresoClient",

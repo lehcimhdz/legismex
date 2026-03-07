@@ -39,6 +39,7 @@
 *   🏛️ **Oaxaca**: Periódico Oficial del Gobierno del Estado (12,000+ ediciones desde 2010 — Ordinario, Extraordinario, Secciones)
 *   🌵 **Aguascalientes**: Agenda Legislativa del Congreso LXVI/LXV/LXIV (1,861+ promociones — 14 tipos: Iniciativas, Decretos, Gaceta Parlamentaria, Actas y más)
 *   🌵 **Aguascalientes**: Periódico Oficial del Estado (8,991+ ediciones desde los 90s — Ordinario, Extraordinario, Vespertina — con calendario de 5,458 fechas)
+*   🌵 **Baja California**: Periódico Oficial del Estado
 *   🌵 **San Luis Potosí**: Gaceta Parlamentaria del Congreso del Estado (Sesiones Ordinarias y Extraordinarias desde la LXII Legislatura, un solo request)
 *   🌵 **San Luis Potosí**: Periódico Oficial del Estado (Consumo directo de la API JSON de VueJS mapeando Disposiciones y Avisos Judiciales)
 *   🌴 **Veracruz**: Gaceta Legislativa del Congreso del Estado (Extracción anidada de sesiones, periodos, anexos, actas, audios y videos en un solo compilado)
