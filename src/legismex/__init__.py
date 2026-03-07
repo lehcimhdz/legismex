@@ -67,6 +67,12 @@ from .sonora import (
     SonoraLegislatura,
     SonoraGacetaMedia,
 )
+from .hidalgo_gaceta import (
+    HidalgoGacetaClient,
+    HidalgoSession,
+    HidalgoDocumento,
+    HidalgoDetalleSesion,
+)
 from .sonora_po import SonoraPoClient, SonoraPoEdicion, SonoraPoResultado
 from .bc_po import BcPoClient, BcPoEdicion, BcPoResultado
 from .bcs_congreso import (
@@ -77,6 +83,7 @@ from .bcs_congreso import (
     BcsActa,
     BcsDiario,
 )
+from .hidalgo_po import HidalgoPoClient, HidalgoPoEdicion, HidalgoPoResultado
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -301,6 +308,12 @@ __all__ = [
     "SonoraLegislatura",
     "SonoraGacetaMedia",
 
+    # Hidalgo - Gaceta
+    "HidalgoGacetaClient",
+    "HidalgoSession",
+    "HidalgoDocumento",
+    "HidalgoDetalleSesion",
+
     # Sonora - Periódico Oficial
     "SonoraPoClient",
     "SonoraPoEdicion",
@@ -318,4 +331,9 @@ __all__ = [
     "BcsOrdenDia",
     "BcsActa",
     "BcsDiario",
+
+    # Hidalgo - Periódico Oficial
+    "HidalgoPoClient",
+    "HidalgoPoEdicion",
+    "HidalgoPoResultado",
 ]

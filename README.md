@@ -59,6 +59,7 @@
 *   **Congreso de Nuevo León:** Convierte la base de datos DataTables de iniciativas a objetos analíticamente procesables al vuelo.
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
 *   **Gaceta Parlamentaria del Estado de México:** Obtiene el listado completo (histórico) de gacetas parlamentarias extrayendo fechas limpias y enlaces a PDFs originales.
+*   **Congreso de Hidalgo:** Extrae sesiones y sus documentos asociados (órdenes del día, actas, diarios de debates) filtrando por año, mes y tipo.
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
 *   **Motores de Búsqueda (HTDIG):** Conexión directa a buscadores internos para localizar iniciativas, proposiciones y dictámenes por palabra clave.
@@ -838,9 +839,32 @@ for g in gacetas[:3]:
 
 # Obtener una gaceta con todos sus documentos
 gaceta = oax.obtener_gaceta(179)
+```
 for doc in gaceta.documentos[:3]:
     print(f"  #{doc.numero}: {doc.descripcion[:60]}")
     print(f"    PDFs: {doc.url_pdfs}")
+```
+
+#### Hidalgo - Gaceta Legislativa
+
+Raspa la Gaceta Legislativa del Congreso de Hidalgo, extrayendo las sesiones y sus documentos asociados (órdenes del día, actas, versiones estenográficas, etc.).
+
+```python
+from legismex import HidalgoClient
+
+hgo = HidalgoClient()
+
+# Listar todas las sesiones
+sesiones = hgo.obtener_sesiones()
+print(f"Total sesiones: {len(sesiones)}")
+
+# Obtener documentos de una sesión específica
+sesion_id = sesiones[0].id  # Tomar la primera sesión como ejemplo
+documentos_sesion = hgo.obtener_documentos_sesion(sesion_id)
+
+for doc in documentos_sesion[:3]:
+    print(f"[{doc.tipo}] {doc.titulo}")
+    print(f"  PDF: {doc.url_pdf}")
 ```
 
 #### Oaxaca - Periódico Oficial

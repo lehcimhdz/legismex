@@ -1540,3 +1540,53 @@ async def fetch():
 
 asyncio.run(fetch())
 ```
+
+---
+
+## Paso 55: Gaceta Legislativa de Hidalgo
+
+Para consultar las gacetas del Congreso de Hidalgo, utiliza el `HidalgoGacetaClient`. Puedes listar sesiones con filtros de año, mes y tipo, y luego obtener el detalle de los documentos asociados.
+
+```python
+from legismex import HidalgoGacetaClient
+
+client = HidalgoGacetaClient()
+
+# Listar sesiones de Enero 2026
+sesiones = client.obtener_sesiones(periodo=2026, mes=1)
+
+for s in sesiones:
+    print(f"[{s.fecha}] {s.titulo}")
+    
+    # Obtener detalle de la primera sesión encontrada
+    detalle = client.obtener_detalle_sesion(s.session_id)
+    for doc in detalle.documentos:
+        if doc.es_existente:
+            print(f"  - Documento: {doc.nombre}")
+            print(f"    URL: {doc.url}")
+```
+
+---
+
+## Paso 56: Periódico Oficial del Estado de Hidalgo
+
+El `HidalgoPoClient` permite realizar búsquedas avanzadas en el Periódico Oficial. Puedes buscar por rango de fechas, términos en el sumario y tipo de edición.
+
+```python
+from datetime import date
+from legismex import HidalgoPoClient
+
+client = HidalgoPoClient()
+
+# Buscar ediciones de la primera semana de marzo 2026
+desde = date(2026, 3, 1)
+hasta = date(2026, 3, 7)
+resultado = client.buscar(fecha_desde=desde, fecha_hasta=hasta)
+
+print(f"Ediciones encontradas: {resultado.total_registros}")
+
+for edicion in resultado.ediciones:
+    print(f"[{edicion.fecha}] {edicion.nombre}")
+    print(f"Sumario: {edicion.sumario[:100]}...")
+    print(f"PDF: {edicion.url_pdf}\n")
+```
