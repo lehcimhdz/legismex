@@ -68,6 +68,14 @@ from .sonora import (
     SonoraGacetaMedia,
 )
 from .sonora_po import SonoraPoClient, SonoraPoEdicion, SonoraPoResultado
+from .bcs_congreso import (
+    BcsCongresoClient,
+    BcsSesion,
+    BcsDocumento,
+    BcsOrdenDia,
+    BcsActa,
+    BcsDiario,
+)
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -296,4 +304,12 @@ __all__ = [
     "SonoraPoClient",
     "SonoraPoEdicion",
     "SonoraPoResultado",
+
+    # Baja California Sur - Congreso
+    "BcsCongresoClient",
+    "BcsSesion",
+    "BcsDocumento",
+    "BcsOrdenDia",
+    "BcsActa",
+    "BcsDiario",
 ]
