@@ -1590,3 +1590,43 @@ for edicion in resultado.ediciones:
     print(f"Sumario: {edicion.sumario[:100]}...")
     print(f"PDF: {edicion.url_pdf}\n")
 ```
+
+---
+
+## Paso 57: Gaceta Parlamentaria de Zacatecas
+
+Para consultar la actividad del Congreso de Zacatecas (LXV Legislatura), utiliza el `ZacatecasClient`. Este cliente extrae las gacetas organizadas por mes.
+
+```python
+from legismex import ZacatecasClient
+
+client = ZacatecasClient()
+
+# Listar meses disponibles (formato MMYYYY)
+meses = client.obtener_meses()
+print(f"Meses disponibles: {meses[:5]}...")
+
+# Obtener gacetas del mes actual
+gacetas = client.obtener_gacetas()
+
+# O de un mes específico (ej. Febrero 2026)
+# gacetas = client.obtener_gacetas("022026")
+
+for g in gacetas:
+    print(f"[{g.fecha}] {g.tipo_sesion} - No. {g.numero}")
+    print(f"URL PDF: {g.url_pdf}\n")
+```
+
+**Versión asíncrona:**
+```python
+import asyncio
+from legismex import ZacatecasClient
+
+async def main():
+    client = ZacatecasClient()
+    gacetas = await client.a_obtener_gacetas("032026")
+    for g in gacetas:
+        print(f"{g.fecha}: {g.url_pdf}")
+
+asyncio.run(main())
+```

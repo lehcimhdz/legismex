@@ -60,6 +60,8 @@
 *   **Periódico Oficial de Nuevo León:** Omite barreras de firewall y parsea la vista ASP.NET empaquetando los enlaces PDF esparcidos.
 *   **Gaceta Parlamentaria del Estado de México:** Obtiene el listado completo (histórico) de gacetas parlamentarias extrayendo fechas limpias y enlaces a PDFs originales.
 *   **Congreso de Hidalgo:** Extrae sesiones y sus documentos asociados (órdenes del día, actas, diarios de debates) filtrando por año, mes y tipo.
+*   **Periódico Oficial de Hidalgo:** Sistema de búsqueda avanzada que extrae sumarios detallados y construye enlaces directos a los archivos PDF institucionales.
+*   **Congreso de Zacatecas:** Consulta la Gaceta Parlamentaria (LXV Legislatura) permitiendo listar y descargar ediciones por mes (formato MMYYYY).
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
 *   **Motores de Búsqueda (HTDIG):** Conexión directa a buscadores internos para localizar iniciativas, proposiciones y dictámenes por palabra clave.
