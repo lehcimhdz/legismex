@@ -29,6 +29,11 @@ def _parse_gacetas(html: str) -> List[ZacatecasGaceta]:
     gacetas: List[ZacatecasGaceta] = []
     periodo_actual: Optional[str] = None
 
+    # Extraer el año de ejercicio (header arriba de la tabla)
+    # Ejemplo: SEGUNDO AÑO DE EJERCICIO CONSTITUCIONAL
+    anio_tag = soup.find("font", color="#424242")
+    anio_ejercicio = anio_tag.get_text(strip=True) if anio_tag else None
+
     for tr in table.find_all("tr")[1:]:  # saltar encabezado
         cells = tr.find_all(["td", "th"])
         if len(cells) < 6:
@@ -64,6 +69,7 @@ def _parse_gacetas(html: str) -> List[ZacatecasGaceta]:
                 tipo_sesion=tipo_sesion.rstrip(),
                 url_pdf=url_pdf,
                 periodo=periodo_actual,
+                anio_ejercicio=anio_ejercicio,
             )
         )
 

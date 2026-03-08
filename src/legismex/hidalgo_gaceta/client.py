@@ -6,7 +6,7 @@ import httpx
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
-from .models import HidalgoSession, HidalgoDocumento, HidalgoDetalleSesion
+from .models import HidalgoGaceta, HidalgoDocumento, HidalgoGacetaDetalle
 
 class HidalgoGacetaClient:
     """Cliente para obtener gacetas y documentos del Congreso de Hidalgo."""
@@ -21,7 +21,7 @@ class HidalgoGacetaClient:
             **kwargs,
         }
 
-    def _parsear_listado(self, html: str) -> List[HidalgoSession]:
+    def _parsear_listado(self, html: str) -> List[HidalgoGaceta]:
         """Parsea el HTML del listado de gacetas."""
         soup = BeautifulSoup(html, "html.parser")
         sesiones = []
@@ -57,7 +57,7 @@ class HidalgoGacetaClient:
             except Exception:
                 fecha_obj = date(1900, 1, 1)
 
-            sesiones.append(HidalgoSession(
+            sesiones.append(HidalgoGaceta(
                 session_id=session_id,
                 titulo=titulo,
                 fecha=fecha_obj,
@@ -67,7 +67,7 @@ class HidalgoGacetaClient:
             
         return sesiones
 
-    def _parsear_detalle(self, html: str, session_id: str) -> HidalgoDetalleSesion:
+    def _parsear_detalle(self, html: str, session_id: str) -> HidalgoGacetaDetalle:
         """Parsea el HTML de la página de detalle de una sesión."""
         soup = BeautifulSoup(html, "html.parser")
         
@@ -127,7 +127,7 @@ class HidalgoGacetaClient:
                 es_zip=es_zip
             ))
             
-        return HidalgoDetalleSesion(
+        return HidalgoGacetaDetalle(
             session_id=session_id,
             titulo=titulo,
             fecha=fecha_obj,
@@ -135,7 +135,7 @@ class HidalgoGacetaClient:
         )
 
     def obtener_sesiones(self, periodo: Optional[int] = None, mes: Optional[int] = None, 
-                         tipo: Optional[int] = None, pagina: int = 1) -> List[HidalgoSession]:
+                         tipo: Optional[int] = None, pagina: int = 1) -> List[HidalgoGaceta]:
         """Obtiene el listado de sesiones con filtros opcionales."""
         params = {"pagina": pagina}
         if periodo: params["periodo"] = periodo
@@ -149,7 +149,7 @@ class HidalgoGacetaClient:
         return self._parsear_listado(resp.text)
 
     async def a_obtener_sesiones(self, periodo: Optional[int] = None, mes: Optional[int] = None, 
-                               tipo: Optional[int] = None, pagina: int = 1) -> List[HidalgoSession]:
+                               tipo: Optional[int] = None, pagina: int = 1) -> List[HidalgoGaceta]:
         """Versión asíncrona de obtener_sesiones."""
         params = {"pagina": pagina}
         if periodo: params["periodo"] = periodo
@@ -162,7 +162,7 @@ class HidalgoGacetaClient:
             
         return self._parsear_listado(resp.text)
 
-    def obtener_detalle_sesion(self, session_id: str) -> HidalgoDetalleSesion:
+    def obtener_detalle_sesion(self, session_id: str) -> HidalgoGacetaDetalle:
         """Obtiene los detalles y documentos de una sesión específica."""
         url = urljoin(self.GACETA_URL + "/", session_id)
         with httpx.Client(**self.client_kwargs) as client:
@@ -171,7 +171,7 @@ class HidalgoGacetaClient:
             
         return self._parsear_detalle(resp.text, session_id)
 
-    async def a_obtener_detalle_sesion(self, session_id: str) -> HidalgoDetalleSesion:
+    async def a_obtener_detalle_sesion(self, session_id: str) -> HidalgoGacetaDetalle:
         """Versión asíncrona de obtener_detalle_sesion."""
         url = urljoin(self.GACETA_URL + "/", session_id)
         async with httpx.AsyncClient(**self.client_kwargs) as client:

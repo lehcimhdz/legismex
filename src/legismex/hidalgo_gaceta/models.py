@@ -9,7 +9,7 @@ class HidalgoDocumento(BaseModel):
     es_existente: bool = True
     es_zip: bool = False
 
-class HidalgoSession(BaseModel):
+class HidalgoGaceta(BaseModel):
     """Representa una entrada en el listado de gacetas."""
     session_id: str
     titulo: str
@@ -17,7 +17,7 @@ class HidalgoSession(BaseModel):
     tipo: str
     url_detalle: str
 
-class HidalgoDetalleSesion(BaseModel):
+class HidalgoGacetaDetalle(BaseModel):
     """Representa el contenido detallado de una sesión específica."""
     session_id: str
     titulo: str

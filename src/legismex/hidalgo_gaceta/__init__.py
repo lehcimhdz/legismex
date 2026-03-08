@@ -1,4 +1,4 @@
 from .client import HidalgoGacetaClient
-from .models import HidalgoSession, HidalgoDocumento, HidalgoDetalleSesion
+from .models import HidalgoGaceta, HidalgoDocumento, HidalgoGacetaDetalle
 
-__all__ = ["HidalgoGacetaClient", "HidalgoSession", "HidalgoDocumento", "HidalgoDetalleSesion"]
+__all__ = ["HidalgoGacetaClient", "HidalgoGaceta", "HidalgoDocumento", "HidalgoGacetaDetalle"]

@@ -23,3 +23,6 @@ class ZacatecasGaceta(BaseModel):
 
     periodo: Optional[str] = None
     """Periodo legislativo (e.g. 'Segundo periodo ordinario'), cuando está disponible."""
+
+    anio_ejercicio: Optional[str] = None
+    """Año de ejercicio constitucional (e.g. 'SEGUNDO AÑO DE EJERCICIO CONSTITUCIONAL')."""

@@ -69,9 +69,9 @@ from .sonora import (
 )
 from .hidalgo_gaceta import (
     HidalgoGacetaClient,
-    HidalgoSession,
+    HidalgoGaceta,
     HidalgoDocumento,
-    HidalgoDetalleSesion,
+    HidalgoGacetaDetalle,
 )
 from .sonora_po import SonoraPoClient, SonoraPoEdicion, SonoraPoResultado
 from .bc_po import BcPoClient, BcPoEdicion, BcPoResultado
@@ -311,9 +311,9 @@ __all__ = [
 
     # Hidalgo - Gaceta
     "HidalgoGacetaClient",
-    "HidalgoSession",
+    "HidalgoGaceta",
     "HidalgoDocumento",
-    "HidalgoDetalleSesion",
+    "HidalgoGacetaDetalle",
 
     # Sonora - Periódico Oficial
     "SonoraPoClient",
