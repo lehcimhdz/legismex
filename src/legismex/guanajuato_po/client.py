@@ -28,30 +28,41 @@ class GuanajuatoPoClient:
         page_size: int = 10,
         page: int = 1,
     ) -> str:
+        # New Order: {anio}/{numero}/{parte}/{inciso}/{keyword}/{limit}/{offset}
+        # Mapping: 
+        # anio -> anio
+        # numero -> numero
+        # tipo -> parte
+        # fecha -> inciso
+        # keyword -> keyword
         kw = keyword or "null"
         a = anio or "null"
         n = numero or "null"
-        t = tipo or "null"
-        f = fecha or "null"
+        p = tipo or "null"
+        i = fecha or "null"
         return (
             f"{self.BASE_URL}/Periodico/BusquedaPeriodicoPublicacion"
-            f"/{kw}/{a}/{n}/{t}/{f}/{page_size}/{page}"
+            f"/{a}/{n}/{p}/{i}/{kw}/{page_size}/{page}"
         )
 
     @staticmethod
     def _parse_items(items: list) -> List[GuanajuatoPoEdicion]:
         results: List[GuanajuatoPoEdicion] = []
         for item in items:
+            # Note: Fields might have changed names in the new API version
+            # Before: perdescripcion, now: asunto
+            descripcion = item.get("asunto") or item.get("perdescripcion") or ""
+            
             results.append(
                 GuanajuatoPoEdicion(
-                    perid=item["perid"],
-                    fecha=item["perfecha"],
-                    anio=item["peranio"],
-                    numero=item["pernumero"],
-                    parte=item["perparte"],
-                    descripcion=item["perdescripcion"],
-                    url_pdf=item.get("perurl", ""),
-                    inciso=item.get("perinciso"),
+                    perid=item.get("perid") or item.get("idPeriodico", 0),
+                    fecha=item.get("perfecha") or item.get("fecha", ""),
+                    anio=item.get("peranio") or item.get("anio", 0),
+                    numero=item.get("pernumero") or item.get("numero", ""),
+                    parte=item.get("perparte") or item.get("parte", ""),
+                    descripcion=descripcion,
+                    url_pdf=item.get("perurl") or item.get("url", ""),
+                    inciso=item.get("perinciso") or item.get("inciso"),
                     total_sumarios=item.get("totsumarios", 0),
                 )
             )
