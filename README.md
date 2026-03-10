@@ -30,6 +30,11 @@
 *   🌴 **Yucatán**:
     *   Congreso del Estado (`yucatan_congreso`) — Scraper con simulación de navegación TLS para evadir bloqueos, tabla de Iniciativas completas con anexos.
     *   Periódico Oficial del Estado (`yucatan_po`) — Extrae las ediciones publicadas en una fecha dada junto a sus sumarios.
+*   🐶 **Chihuahua**: 
+    *   Congreso del Estado (`chihuahua_congreso`) — Extrae las Sesiones publicadas en la Gaceta Parlamentaria con soporte a paginado, agrupamiento de documentos por fase de sesión (probables, desahogados, votación y turnados) y ligas de YouTube.
+    *   Periódico Oficial del Estado (`chihuahua_po`) — Extrae las emisiones del PO con filtrado de fechas, palabras clave y anexos aledaños en formato de PDF expuestos de forma directa.
+*   🦖 **Coahuila**: 
+    *   Congreso del Estado (`coahuila_congreso`) — Extrae el listado de Iniciativas de la Legislatura actual almacenadas en la base de datos de PrimeFaces.
 *   🌵 **Sonora**: Gaceta Parlamentaria `sonora` (REST API, 7 legislaturas) y Periódico Oficial `sonora_po` (Joomla Scraping, archivo 1981–2026).
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   🐸 **Guanajuato**: Periódico Oficial del Estado
