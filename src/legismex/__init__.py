@@ -91,6 +91,7 @@ from .bcs_congreso import (
 from .hidalgo_po import HidalgoPoClient, HidalgoPoEdicion, HidalgoPoResultado
 from .zacatecas import ZacatecasClient, ZacatecasGaceta
 from .zacatecas_po import ZacatecasPoClient, ZacatecasPoPublicacion
+from .yucatan_congreso import YucatanCongresoClient, YucatanIniciativa, YucatanDocumento
 
 __all__ = [
     # Durango
@@ -369,4 +370,9 @@ __all__ = [
     # Baja California Sur - PO
     "BcsPoClient",
     "BcsPoEdicion",
+
+    # Yucatán - Congreso
+    "YucatanCongresoClient",
+    "YucatanIniciativa",
+    "YucatanDocumento",
 ]
