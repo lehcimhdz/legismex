@@ -79,6 +79,7 @@ from .hidalgo_gaceta import (
 from .sonora_po import SonoraPoClient, SonoraPoEdicion, SonoraPoResultado
 from .bc_po import BcPoClient, BcPoEdicion, BcPoResultado
 from .bc_congreso import BcCongresoClient, BcIniciativa
+from .bcs_po import BcsPoClient, BcsPoEdicion
 from .bcs_congreso import (
     BcsCongresoClient,
     BcsSesion,
@@ -364,4 +365,8 @@ __all__ = [
     # Zacatecas - PO
     "ZacatecasPoClient",
     "ZacatecasPoPublicacion",
+
+    # Baja California Sur - PO
+    "BcsPoClient",
+    "BcsPoEdicion",
 ]

@@ -170,7 +170,33 @@ if dictamenes:
 
 ---
 
+## Periódico Oficial del Estado de Baja California Sur
+
+Extrae las ediciones por año publicadas por la Secretaría de Finanzas.
+
+```python
+import asyncio
+from legismex import BcsPoClient
+
+async def obtener_boletines_bcs():
+    client = BcsPoClient()
+    
+    # Obtiene los boletines publicados en 2025
+    ediciones_2025 = await client.a_obtener_ediciones(2025)
+    
+    print(f"Total encontrados 2025: {len(ediciones_2025)}")
+    
+    for e in ediciones_2025[:3]:
+        print(f"Boletín {e.numero} ({e.fecha}): {e.url_pdf}")
+
+if __name__ == "__main__":
+    asyncio.run(obtener_boletines_bcs())
+```
+
+---
+
 ## 6. Proposiciones y Documentos Estáticos (Actas, Acuerdos, Agendas, Asistencias)
+
 
 La Gaceta también cuenta con un buscador idéntico para **Proposiciones con punto de acuerdo** y directorios históricos en formato de texto.
 
