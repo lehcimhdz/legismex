@@ -1695,3 +1695,24 @@ async def probar_durango_gaceta():
 if __name__ == "__main__":
     asyncio.run(probar_durango_gaceta())
 ```
+
+### Paso 60: Extraer Periódico Oficial del Estado de Durango
+
+El cliente `DurangoPoClient` resuelve automáticamente la estructura modular extraída de React Server Components de Next.js, escaneando internamente las URL embebidas alojadas en Amazon S3.
+
+```python
+from legismex import DurangoPoClient
+import asyncio
+
+async def probar_durango_po():
+    client = DurangoPoClient()
+    # Se consulta la primera página de publicaciones
+    ediciones = await client.a_obtener_ediciones(pagina=1)
+    
+    for ed in ediciones[:3]:
+        print(f"[{ed.fecha}] {ed.titulo}")
+        print(f"S3 URL: {ed.url_pdf}")
+
+if __name__ == "__main__":
+    asyncio.run(probar_durango_po())
+```

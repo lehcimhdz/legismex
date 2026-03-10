@@ -63,6 +63,9 @@
 *   **Periódico Oficial de Hidalgo:** Sistema de búsqueda avanzada que extrae sumarios detallados y construye enlaces directos a los archivos PDF institucionales.
 *   **Congreso de Zacatecas:** Consulta la Gaceta Parlamentaria (LXV Legislatura) permitiendo listar y descargar ediciones por mes (formato MMYYYY).
 *   **Periódico Oficial de Zacatecas:** Plataforma unificada que permite descargar ediciones ordinarias por rango de fechas, además de extraer ágilmente suplementos, leyes, códigos y reglamentos vigentes desde sus endpoints JSON nativos.
+*   **Periódico Oficial de Sonora:** Scraping y mapeo de años a Joomla SP Builder (1981-2026).
+*   **Periódico Oficial de Zacatecas:** Interfaz con Parse API y descargas resolviendo ID del objeto con redirecciones dinámicas a PDFS.
+*   **Periódico Oficial de Durango:** API híbrida asíncrona validando Next.js server payload y extracción en profundidad de links nativos (Amazon S3).
 *   **Congreso de Durango (Gaceta):** Extracción desde un CMS basado en WordPress (TablePress) extrayendo publicaciones de la Comisión Permanente y del Periodo Ordinario empaquetando URLs directas al PDF de cada edición.
 ### 🛠️ Capacidades de Extracción
 *   **Votaciones Detalladas:** Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.
