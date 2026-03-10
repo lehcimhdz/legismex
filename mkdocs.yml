@@ -34,7 +34,8 @@ theme:
 nav:
   - 🏠 Inicio: index.md
   - 📖 Tutorial y Ejemplos: tutorial.md
-  - 🛠️ Tipos de Respuesta (Excepciones): excepciones.md
+  - �️ Referencia de Modelos: modelos.md
+  - �🛠️ Tipos de Respuesta (Excepciones): excepciones.md
   - 🤝 Guía de Contribución: contributing.md
 
 extra_css:
