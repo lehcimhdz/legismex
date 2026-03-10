@@ -342,13 +342,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#practicamente-soporte-total" class="md-nav__link">
+  <a href="#soporte-multi-camara-e-institucional" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prácticamente Soporte Total 🦅
+        🦅 Soporte Multi-Cámara e Institucional
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="🦅 Soporte Multi-Cámara e Institucional">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#capacidades-de-extraccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🛠️ Capacidades de Extracción
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -394,6 +411,33 @@
   
   
     <li class="md-nav__item">
+      <a href="modelos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    �️ Referencia de Modelos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="excepciones/" class="md-nav__link">
         
   
@@ -401,7 +445,7 @@
   <span class="md-ellipsis">
     
   
-    🛠️ Tipos de Respuesta (Excepciones)
+    �🛠️ Tipos de Respuesta (Excepciones)
   
 
     
@@ -490,13 +534,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#practicamente-soporte-total" class="md-nav__link">
+  <a href="#soporte-multi-camara-e-institucional" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prácticamente Soporte Total 🦅
+        🦅 Soporte Multi-Cámara e Institucional
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="🦅 Soporte Multi-Cámara e Institucional">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#capacidades-de-extraccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🛠️ Capacidades de Extracción
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -533,9 +594,53 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;legismex[consejeria]  @ git+https://github.com/lehcimhdz/legismex.git&quot;</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>playwright<span class="w"> </span>install<span class="w"> </span>chromium
 </code></pre></div></p>
-<h2 id="practicamente-soporte-total">Prácticamente Soporte Total 🦅</h2>
-<p>Ya sea que necesites compilar <em>Iniciativas de Ley</em> en Nuevo León, descargar Gacetas ocultas de la CDMX o mapear resoluciones judiciales en Michoacán, tenemos conectores dedicados.</p>
-<p>Revisa el <a href="tutorial/">Tutorial Oficial</a> para ejemplos de código.</p>
+<h2 id="soporte-multi-camara-e-institucional">🦅 Soporte Multi-Cámara e Institucional</h2>
+<ul>
+<li><strong>Cámara de Diputados:</strong> Soporte robusto para la Gaceta Parlamentaria (<code>gaceta.diputados.gob.mx</code>), abstrayendo <code>framesets</code> antiguos en una API moderna.</li>
+<li><strong>Senado de la República:</strong> Integración con <code>www.senado.gob.mx</code> para extraer la gaceta diaria estructurada por categorías y el histórico.</li>
+<li><strong>Diario Oficial de la Federación:</strong> Integración con <code>dof.gob.mx</code> extrayendo el concentrado diario por secciones y dependencias federales.</li>
+<li><strong>Congreso de la Ciudad de México:</strong> Rastreador especializado para recuperar y descargar PDFs pesados directos de los Diarios de Debate con barra de progreso interactivos.</li>
+<li><strong>Consejería de la CDMX (Gaceta Oficial):</strong> Extrae Gacetas evadiendo la ofuscación de <em>ZK Framework</em> a través de control headless nativo con Playwright.</li>
+<li><strong>Congreso del Estado de México</strong>: Extrae Iniciativas, Puntos de Acuerdo, y Pronunciamientos de la Gaceta Parlamentaria.</li>
+<li><strong>Periódico Oficial del Estado de México</strong>: Permite consultar tomos y documentos oficiales publicados en la "Gaceta del Gobierno".</li>
+<li><strong>Congreso de Puebla</strong>: Análisis de las resoluciones, iniciativas y puntos de acuerdo de la Gaceta Legislativa de Puebla.</li>
+<li>🌋 <strong>Puebla</strong>: Periódico Oficial del Estado</li>
+<li>🏰 <strong>Querétaro</strong>: Gaceta Legislativa del Congreso del Estado</li>
+<li>⚔️ <strong>Querétaro</strong>: Periódico Oficial "La Sombra de Arteaga"</li>
+<li>🏝️ <strong>Quintana Roo</strong> (Gaceta Parlamentaria <code>qroo</code> y Periódico Oficial <code>qroo_po</code>)</li>
+<li>🌵 <strong>San Luis Potosí</strong> (Congreso <code>sanluis</code> y Periódico Oficial <code>sanluis_po</code>)</li>
+<li>🌴 <strong>Colima</strong> (Gaceta Parlamentaria <code>colima</code> y Periódico Oficial <code>colima_po</code>)</li>
+<li>🍫 <strong>Tabasco</strong> (Congreso Iniciativas <code>tabasco_iniciativas</code> y Periódico Oficial <code>tabasco_po</code>)</li>
+<li>🌺 <strong>Tamaulipas</strong> (Congreso <code>tamaulipas</code> y Periódico Oficial <code>tamaulipas_po</code>)</li>
+<li>🌴 <strong>Veracruz</strong> (Congreso <code>veracruz</code> y Periódico Oficial <code>veracruz_po</code>)</li>
+<li>🌊 <strong>Nayarit</strong> (Congreso Iniciativas <code>nayarit_congreso</code> y Periódico Oficial <code>nayarit_po</code>)</li>
+<li>🌊 <strong>Sinaloa</strong> (Congreso <code>sinaloa</code> y Periódico Oficial <code>sinaloa_po</code>)</li>
+<li>🌊 <strong>Baja California Sur</strong>: Congreso del Estado (<code>bcs_congreso</code>)</li>
+<li>🌵 <strong>Baja California</strong>: Congreso del Estado (<code>bc_congreso</code>) y Periódico Oficial (<code>bc_po</code>)</li>
+<li>🌴 <strong>Yucatán</strong>: Congreso del Estado (<code>yucatan_congreso</code>) y Periódico Oficial (<code>yucatan_po</code>)</li>
+<li>🐶 <strong>Chihuahua</strong>: Congreso del Estado (<code>chihuahua_congreso</code>) y Periódico Oficial (<code>chihuahua_po</code>)</li>
+<li>🦖 <strong>Coahuila</strong>: Congreso del Estado (<code>coahuila_congreso</code>) y Periódico Oficial (<code>coahuila_po</code>)</li>
+<li>🌵 <strong>Sonora</strong>: Gaceta Parlamentaria <code>sonora</code> y Periódico Oficial <code>sonora_po</code></li>
+<li>🐸 <strong>Guanajuato</strong>: Gaceta Parlamentaria y Periódico Oficial del Estado</li>
+<li>🦋 <strong>Michoacán</strong>: Gaceta Parlamentaria y Periódico Oficial del Estado</li>
+<li>🌲 <strong>Durango</strong>: Congreso del Estado (<code>durango_gaceta</code>) y Periódico Oficial (<code>durango_po</code>)</li>
+<li>🌋 <strong>Morelos</strong>: Documentos Legislativos del Congreso y Periódico Oficial</li>
+<li>🌴 <strong>Guerrero</strong>: Gaceta Parlamentaria del Congreso y Periódico Oficial</li>
+<li>🌋 <strong>Tlaxcala</strong>: Trabajo Legislativo del Congreso LXV y Periódico Oficial</li>
+<li>🏛️ <strong>Oaxaca</strong>: Gaceta Parlamentaria del Congreso y Periódico Oficial</li>
+<li>🌵 <strong>Aguascalientes</strong>: Agenda Legislativa del Congreso y Periódico Oficial</li>
+<li>🏺 <strong>Campeche</strong>: Gaceta Parlamentaria y Periódico Oficial</li>
+<li>🐆 <strong>Chiapas</strong>: Gaceta Parlamentaria y Periódico Oficial</li>
+<li>🏛️ <strong>Hidalgo</strong>: Congreso del Estado y Periódico Oficial</li>
+<li><strong>Zacatecas:</strong> Congreso del Estado y Periódico Oficial</li>
+</ul>
+<h3 id="capacidades-de-extraccion">🛠️ Capacidades de Extracción</h3>
+<ul>
+<li><strong>Votaciones Detalladas:</strong> Analiza el concentrado por periodo y extrae la votación particular de cada dictamen, incluyendo sumatorias de votos.</li>
+<li><strong>Motores de Búsqueda (HTDIG):</strong> Conexión directa a buscadores internos para localizar iniciativas, proposiciones y dictámenes.</li>
+<li><strong>Iniciativas y Seguimiento:</strong> Obtiene el estatus de trámite, promotores y links directos (PDF/HTML) de asuntos en comisiones.</li>
+</ul>
+<p>Revisa el <a href="tutorial/">Tutorial Oficial</a> para ver ejemplos de código para cada uno de estos estados.</p>
 
 
 
