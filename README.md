@@ -35,6 +35,7 @@
     *   Periódico Oficial del Estado (`chihuahua_po`) — Extrae las emisiones del PO con filtrado de fechas, palabras clave y anexos aledaños en formato de PDF expuestos de forma directa.
 *   🦖 **Coahuila**: 
     *   Congreso del Estado (`coahuila_congreso`) — Extrae el listado de Iniciativas de la Legislatura actual almacenadas en la base de datos de PrimeFaces.
+    *   Periódico Oficial del Estado (`coahuila_po`) — Extrae e indexa las ediciones y anexos publicados en un año específico con URLs directas de sus repositorios escondidos.
 *   🌵 **Sonora**: Gaceta Parlamentaria `sonora` (REST API, 7 legislaturas) y Periódico Oficial `sonora_po` (Joomla Scraping, archivo 1981–2026).
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   🐸 **Guanajuato**: Periódico Oficial del Estado

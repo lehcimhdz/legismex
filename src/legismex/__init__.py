@@ -96,6 +96,7 @@ from .yucatan_po import YucatanPoClient, YucatanPoEdicion
 from .chihuahua_congreso import ChihuahuaCongresoClient, ChihuahuaSesion, ChihuahuaDocumento
 from .chihuahua_po import ChihuahuaPoClient, ChihuahuaPoEdicion
 from .coahuila_congreso import CoahuilaCongresoClient, CoahuilaIniciativa
+from .coahuila_po import CoahuilaPoClient, CoahuilaPoEdicion
 
 __all__ = [
     # Durango
@@ -396,4 +397,8 @@ __all__ = [
     # Coahuila - Congreso
     "CoahuilaCongresoClient",
     "CoahuilaIniciativa",
+
+    # Coahuila - Periódico Oficial
+    "CoahuilaPoClient",
+    "CoahuilaPoEdicion",
 ]
