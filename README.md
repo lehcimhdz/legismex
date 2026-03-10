@@ -2,6 +2,28 @@
 
 > Biblioteca en Python para facilitar el acceso y análisis de información legislativa en México. 🇲🇽
 
+### 🌎 What is Legismex? (English Quickstart)
+
+**Legismex** is an open-source Python library that brings Civic Tech to Mexico. It provides a clean, unified, and strictly-typed API to automatically extract, download, and parse legal documents (initiatives, debates, and gazettes) from **all 32 State Congresses**, the Federal Senate, and the National Official Gazette (DOF). 
+
+**Quick Install:**
+```bash
+pip install legismex
+```
+
+**Minimal Example (Extracting Federal Decrees):**
+```python
+from legismex.dof import DofClient
+
+client = DofClient()
+today_edition = client.obtener_edicion_del_dia()
+
+print(f"Total decrees today: {len(today_edition.documentos)}")
+print(f"Top decree: {today_edition.documentos[0].titulo}")
+```
+*For the full documentation in Spanish, please see the sections below or visit the [Official Docs Site](https://lehcimhdz.github.io/legismex/).*
+
+---
 
 ### 🏛️ Soporte Multi-Cámara e Institucional
 *   **Cámara de Diputados:** Soporte robusto para la Gaceta Parlamentaria (`gaceta.diputados.gob.mx`), abstrayendo `framesets` antiguos en una API moderna.
