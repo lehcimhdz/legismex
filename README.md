@@ -24,11 +24,17 @@
 *   🌊 **Nayarit** (Congreso Iniciativas `nayarit_congreso` y Periódico Oficial `nayarit_po` — API REST interna, 3 tipos de búsqueda)
 *   🌊 **Sinaloa** (Congreso `sinaloa` — Iniciativas, Dictámenes, Acuerdos y Decretos vía API REST, legislaturas LX–LXV; Periódico Oficial `sinaloa_po` — ediciones ordinarias y vespertinas con PDF directo)
 *   🌊 **Baja California Sur**: Congreso del Estado (`bcs_congreso`) — Extracción de Órdenes del Día, Actas y Diario de los Debates (XVII Legislatura).
+*   🌵 **Baja California**: 
+    *   Congreso del Estado (`bc_congreso`) — Extracción de iniciativas, posicionamientos y recolección de URLs de PDF con navegación de ASP.NET.
+    *   Periódico Oficial del Estado (`bc_po`) — Consultas integradas para POES mensual y descargas desde CDN.
 *   🌵 **Sonora**: Gaceta Parlamentaria `sonora` (REST API, 7 legislaturas) y Periódico Oficial `sonora_po` (Joomla Scraping, archivo 1981–2026).
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   🐸 **Guanajuato**: Periódico Oficial del Estado
 *   🦋 **Michoacán**: Gaceta Parlamentaria del Congreso del Estado
 *   🦋 **Michoacán**: Periódico Oficial del Estado (archivo 1955–2025)
+*   🌲 **Durango**:
+    *   Congreso del Estado (`durango_gaceta`) — Gacetas ordinarias y de la Comisión Permanente.
+    *   Periódico Oficial del Estado (`durango_po`) — Ediciones publicadas alojadas en AWS S3.
 *   🌋 **Morelos**: Documentos Legislativos del Congreso (LVI Legislatura)
 *   🌋 **Morelos**: Periódico Oficial del Estado (archivo 1970–2026, 6,400+ ejemplares)
 *   🌴 **Guerrero**: Gaceta Parlamentaria del Congreso (LXIV Legislatura, 185+ gacetas)

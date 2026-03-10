@@ -1730,3 +1730,23 @@ async def probar_durango_po():
 if __name__ == "__main__":
     asyncio.run(probar_durango_po())
 ```
+
+## 58. Congreso del Estado de Baja California (`bc_congreso`)
+
+Para descargar iniciativas de ley, posicionamientos y proposiciones ingresadas en el Congreso de Baja California:
+
+```python
+import asyncio
+from legismex import BcCongresoClient
+
+async def extraer_bc():
+    client = BcCongresoClient()
+    # Para extraer la primera página:
+    iniciativas = await client.a_obtener_iniciativas(max_paginas=1)
+    
+    print(f"Total extraídas: {len(iniciativas)}")
+    for i in iniciativas[:3]:
+        print(f"[{i.fecha}] {i.tipo} by {i.presentado_por} -> {i.url_pdf}")
+
+asyncio.run(extraer_bc())
+```
