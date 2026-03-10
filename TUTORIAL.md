@@ -1662,3 +1662,36 @@ async def probar_zacatecas_po():
 if __name__ == "__main__":
     asyncio.run(probar_zacatecas_po())
 ```
+
+### Paso 59: Extraer Gacetas del Congreso de Durango
+
+El cliente `DurangoGacetaClient` está diseñado para leer las tablas `TablePress` incrustadas en el CMS de WordPress del Congreso del Estado de Durango y obtener los enlaces directos a las publicaciones de los periodos Ordinario y Permanente.
+
+```python
+import asyncio
+from legismex import DurangoGacetaClient
+
+async def probar_durango_gaceta():
+    client = DurangoGacetaClient()
+    
+    # Extraer gacetas del periodo ordinario (tabla tablepress-41)
+    ordinarios = await client.a_obtener_ordinarios()
+    print(f"Ordinarios recuperados: {len(ordinarios)}")
+    
+    if ordinarios:
+        print(f"Primera gaceta ordinaria: {ordinarios[0].numero} | Publicada el: {ordinarios[0].fecha}")
+        print(f"Enlace PDF: {ordinarios[0].url_pdf}")
+        
+    print("-" * 40)
+    
+    # Extraer gacetas de la Comisión Permanente (tabla tablepress-88)
+    permanente = await client.a_obtener_permanente()
+    print(f"Permanentes recuperadas: {len(permanente)}")
+    
+    # También puedes obtener todas combinadas en una sola llamada:
+    todas = await client.a_obtener_todas()
+    print(f"\nTotal combinadas en el sistema: {len(todas)}")
+
+if __name__ == "__main__":
+    asyncio.run(probar_durango_gaceta())
+```

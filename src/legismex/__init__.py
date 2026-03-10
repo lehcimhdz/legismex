@@ -67,6 +67,7 @@ from .sonora import (
     SonoraLegislatura,
     SonoraGacetaMedia,
 )
+from .durango_gaceta import DurangoGacetaClient, DurangoGaceta
 from .hidalgo_gaceta import (
     HidalgoGacetaClient,
     HidalgoGaceta,
@@ -88,6 +89,10 @@ from .zacatecas import ZacatecasClient, ZacatecasGaceta
 from .zacatecas_po import ZacatecasPoClient, ZacatecasPoPublicacion
 
 __all__ = [
+    # Durango
+    "DurangoGacetaClient",
+    "DurangoGaceta",
+
     # Gaceta Parlamentaria
     "GacetaClient",
     "PeriodoVotacion",
