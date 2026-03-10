@@ -77,17 +77,33 @@ class BcsCongresoClient:
             resp.raise_for_status()
             
         soup = BeautifulSoup(resp.text, "html.parser")
-        # El título del artículo en Joomla suele estar en h2 o en .page-header h2
-        header = soup.select_one(".page-header h2, h2")
-        titulo = header.get_text(strip=True) if header else "N/A"
+        
+        # El título del artículo en Joomla suele estar en h2 o en .page-header h2, 
+        # o recurrimos a la etiqueta <title>
+        header = soup.select_one(".page-header h2, article h2")
+        if header:
+            titulo = header.get_text(strip=True)
+        elif soup.title:
+            titulo = soup.title.get_text(strip=True)
+        else:
+            titulo = "N/A"
+            
         fecha = self._parsear_fecha(titulo)
         
         documentos = []
         # Buscar enlaces a PDFs
         links = soup.find_all("a", href=re.compile(r"\.pdf$", re.IGNORECASE))
         for link in links:
-            # Si el link no tiene texto, buscamos en el atributo title o en el texto del padre
-            doc_titulo = link.get_text(strip=True) or link.get("title") or "Documento"
+            # Si el link no tiene texto, buscamos en el atributo title, o tratamos de agarrar el texto del párrafo contenedor
+            doc_titulo = link.get_text(strip=True) or link.get("title")
+            if not doc_titulo:
+                parent_p = link.find_parent("p")
+                if parent_p:
+                    # Obtenemos el texto del párrafo excluyendo el enlace mismo
+                    texto_p = parent_p.get_text(strip=True)
+                    doc_titulo = texto_p[:200] + "..." if len(texto_p) > 200 else texto_p
+            
+            doc_titulo = doc_titulo or "Documento"
             doc_url = urljoin(url, link["href"])
             documentos.append(BcsDocumento(titulo=doc_titulo, url=doc_url))
             
@@ -179,13 +195,27 @@ class BcsCongresoClient:
             resp.raise_for_status()
             
         soup = BeautifulSoup(resp.text, "html.parser")
-        header = soup.select_one(".page-header h2, h2")
-        titulo = header.get_text(strip=True) if header else "N/A"
+        header = soup.select_one(".page-header h2, article h2")
+        if header:
+            titulo = header.get_text(strip=True)
+        elif soup.title:
+            titulo = soup.title.get_text(strip=True)
+        else:
+            titulo = "N/A"
+            
         fecha = self._parsear_fecha(titulo)
+        
         documentos = []
         links = soup.find_all("a", href=re.compile(r"\.pdf$", re.IGNORECASE))
         for link in links:
-            doc_titulo = link.get_text(strip=True) or link.get("title") or "Documento"
+            doc_titulo = link.get_text(strip=True) or link.get("title")
+            if not doc_titulo:
+                parent_p = link.find_parent("p")
+                if parent_p:
+                    texto_p = parent_p.get_text(strip=True)
+                    doc_titulo = texto_p[:200] + "..." if len(texto_p) > 200 else texto_p
+            
+            doc_titulo = doc_titulo or "Documento"
             doc_url = urljoin(url, link["href"])
             documentos.append(BcsDocumento(titulo=doc_titulo, url=doc_url))
         return BcsOrdenDia(titulo=titulo, fecha=fecha, documentos=documentos)
