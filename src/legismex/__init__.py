@@ -92,6 +92,7 @@ from .hidalgo_po import HidalgoPoClient, HidalgoPoEdicion, HidalgoPoResultado
 from .zacatecas import ZacatecasClient, ZacatecasGaceta
 from .zacatecas_po import ZacatecasPoClient, ZacatecasPoPublicacion
 from .yucatan_congreso import YucatanCongresoClient, YucatanIniciativa, YucatanDocumento
+from .yucatan_po import YucatanPoClient, YucatanPoEdicion
 
 __all__ = [
     # Durango
@@ -375,4 +376,8 @@ __all__ = [
     "YucatanCongresoClient",
     "YucatanIniciativa",
     "YucatanDocumento",
+
+    # Yucatán - Periódico Oficial
+    "YucatanPoClient",
+    "YucatanPoEdicion",
 ]
