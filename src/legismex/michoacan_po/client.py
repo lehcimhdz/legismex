@@ -17,7 +17,7 @@ class MichoacanPoClient:
 
     def __init__(self, client: Optional[httpx.Client] = None):
         if client is None:
-            self._client = httpx.Client(follow_redirects=True, timeout=30)
+            self._client = httpx.Client(follow_redirects=True, timeout=30, verify=False)
         else:
             self._client = client
 
