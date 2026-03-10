@@ -1,10 +1,12 @@
 from legismex.tabasco_iniciativas.client import TabascoIniciativasClient
 
+
 def imprimir_iniciativa(ini):
     print(f"[{ini.fecha}] No. {ini.numero}")
     print(f"  > Título: {ini.titulo[:100]}...")
     print(f"  > Presentada por: {ini.presentada_por}")
     print(f"  > PDF: {ini.url_pdf}")
+
 
 def test_tabasco_iniciativas():
     print("=== Tabasco Iniciativas (Congreso) ===")
@@ -16,7 +18,7 @@ def test_tabasco_iniciativas():
         print(f"\n--- Iniciativas del año {anio} ---")
         iniciativas = client.obtener_iniciativas(anio=anio)
         print(f"Total iniciativas encontradas en {anio}: {len(iniciativas)}")
-        
+
         if not iniciativas:
             print(f"No se encontraron iniciativas para el año {anio}.")
             return
@@ -28,6 +30,7 @@ def test_tabasco_iniciativas():
 
     except Exception as exc:
         print(f"Error en prueba de Iniciativas: {exc}")
+
 
 if __name__ == "__main__":
     test_tabasco_iniciativas()

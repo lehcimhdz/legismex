@@ -13,6 +13,7 @@ from .models import (
 
 T = TypeVar("T", bound=ColimaDocumentoBase)
 
+
 class ColimaClient:
     """Cliente para la Gaceta Parlamentaria del H. Congreso del Estado de Colima."""
     BASE_URL = "https://congresocol.gob.mx/web/www/gaceta/plantilla_datos.php"
@@ -24,7 +25,7 @@ class ColimaClient:
             "verify": False,  # Sus certificados SSL suelen fallar
             **kwargs
         }
-        
+
     def _limpiar_url(self, href: str) -> str:
         if not href or href == "N/A" or href == "#":
             return ""
@@ -74,7 +75,8 @@ class ColimaClient:
     # --- Síncronos ---
 
     def obtener_decretos(self, legislatura_id: int = 61, legislatura_nombre: str = "LXI Legislatura") -> List[ColimaDecreto]:
-        html = self._ejecutar_peticion("tdecretos", legislatura_id, legislatura_nombre)
+        html = self._ejecutar_peticion(
+            "tdecretos", legislatura_id, legislatura_nombre)
         rows = self._parsear_html(html)
         resultados = []
         for r in rows:
@@ -93,7 +95,8 @@ class ColimaClient:
         return resultados
 
     def obtener_iniciativas(self, legislatura_id: int = 61, legislatura_nombre: str = "LXI Legislatura") -> List[ColimaIniciativa]:
-        html = self._ejecutar_peticion("tiniciativas", legislatura_id, legislatura_nombre)
+        html = self._ejecutar_peticion(
+            "tiniciativas", legislatura_id, legislatura_nombre)
         rows = self._parsear_html(html)
         resultados = []
         for r in rows:
@@ -101,12 +104,12 @@ class ColimaClient:
             if len(cols) >= 4:
                 pdf = cols[3].find("a")
                 txt_estado = cols[2].get_text(" ", strip=True)
-                
+
                 # Partir texto de estado ("Autor: X Comisión: Y Pendiente")
                 autor = ""
                 comision = ""
                 status = txt_estado
-                
+
                 if "Autor:" in txt_estado:
                     partes = txt_estado.split("Comisión:")
                     autor = partes[0].replace("Autor:", "").strip()
@@ -133,7 +136,8 @@ class ColimaClient:
         return resultados
 
     def obtener_diario_debates(self, legislatura_id: int = 61, legislatura_nombre: str = "LXI Legislatura") -> List[ColimaDiarioDebate]:
-        html = self._ejecutar_peticion("tdiario", legislatura_id, legislatura_nombre)
+        html = self._ejecutar_peticion(
+            "tdiario", legislatura_id, legislatura_nombre)
         rows = self._parsear_html(html)
         resultados = []
         for r in rows:
@@ -150,7 +154,8 @@ class ColimaClient:
         return resultados
 
     def obtener_actas(self, legislatura_id: int = 61, legislatura_nombre: str = "LXI Legislatura") -> List[ColimaActa]:
-        html = self._ejecutar_peticion("tactas", legislatura_id, legislatura_nombre)
+        html = self._ejecutar_peticion(
+            "tactas", legislatura_id, legislatura_nombre)
         rows = self._parsear_html(html)
         resultados = []
         for r in rows:
@@ -198,11 +203,11 @@ class ColimaClient:
             if len(cols) >= 4:
                 pdf = cols[3].find("a")
                 txt_estado = cols[2].get_text(" ", strip=True)
-                
+
                 autor = ""
                 comision = ""
                 status = txt_estado
-                
+
                 if "Autor:" in txt_estado:
                     partes = txt_estado.split("Comisión:")
                     autor = partes[0].replace("Autor:", "").strip()

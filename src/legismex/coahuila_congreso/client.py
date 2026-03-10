@@ -4,6 +4,7 @@ from typing import List, Optional
 import re
 from .models import CoahuilaIniciativa
 
+
 class CoahuilaCongresoClient:
     """
     Cliente para la extracción de Iniciativas del H. Congreso del Estado de Coahuila.
@@ -51,7 +52,7 @@ class CoahuilaCongresoClient:
             # pdf button is in column 6
             btn_pdf = tds[6].find("button")
             url_pdf = self._extraer_url_onclick(btn_pdf)
-            
+
             # docx button is in column 7
             btn_docx = tds[7].find("button")
             url_abierto = self._extraer_url_onclick(btn_docx)
@@ -76,18 +77,18 @@ class CoahuilaCongresoClient:
     def _procesar_html(self, html_content: str) -> List[CoahuilaIniciativa]:
         soup = BeautifulSoup(html_content, "html.parser")
         iniciativas = []
-        
+
         # Encontrar la tabla que tiene los resultados data
         tbody = soup.find("tbody", id="frm:grid_data")
         if not tbody:
             return iniciativas
-            
+
         rows = tbody.find_all("tr", recursive=False)
         for row in rows:
             iniciativa = self._parsear_iniciativa(row)
             if iniciativa:
                 iniciativas.append(iniciativa)
-                
+
         return iniciativas
 
     def obtener_iniciativas(self) -> List[CoahuilaIniciativa]:

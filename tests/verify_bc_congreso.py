@@ -1,16 +1,17 @@
+from legismex import BcCongresoClient
 import asyncio
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "src")))
 
-from legismex import BcCongresoClient
 
 def verify_sync():
     print("--- Probando obtener_iniciativas (sync - limit: 2 páginas) ---")
     client = BcCongresoClient()
     iniciativas = client.obtener_iniciativas(max_paginas=2)
-    
+
     print(f"Iniciativas de BC extraídas: {len(iniciativas)}")
     for i in iniciativas[:3]:
         print(f"[{i.fecha or 'Sin fecha'}] Sesión: {i.sesion} - Doc: {i.num_doc}")
@@ -19,6 +20,7 @@ def verify_sync():
         print(f"  Desc: {i.descripcion[:80]}...")
         print(f"  PDF: {i.url_pdf}")
         print()
+
 
 async def verify_async():
     print("--- Probando a_obtener_iniciativas (async - limit: 1 página) ---")

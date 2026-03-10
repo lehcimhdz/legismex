@@ -1,8 +1,10 @@
 from legismex.oaxaca_po.client import OaxacaPoClient
 
+
 def imprimir_edicion(e):
     print(f"[{e.fecha}] {e.nombre} ({e.tipo})")
     print(f"  > PDF: {e.url_pdf}")
+
 
 def test_oaxaca_po():
     print("=== Oaxaca Periódico Oficial ===")
@@ -18,7 +20,7 @@ def test_oaxaca_po():
 
         # 2. Probar filtrado por mes (Feb/2026 o similar)
         anio_actual = 2026
-        mes_num = 2 # Febrero
+        mes_num = 2  # Febrero
         print(f"\n--- Ediciones en 0{mes_num}/{anio_actual} ---")
         mes_filtro = client.obtener_ediciones(ano=anio_actual, mes=mes_num)
         print(f"Ediciones encontradas en Febrero 2026: {len(mes_filtro)}")
@@ -37,6 +39,7 @@ def test_oaxaca_po():
 
     except Exception as exc:
         print(f"Error en prueba de P.O.: {exc}")
+
 
 if __name__ == "__main__":
     test_oaxaca_po()

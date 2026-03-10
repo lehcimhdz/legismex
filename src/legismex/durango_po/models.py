@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List
 
+
 class DurangoPoEdicion(BaseModel):
     """Representa una publicación del Periódico Oficial del Estado de Durango."""
     uuid: str

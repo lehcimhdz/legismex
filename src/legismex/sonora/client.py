@@ -88,7 +88,8 @@ class SonoraClient:
     _EXPAND_DETAIL = "mediaGaceta.media,legislatura"
 
     def __init__(self, **kwargs):
-        self.client_kwargs = {"timeout": 30.0, "follow_redirects": True, **kwargs}
+        self.client_kwargs = {"timeout": 30.0,
+                              "follow_redirects": True, **kwargs}
 
     def _id_legislatura(self, legislatura: str) -> str:
         """Resuelve una clave legible (ej. 'LXIV') o un UUID directo."""
@@ -155,20 +156,23 @@ class SonoraClient:
         with httpx.Client(**self.client_kwargs) as client:
             resp = client.get(
                 f"{_API_BASE}/gaceta",
-                params=self._list_params(id_leg, 1, buscar, fecha_inicio, fecha_fin),
+                params=self._list_params(
+                    id_leg, 1, buscar, fecha_inicio, fecha_fin),
                 headers=_HEADERS,
             )
             resp.raise_for_status()
             data = resp.json()
             pag = data["paginacion"]
             total_pages = -(-pag["total"] // pag["limite"])  # ceil
-            resultados = [SonoraGaceta.from_api(r) for r in data.get("resultado", [])]
+            resultados = [SonoraGaceta.from_api(
+                r) for r in data.get("resultado", [])]
 
             if all_pages and total_pages > 1:
                 for page in range(2, total_pages + 1):
                     resp = client.get(
                         f"{_API_BASE}/gaceta",
-                        params=self._list_params(id_leg, page, buscar, fecha_inicio, fecha_fin),
+                        params=self._list_params(
+                            id_leg, page, buscar, fecha_inicio, fecha_fin),
                         headers=_HEADERS,
                     )
                     resp.raise_for_status()
@@ -192,7 +196,8 @@ class SonoraClient:
             resp.raise_for_status()
             resultados = resp.json().get("resultado", [])
             if not resultados:
-                raise ValueError(f"No se encontró la gaceta con id={id_gaceta}")
+                raise ValueError(
+                    f"No se encontró la gaceta con id={id_gaceta}")
             return SonoraGaceta.from_api(resultados[0])
 
     # ------------------------------------------------------------------
@@ -223,20 +228,23 @@ class SonoraClient:
         async with httpx.AsyncClient(**self.client_kwargs) as client:
             resp = await client.get(
                 f"{_API_BASE}/gaceta",
-                params=self._list_params(id_leg, 1, buscar, fecha_inicio, fecha_fin),
+                params=self._list_params(
+                    id_leg, 1, buscar, fecha_inicio, fecha_fin),
                 headers=_HEADERS,
             )
             resp.raise_for_status()
             data = resp.json()
             pag = data["paginacion"]
             total_pages = -(-pag["total"] // pag["limite"])
-            resultados = [SonoraGaceta.from_api(r) for r in data.get("resultado", [])]
+            resultados = [SonoraGaceta.from_api(
+                r) for r in data.get("resultado", [])]
 
             if all_pages and total_pages > 1:
                 tareas = [
                     client.get(
                         f"{_API_BASE}/gaceta",
-                        params=self._list_params(id_leg, pg, buscar, fecha_inicio, fecha_fin),
+                        params=self._list_params(
+                            id_leg, pg, buscar, fecha_inicio, fecha_fin),
                         headers=_HEADERS,
                     )
                     for pg in range(2, total_pages + 1)
@@ -244,7 +252,8 @@ class SonoraClient:
                 respuestas = await asyncio.gather(*tareas)
                 for r in respuestas:
                     r.raise_for_status()
-                    resultados.extend(SonoraGaceta.from_api(x) for x in r.json().get("resultado", []))
+                    resultados.extend(SonoraGaceta.from_api(x)
+                                      for x in r.json().get("resultado", []))
         return resultados
 
     async def a_obtener_detalle(self, id_gaceta: str) -> SonoraGaceta:
@@ -258,5 +267,6 @@ class SonoraClient:
             resp.raise_for_status()
             resultados = resp.json().get("resultado", [])
             if not resultados:
-                raise ValueError(f"No se encontró la gaceta con id={id_gaceta}")
+                raise ValueError(
+                    f"No se encontró la gaceta con id={id_gaceta}")
             return SonoraGaceta.from_api(resultados[0])

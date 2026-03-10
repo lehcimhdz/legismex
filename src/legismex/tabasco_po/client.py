@@ -4,6 +4,7 @@ from typing import List, Optional
 import asyncio
 from .models import TabascoPoPublicacion
 
+
 class TabascoPoClient:
     """Cliente para extraer publicaciones del Periódico Oficial de Tabasco."""
     BASE_URL = "https://tabasco.gob.mx/PeriodicoOficial"
@@ -34,7 +35,7 @@ class TabascoPoClient:
 
         publicaciones = []
         rows = tbody.find_all("tr", class_="datos-periodico")
-        
+
         for row in rows:
             tds = row.find_all("td")
             if len(tds) < 6:
@@ -44,13 +45,13 @@ class TabascoPoClient:
             numero = tds[1].get_text(strip=True)
             tipo = tds[2].get_text(strip=True)
             suplemento = tds[3].get_text(strip=True) or None
-            
+
             # Limpiar descripción (quitar "Mostrar ↓")
             desc_td = tds[4]
             desc_text = desc_td.get_text(separator=" ", strip=True)
             if "Mostrar ↓" in desc_text:
                 desc_text = desc_text.split("Mostrar ↓")[0].strip()
-            
+
             a_tag = tds[5].find("a")
             url_pdf = a_tag["href"] if a_tag else ""
 
@@ -62,12 +63,12 @@ class TabascoPoClient:
                 descripcion=desc_text,
                 url_pdf=url_pdf
             ))
-        
+
         return publicaciones
 
     def obtener_publicaciones(
-        self, 
-        busqueda: str = "", 
+        self,
+        busqueda: str = "",
         paginas: int = 1
     ) -> List[TabascoPoPublicacion]:
         """
@@ -87,7 +88,7 @@ class TabascoPoClient:
                         url = f"{self.BASE_URL}/resultado/{busqueda}/{p}"
                     else:
                         url = f"{self.BASE_URL}?page={p}"
-                    
+
                     response = client.get(url)
                     response.raise_for_status()
                     pubs = self._parsear_html(response.text)
@@ -97,8 +98,8 @@ class TabascoPoClient:
             return todas_publicaciones
 
     async def a_obtener_publicaciones(
-        self, 
-        busqueda: str = "", 
+        self,
+        busqueda: str = "",
         paginas: int = 1
     ) -> List[TabascoPoPublicacion]:
         """
@@ -118,7 +119,7 @@ class TabascoPoClient:
                         url = f"{self.BASE_URL}/resultado/{busqueda}/{p}"
                     else:
                         url = f"{self.BASE_URL}?page={p}"
-                    
+
                     response = await client.get(url)
                     response.raise_for_status()
                     pubs = self._parsear_html(response.text)

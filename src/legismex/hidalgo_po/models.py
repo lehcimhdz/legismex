@@ -2,6 +2,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 from datetime import date
 
+
 class HidalgoPoEdicion(BaseModel):
     id: str
     nombre: str = Field(alias="name")
@@ -16,6 +17,7 @@ class HidalgoPoEdicion(BaseModel):
 
     class Config:
         populate_by_name = True
+
 
 class HidalgoPoResultado(BaseModel):
     ediciones: List[HidalgoPoEdicion]

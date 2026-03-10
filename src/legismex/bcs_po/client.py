@@ -6,6 +6,7 @@ import asyncio
 
 from .models import BcsPoEdicion
 
+
 class BcsPoClient:
     """
     Cliente para interactuar con el portal de Boletines Oficiales de Baja California Sur.
@@ -28,7 +29,7 @@ class BcsPoClient:
         tanto de las tablas inyectadas por variables JS como de tablas HTML estándar.
         """
         ediciones_dict: Dict[str, BcsPoEdicion] = {}
-        
+
         # 1. Parsear variables JavaScript si existen
         # El sitio puede inyectar HTML de las tablas dentro de variables (ej. let enero = '<table>...';)
         pattern = re.compile(r"let\s+\w+\s*=\s*'([^']*)';")
@@ -56,7 +57,7 @@ class BcsPoClient:
                 if not link_tag:
                     # En algunos años, el enlace puede estar en el primer td
                     link_tag = tds[0].find("a", href=True)
-                
+
                 if not link_tag or not title_text:
                     continue
 
@@ -72,8 +73,10 @@ class BcsPoClient:
                     continue
 
                 # Extraer Número y Fecha. Ejemplo: "Boletín No. 49 - Fecha 30/11/2024"
-                m_num = re.search(r"Bolet[ií]n\s+No\.?\s*([a-zA-Z0-9\s]+)\s*(?:-|$)", title_text, re.IGNORECASE)
-                m_date = re.search(r"Fecha\s+(\d{2}/\d{2}/\d{4})", title_text, re.IGNORECASE)
+                m_num = re.search(
+                    r"Bolet[ií]n\s+No\.?\s*([a-zA-Z0-9\s]+)\s*(?:-|$)", title_text, re.IGNORECASE)
+                m_date = re.search(
+                    r"Fecha\s+(\d{2}/\d{2}/\d{4})", title_text, re.IGNORECASE)
 
                 b_num = m_num.group(1).strip() if m_num else "Sin Número"
                 b_date = m_date.group(1).strip() if m_date else "Sin Fecha"
@@ -94,7 +97,7 @@ class BcsPoClient:
         with httpx.Client(timeout=self.timeout, verify=False, follow_redirects=True) as client:
             response = client.get(self.INDEX_URL, headers=self.headers)
             response.raise_for_status()
-            
+
             return self._parsear_urls_anio(response.text)
 
     async def _obtener_urls_por_anio_async(self) -> Dict[int, str]:
@@ -102,7 +105,7 @@ class BcsPoClient:
         async with httpx.AsyncClient(timeout=self.timeout, verify=False, follow_redirects=True) as client:
             response = await client.get(self.INDEX_URL, headers=self.headers)
             response.raise_for_status()
-            
+
             return self._parsear_urls_anio(response.text)
 
     def _parsear_urls_anio(self, html: str) -> Dict[int, str]:
@@ -119,21 +122,23 @@ class BcsPoClient:
     def obtener_ediciones(self, anio: int) -> List[BcsPoEdicion]:
         """
         Obtiene las ediciones del Periódico Oficial para un año determinado (Síncrono).
-        
+
         Args:
             anio: El año a consultar (ej. 2024).
-            
+
         Returns:
             Lista de objetos BcsPoEdicion.
         """
         urls_por_anio = self._obtener_urls_por_anio_sync()
         url_anio_path = urls_por_anio.get(anio)
-        
-        if not url_anio_path:
-            raise ValueError(f"No se encontró URL para el año {anio} en el portal.")
 
-        url_completa = url_anio_path if url_anio_path.startswith("http") else f"{self.BASE_URL}{url_anio_path}"
-        
+        if not url_anio_path:
+            raise ValueError(
+                f"No se encontró URL para el año {anio} en el portal.")
+
+        url_completa = url_anio_path if url_anio_path.startswith(
+            "http") else f"{self.BASE_URL}{url_anio_path}"
+
         with httpx.Client(timeout=self.timeout, verify=False, follow_redirects=True) as client:
             response = client.get(url_completa, headers=self.headers)
             response.raise_for_status()
@@ -142,21 +147,23 @@ class BcsPoClient:
     async def a_obtener_ediciones(self, anio: int) -> List[BcsPoEdicion]:
         """
         Obtiene las ediciones del Periódico Oficial para un año determinado (Asíncrono).
-        
+
         Args:
             anio: El año a consultar (ej. 2024).
-            
+
         Returns:
             Lista de objetos BcsPoEdicion.
         """
         urls_por_anio = await self._obtener_urls_por_anio_async()
         url_anio_path = urls_por_anio.get(anio)
-        
-        if not url_anio_path:
-            raise ValueError(f"No se encontró URL para el año {anio} en el portal.")
 
-        url_completa = url_anio_path if url_anio_path.startswith("http") else f"{self.BASE_URL}{url_anio_path}"
-        
+        if not url_anio_path:
+            raise ValueError(
+                f"No se encontró URL para el año {anio} en el portal.")
+
+        url_completa = url_anio_path if url_anio_path.startswith(
+            "http") else f"{self.BASE_URL}{url_anio_path}"
+
         async with httpx.AsyncClient(timeout=self.timeout, verify=False, follow_redirects=True) as client:
             response = await client.get(url_completa, headers=self.headers)
             response.raise_for_status()

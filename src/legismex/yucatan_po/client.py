@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from typing import List
 from .models import YucatanPoEdicion
 
+
 class YucatanPoClient:
     """
     Cliente para la extracción de las publicaciones del Diario Oficial del Estado de Yucatán.
@@ -31,31 +32,34 @@ class YucatanPoClient:
             subtitulo_tag = sec.find("p", class_="subtitulo")
             if not subtitulo_tag:
                 continue
-                
+
             tipo_edicion = subtitulo_tag.get_text(strip=True)
-            
+
             # Si es Índice General (contiene años sueltos y es otra estructura)
             # Generalmente la url_pdf está en <a> clasificados como 'pdf'
             if "ndices" in tipo_edicion.lower():
                 # En extraer varios PDF si es necesario se podría hacer, pero la solicitud del scraper principal es por ediciones
-                pass # Por diseño nos concentramos en las de la fecha
+                pass  # Por diseño nos concentramos en las de la fecha
 
             # Las ediciones normales (Matutina, Suplemento) tienen un div.small con el número
             numero_tag = sec.find("div", class_="small")
-            numero = numero_tag.get_text(strip=True).replace("NUM.", "").strip() if numero_tag and "NUM." in numero_tag.text else ""
-            
+            numero = numero_tag.get_text(strip=True).replace(
+                "NUM.", "").strip() if numero_tag and "NUM." in numero_tag.text else ""
+
             # Buscar el enlace al PDF
             pdf_tag = sec.find("a", class_="pdf", href=True)
             if not pdf_tag:
                 continue
-                
+
             url_pdf = pdf_tag["href"]
             if not url_pdf.startswith("http"):
-                url_pdf = f"{self.BASE_URL}{url_pdf}" if url_pdf.startswith("/") else f"{self.BASE_URL}/{url_pdf}"
+                url_pdf = f"{self.BASE_URL}{url_pdf}" if url_pdf.startswith(
+                    "/") else f"{self.BASE_URL}/{url_pdf}"
 
             # Extraer el Sumario (div class="sumario")
             sumario_tag = sec.find("div", class_="sumario")
-            sumario_texto = sumario_tag.get_text(separator="\n", strip=True) if sumario_tag else ""
+            sumario_texto = sumario_tag.get_text(
+                separator="\n", strip=True) if sumario_tag else ""
 
             ediciones.append(YucatanPoEdicion(
                 fecha=fecha_buscada,
@@ -84,7 +88,8 @@ class YucatanPoClient:
 
         params = {"f": f_query}
         with httpx.Client(timeout=self.timeout) as client:
-            response = client.get(self.URL_DIARIO, params=params, headers=self.headers)
+            response = client.get(
+                self.URL_DIARIO, params=params, headers=self.headers)
             response.raise_for_status()
             return self._procesar_html(response.text, fecha)
 

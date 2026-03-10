@@ -72,7 +72,8 @@ class SanLuisParser:
                 fecha_iso = ""
                 fecha_texto = ""
                 if fecha_div:
-                    date_span = fecha_div.find("span", class_="date-display-single")
+                    date_span = fecha_div.find(
+                        "span", class_="date-display-single")
                     if date_span:
                         fecha_iso = date_span.get("content", "")
                         fecha_texto = date_span.get_text(strip=True)

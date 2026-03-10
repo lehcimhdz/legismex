@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
+
 class TamaulipasGaceta(BaseModel):
     """Representa un registro de la Gaceta Parlamentaria del Congreso de Tamaulipas."""
     model_config = ConfigDict(populate_by_name=True)

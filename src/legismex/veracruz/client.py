@@ -43,7 +43,7 @@ class VeracruzClient:
     def obtener_gacetas(self) -> List[VeracruzSesion]:
         """Obtiene el histórico completo de gacetas parlamentarias, incluyendo
         sus anexos, actas, audios, videos y versiones estenográficas.
-        
+
         Returns:
             Una lista de instancias :class:`VeracruzSesion` completamente 
             pobladas con sus documentos hijos subyacentes.

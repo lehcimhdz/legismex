@@ -4,6 +4,7 @@ from typing import List, Optional
 from datetime import date
 from .models import HidalgoPoEdicion, HidalgoPoResultado
 
+
 class HidalgoPoClient:
     """
     Cliente para el Periódico Oficial del Estado de Hidalgo (POEH).
@@ -38,7 +39,7 @@ class HidalgoPoClient:
             # Construir URL del PDF usando el barcode
             barcode = item.get("barcode", "")
             url_pdf = f"{self.PDF_BASE_URL}{barcode}.pdf" if barcode else ""
-            
+
             edicion = HidalgoPoEdicion(**item, url_pdf=url_pdf)
             ediciones.append(edicion)
 
@@ -48,14 +49,16 @@ class HidalgoPoClient:
         # Asumiremos valores por defecto o extraeremos si están presentes.
         return HidalgoPoResultado(
             ediciones=ediciones,
-            total_registros=len(ediciones), # Pendiente: confirmar si viene el total real
+            # Pendiente: confirmar si viene el total real
+            total_registros=len(ediciones),
             pagina_actual=page,
-            total_paginas=1 # Pendiente: lógica de paginación avanzada
+            total_paginas=1  # Pendiente: lógica de paginación avanzada
         )
 
     def buscar(self, fecha_desde: date, fecha_hasta: date, term: str = "", tipo_edicion: str = "", page: int = 1) -> HidalgoPoResultado:
         """Busca ediciones de forma síncrona."""
-        params = self._build_params(fecha_desde, fecha_hasta, term, tipo_edicion, page)
+        params = self._build_params(
+            fecha_desde, fecha_hasta, term, tipo_edicion, page)
         with httpx.Client(headers=self.headers, timeout=self.timeout) as client:
             response = client.get(self.AJAX_URL, params=params)
             response.raise_for_status()
@@ -63,7 +66,8 @@ class HidalgoPoClient:
 
     async def a_buscar(self, fecha_desde: date, fecha_hasta: date, term: str = "", tipo_edicion: str = "", page: int = 1) -> HidalgoPoResultado:
         """Busca ediciones de forma asíncrona."""
-        params = self._build_params(fecha_desde, fecha_hasta, term, tipo_edicion, page)
+        params = self._build_params(
+            fecha_desde, fecha_hasta, term, tipo_edicion, page)
         async with httpx.AsyncClient(headers=self.headers, timeout=self.timeout) as client:
             response = await client.get(self.AJAX_URL, params=params)
             response.raise_for_status()

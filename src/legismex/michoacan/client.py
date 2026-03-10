@@ -14,7 +14,8 @@ class MichoacanClient:
 
     BASE_URL = "http://congresomich.gob.mx"
 
-    LEGISLATURAS = ["lxxvi", "lxxv", "lxxiv", "lxxiii", "lxxii", "lxxi", "i-constituyente"]
+    LEGISLATURAS = ["lxxvi", "lxxv", "lxxiv",
+                    "lxxiii", "lxxii", "lxxi", "i-constituyente"]
 
     def __init__(self, client: Optional[httpx.Client] = None):
         if client is None:
@@ -142,6 +143,7 @@ class MichoacanClient:
         if fecha_hasta:
             params["fecha-to"] = fecha_hasta
 
-        response = self._client.get(f"{self.BASE_URL}/ptb-search/", params=params)
+        response = self._client.get(
+            f"{self.BASE_URL}/ptb-search/", params=params)
         response.raise_for_status()
         return self._parse_total_pages(response.text)

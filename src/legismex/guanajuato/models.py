@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class GuanajuatoAsunto(BaseModel):
     expediente: str
     descripcion: str

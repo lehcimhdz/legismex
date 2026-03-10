@@ -119,7 +119,8 @@ class OaxacaPoClient:
             if len(cells) < 2:
                 continue
             fecha_text = cells[0].get_text(strip=True)
-            pdf_link = cells[1].find("a", href=lambda h: h and ".pdf" in h.lower())
+            pdf_link = cells[1].find(
+                "a", href=lambda h: h and ".pdf" in h.lower())
             if not pdf_link or not fecha_text:
                 continue
             # Skip header rows

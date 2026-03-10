@@ -55,14 +55,16 @@ class SenadoClient:
                 return SenadoParser.parse_gaceta_dia(html_content)
 
         except httpx.HTTPStatusError as exc:
-            raise Exception(f"HTTP error {exc.response.status_code} - al consultar la Gaceta del Senado: {url}")
+            raise Exception(
+                f"HTTP error {exc.response.status_code} - al consultar la Gaceta del Senado: {url}")
         except httpx.RequestError as exc:
-            raise Exception(f"Error de red al conectar con el servidor del Senado: {exc}")
+            raise Exception(
+                f"Error de red al conectar con el servidor del Senado: {exc}")
 
     def obtener_gaceta_por_url(self, url: str) -> GacetaSenado:
         """
         Obtiene una gaceta histórica a través de una URL explícita (del calendario).
-        
+
         :param url: URL absoluta de la gaceta a extraer.
         :return: Objeto GacetaSenado validado por Pydantic.
         """
@@ -78,9 +80,11 @@ class SenadoClient:
                 return SenadoParser.parse_gaceta_dia(html_content)
 
         except httpx.HTTPStatusError as exc:
-            raise Exception(f"HTTP error {exc.response.status_code} - al consultar la Gaceta del Senado: {url}")
+            raise Exception(
+                f"HTTP error {exc.response.status_code} - al consultar la Gaceta del Senado: {url}")
         except httpx.RequestError as exc:
-            raise Exception(f"Error de red al conectar con el servidor del Senado: {exc}")
+            raise Exception(
+                f"Error de red al conectar con el servidor del Senado: {exc}")
 
     def get_calendario_gacetas(self, legislatura: str = "66", year: Optional[int] = None, month: Optional[int] = None) -> List[ReferenciaGaceta]:
         """
@@ -109,14 +113,17 @@ class SenadoClient:
                 filas = soup.select('table.calendario tbody tr td a')
                 for a in filas:
                     href = a.get('href', '')
-                    if not href: continue
+                    if not href:
+                        continue
 
                     # Normalizar a absoluto
                     if not href.startswith("http"):
-                        href = f"{self.BASE_URL}{href}" if href.startswith("/") else f"{self.BASE_URL}/{href}"
+                        href = f"{self.BASE_URL}{href}" if href.startswith(
+                            "/") else f"{self.BASE_URL}/{href}"
 
                     dia_texto = a.get_text(strip=True)
-                    descripcion = a.get('title', '') or a.parent.get('title', '') or dia_texto
+                    descripcion = a.get('title', '') or a.parent.get(
+                        'title', '') or dia_texto
 
                     referencias.append(
                         ReferenciaGaceta(
@@ -129,6 +136,8 @@ class SenadoClient:
                 return referencias
 
         except httpx.HTTPStatusError as exc:
-            raise Exception(f"HTTP error {exc.response.status_code} - al consultar el calendario del Senado: {url}")
+            raise Exception(
+                f"HTTP error {exc.response.status_code} - al consultar el calendario del Senado: {url}")
         except httpx.RequestError as exc:
-            raise Exception(f"Error de red al conectar con el servidor del Senado: {exc}")
+            raise Exception(
+                f"Error de red al conectar con el servidor del Senado: {exc}")

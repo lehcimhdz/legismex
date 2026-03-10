@@ -2,11 +2,12 @@ import httpx
 from typing import List, Optional
 from .models import ZacatecasPoPublicacion
 
+
 class ZacatecasPoClient:
     """Cliente para interactuar con la API del Periódico Oficial del Estado de Zacatecas (POEZ)."""
-    
+
     BASE_URL = "https://periodico.zacatecas.gob.mx"
-    
+
     def __init__(self, **kwargs):
         self.client_kwargs = {
             "timeout": 30.0,
@@ -52,7 +53,7 @@ class ZacatecasPoClient:
             return self._parsear_lista(resp.json())
 
     # --- Métodos Públicos Síncronos ---
-    
+
     def obtener_ediciones(self, fecha_inicial: str, fecha_final: str) -> List[ZacatecasPoPublicacion]:
         """Obtiene periódicos ordinarios en un rango de fechas (YYYY-MM-DD)."""
         data = {"fechaInicial": fecha_inicial, "fechaFinal": fecha_final}
@@ -79,7 +80,7 @@ class ZacatecasPoClient:
         return self._get_request("/obtener/codigos")
 
     # --- Métodos Públicos Asíncronos ---
-    
+
     async def a_obtener_ediciones(self, fecha_inicial: str, fecha_final: str) -> List[ZacatecasPoPublicacion]:
         data = {"fechaInicial": fecha_inicial, "fechaFinal": fecha_final}
         return await self._a_post_request("/busqueda/periodicoMesAnio", data)

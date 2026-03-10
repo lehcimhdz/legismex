@@ -4,6 +4,7 @@ from typing import List, Optional
 from .models import GuanajuatoAsunto
 import urllib.parse
 
+
 class GuanajuatoClient:
     BASE_URL = "https://www.congresogto.gob.mx"
 
@@ -18,7 +19,7 @@ class GuanajuatoClient:
     def _parse_table(self, html: str, tipo: str) -> List[GuanajuatoAsunto]:
         soup = BeautifulSoup(html, "html.parser")
         asuntos: List[GuanajuatoAsunto] = []
-        
+
         table = soup.find("table", id="dataTable")
         if not table:
             return asuntos
@@ -32,11 +33,11 @@ class GuanajuatoClient:
             if len(cols) >= 4:
                 expediente = cols[0].get_text(strip=True)
                 descripcion_col = cols[1]
-                
+
                 # Fetch text and potential link
                 descripcion = descripcion_col.get_text(strip=True)
                 url_detalle = None
-                
+
                 a_tag = descripcion_col.find("a")
                 if a_tag and a_tag.has_attr("href"):
                     href = a_tag["href"]
@@ -45,12 +46,13 @@ class GuanajuatoClient:
 
                 fecha = cols[2].get_text(strip=True)
                 legislatura_text = cols[3].get_text(strip=True)
-                
+
                 if "Legislatura" in legislatura_text:
-                    legislatura = legislatura_text.replace("Legislatura ", "").strip()
+                    legislatura = legislatura_text.replace(
+                        "Legislatura ", "").strip()
                 else:
                     legislatura = legislatura_text
-                
+
                 asuntos.append(
                     GuanajuatoAsunto(
                         expediente=expediente,
@@ -68,7 +70,6 @@ class GuanajuatoClient:
         response = self._client.get(f"/gaceta/iniciativas?page={page}")
         response.raise_for_status()
         return self._parse_table(response.text, "iniciativa")
-
 
     def obtener_puntos_de_acuerdo(self, page: int = 1) -> List[GuanajuatoAsunto]:
         response = self._client.get(f"/gaceta/puntos-de-acuerdo?page={page}")

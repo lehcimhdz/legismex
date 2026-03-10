@@ -69,7 +69,8 @@ class TlaxcalaClient:
                     titulo = pdf_a.get_text(strip=True)
                 else:
                     numero = None
-                    fecha = tds[0].get_text(strip=True) if len(tds) > 1 else None
+                    fecha = tds[0].get_text(
+                        strip=True) if len(tds) > 1 else None
                     titulo = pdf_a.get_text(strip=True)
 
                 docs.append(

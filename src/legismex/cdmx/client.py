@@ -11,14 +11,15 @@ except ImportError:
 from legismex.cdmx.models import DocumentoCdmx
 from legismex.cdmx.parser import CdmxParser
 
+
 class CdmxClient:
     """
     Cliente para interactuar con la plataforma de la Gaceta Parlamentaria 
     y Diarios de Debate del Congreso de la Ciudad de México.
     """
-    
+
     BASE_URL = "https://www.congresocdmx.gob.mx"
-    
+
     def __init__(self, use_tqdm: bool = True):
         self.session = requests.Session()
         self.session.headers.update({
@@ -44,7 +45,7 @@ class CdmxClient:
 
         response = self.session.get(url, verify=self._verify_ssl)
         response.raise_for_status()
-        
+
         return CdmxParser.parse_alertas_pdf(response.text)
 
     def descargar_pdf(self, url_pdf: str, ruta_destino: str) -> Optional[str]:
@@ -54,18 +55,20 @@ class CdmxClient:
         """
         if not url_pdf.startswith('http'):
             url_pdf = f"{self.BASE_URL}/{url_pdf.lstrip('/')}"
-        
+
         # Ensure target directory exists
         directorios = os.path.dirname(ruta_destino)
         if directorios:
-             os.makedirs(directorios, exist_ok=True)
-             
+            os.makedirs(directorios, exist_ok=True)
+
         # Request file as stream
         try:
-            response = self.session.get(url_pdf, stream=True, verify=self._verify_ssl, timeout=30)
+            response = self.session.get(
+                url_pdf, stream=True, verify=self._verify_ssl, timeout=30)
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
-            print(f"Error al conectar o descargar el archivo desde {url_pdf}: {e}")
+            print(
+                f"Error al conectar o descargar el archivo desde {url_pdf}: {e}")
             return None
 
         total_size_in_bytes = int(response.headers.get('content-length', 0))
@@ -74,17 +77,19 @@ class CdmxClient:
         if self.use_tqdm and total_size_in_bytes > 0:
             # Barra de progreso estilizada
             progress_bar = tqdm(
-                total=total_size_in_bytes, 
-                unit='iB', 
-                unit_scale=True, 
+                total=total_size_in_bytes,
+                unit='iB',
+                unit_scale=True,
                 desc=f"Descargando {os.path.basename(ruta_destino)}",
                 colour='green'
             )
         else:
             if total_size_in_bytes > 0:
-                print(f"Iniciando descarga de {total_size_in_bytes / (1024*1024):.2f} MB hacia {ruta_destino}...")
+                print(
+                    f"Iniciando descarga de {total_size_in_bytes / (1024*1024):.2f} MB hacia {ruta_destino}...")
             else:
-                print(f"Iniciando descarga hacia {ruta_destino} (Tamaño desconocido)..")
+                print(
+                    f"Iniciando descarga hacia {ruta_destino} (Tamaño desconocido)..")
             progress_bar = None
 
         try:
@@ -99,11 +104,12 @@ class CdmxClient:
         finally:
             if progress_bar:
                 progress_bar.close()
-                
+
         # Verificar integridad si el servidor mandó la bandera de tamaño
         if total_size_in_bytes != 0 and progress_bar and progress_bar.n != total_size_in_bytes:
-            print("ADVERTENCIA: Algo salió mal, el archivo descargado no coincide con el tamaño del servidor.")
+            print(
+                "ADVERTENCIA: Algo salió mal, el archivo descargado no coincide con el tamaño del servidor.")
             return None
-            
+
         print(f"¡Descarga exitosa guardada en {ruta_destino}! 🚀")
         return ruta_destino

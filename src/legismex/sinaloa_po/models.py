@@ -22,11 +22,13 @@ class _TextExtractor(HTMLParser):
 
 def _extract_pdf_url(html: str) -> Optional[str]:
     """Extrae la primera URL a un archivo PDF del HTML de descripción."""
-    match = re.search(r'href=["\']([^"\']*\.pdf[^"\']*)["\']', html, re.IGNORECASE)
+    match = re.search(
+        r'href=["\']([^"\']*\.pdf[^"\']*)["\']', html, re.IGNORECASE)
     if match:
         return match.group(1)
     # A veces el PDF está en un link "Descargar Archivo" sin extensión .pdf
-    match = re.search(r'href=["\']([^"\']*media\.transparencia[^"\']+)["\']', html, re.IGNORECASE)
+    match = re.search(
+        r'href=["\']([^"\']*media\.transparencia[^"\']+)["\']', html, re.IGNORECASE)
     return match.group(1) if match else None
 
 

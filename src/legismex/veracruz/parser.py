@@ -95,16 +95,19 @@ class VeracruzParser:
 
                     fecha = td_fecha_text
                     tipo_sesion = tds[1].text.strip()
-                    
+
                     # 2: Gaceta, 3: Versión Estenográfica, 4: Acta
                     gaceta_a = tds[2].find("a")
                     version_a = tds[3].find("a") if len(tds) > 3 else None
                     acta_a = tds[4].find("a") if len(tds) > 4 else None
-                    
+
                     # Extraer enlaces
-                    gaceta_url = self._clean_url(gaceta_a.get("href")) if gaceta_a else None
-                    version_url = self._clean_url(version_a.get("href")) if version_a else None
-                    acta_url = self._clean_url(acta_a.get("href")) if acta_a else None
+                    gaceta_url = self._clean_url(
+                        gaceta_a.get("href")) if gaceta_a else None
+                    version_url = self._clean_url(
+                        version_a.get("href")) if version_a else None
+                    acta_url = self._clean_url(
+                        acta_a.get("href")) if acta_a else None
 
                     # Instanciar nueva sesión y activarla
                     nueva_sesion = VeracruzSesion(
@@ -125,7 +128,7 @@ class VeracruzParser:
                             media_link = self._clean_url(col_a.get("href"))
                             if not media_link:
                                 continue
-                            
+
                             if media_link.endswith((".mp3", ".ogg", "m4a")):
                                 nueva_sesion.audio_urls.append(media_link)
                             elif media_link.endswith((".mp4", ".mov", ".avi", "youtube.com", "youtu.be")) or "video" in col_a.get("href", ""):

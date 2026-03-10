@@ -7,6 +7,7 @@ decoded = base64.b64decode(S).decode('utf-8')
 print("--- Decoded JS ---")
 print(decoded)
 
+
 def evaluate_js_string_concat(expr):
     # evaluate things like '4' + "d" + String.fromCharCode(50)
     result = ""
@@ -20,6 +21,7 @@ def evaluate_js_string_concat(expr):
             result += chr(num)
     return result
 
+
 # Extract u assignment
 u_match = re.search(r"u=([^;]+);", decoded)
 if u_match:
@@ -28,9 +30,9 @@ if u_match:
     print("u =", u_val)
 
 # Extract cookie name
-cookie_match = re.search(r"document\.cookie=(.+?)\s*\+\s*\"=\"\s*\+\s*u", decoded)
+cookie_match = re.search(
+    r"document\.cookie=(.+?)\s*\+\s*\"=\"\s*\+\s*u", decoded)
 if cookie_match:
     cookie_expr = cookie_match.group(1)
     cookie_name = evaluate_js_string_concat(cookie_expr)
     print("cookie_name =", cookie_name)
-

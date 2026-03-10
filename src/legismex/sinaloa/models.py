@@ -96,4 +96,3 @@ class SinaloaLegislatura(BaseModel):
 
     nombre: Optional[str] = None
     """Nombre de la legislatura (ej. 'LXV Legislatura')."""
-

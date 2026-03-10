@@ -1,6 +1,7 @@
 import asyncio
 from legismex import BcsPoClient
 
+
 def test_sync():
     print("=== Obteniendo ediciones BCS PO Síncrono (2025) ===")
     client = BcsPoClient()
@@ -11,6 +12,7 @@ def test_sync():
             print(f"- {e.numero} ({e.fecha}): {e.url_pdf}")
     except Exception as e:
         print(f"Error en síncrono: {e}")
+
 
 async def test_async():
     print("\n=== Obteniendo ediciones BCS PO Asíncrono (2024) ===")

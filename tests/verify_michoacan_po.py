@@ -1,8 +1,10 @@
 from legismex.michoacan_po.client import MichoacanPoClient
 
+
 def imprimir_archivo(a):
     print(f"[{a.dia}/{a.mes}/{a.anio}] {a.nombre}")
     print(f"  > PDF: {a.url_pdf}")
+
 
 def test_michoacan_po():
     print("=== Michoacán Periódico Oficial ===")
@@ -27,7 +29,8 @@ def test_michoacan_po():
             # Obtener archivos del primer mes encontrado
             mes_test = meses[0]
             print(f"\n--- Archivos en {mes_test.nombre} {anio_actual} ---")
-            archivos = client.obtener_archivos_por_fecha(anio=int(anio_actual), mes=mes_test.nombre)
+            archivos = client.obtener_archivos_por_fecha(
+                anio=int(anio_actual), mes=mes_test.nombre)
             print(f"Obtenidos {len(archivos)} archivos")
             for a in archivos[:3]:
                 imprimir_archivo(a)
@@ -35,6 +38,7 @@ def test_michoacan_po():
 
     except Exception as exc:
         print(f"Error en prueba de P.O.: {exc}")
+
 
 if __name__ == "__main__":
     test_michoacan_po()

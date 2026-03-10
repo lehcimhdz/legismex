@@ -2,12 +2,14 @@ class LegismexError(Exception):
     """Excepción base para todos los errores en legismex."""
     pass
 
+
 class LegismexConnectionError(LegismexError):
     """
     Excepción lanzada cuando hay un error de conexión con el servidor 
     del Congreso o Periódico Oficial (ej. Timeout, SSL inválido no manejado).
     """
     pass
+
 
 class HTMLParsingError(LegismexError):
     """
@@ -16,12 +18,14 @@ class HTMLParsingError(LegismexError):
     """
     pass
 
+
 class APIResponseError(LegismexError):
     """
     Excepción lanzada cuando el backend interconectado (JSON/REST)
     devuelve un status code de error (e.g. 500) o un payload inesperado.
     """
     pass
+
 
 class DocumentNotFoundError(LegismexError):
     """

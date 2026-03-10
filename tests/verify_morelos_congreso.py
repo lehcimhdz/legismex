@@ -1,10 +1,12 @@
 from legismex.morelos.client import MorelosClient
 
+
 def imprimir_documento(d):
     print(f"[{d.seccion}] {d.titulo}")
     if d.periodo:
         print(f"  > Periodo: {d.periodo}")
     print(f"  > PDF: {d.url_pdf}")
+
 
 def test_morelos_congreso():
     print("=== Morelos Congreso (LVI Legislatura) ===")
@@ -14,7 +16,7 @@ def test_morelos_congreso():
         print("\n--- Documentos Legislativos (Muestra) ---")
         docs = client.obtener_documentos()
         print(f"Total documentos encontrados: {len(docs)}")
-        
+
         # Mostrar los primeros 5
         for d in docs[:5]:
             imprimir_documento(d)
@@ -31,6 +33,7 @@ def test_morelos_congreso():
 
     except Exception as exc:
         print(f"Error en prueba de Congreso: {exc}")
+
 
 if __name__ == "__main__":
     test_morelos_congreso()

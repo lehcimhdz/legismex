@@ -1,10 +1,12 @@
 from legismex.zacatecas.client import ZacatecasClient
 
+
 def imprimir_gaceta(g):
     print(f"[{g.fecha}] No. {g.numero} (Tomo: {g.tomo})")
     print(f"  > Sesión: {g.tipo_sesion}")
     print(f"  > Periodo: {g.periodo} ({g.anio_ejercicio})")
     print(f"  > PDF: {g.url_pdf}")
+
 
 def test_zacatecas_congreso():
     print("=== Zacatecas Congreso (Gaceta Legislativa LXV) ===")
@@ -23,7 +25,7 @@ def test_zacatecas_congreso():
         print(f"\n--- Gacetas del mes {mes_a_probar} ---")
         gacetas = client.obtener_gacetas(mes=mes_a_probar)
         print(f"Total gacetas encontradas: {len(gacetas)}")
-        
+
         if not gacetas:
             print(f"No se encontraron gacetas para el mes {mes_a_probar}.")
         else:
@@ -34,6 +36,7 @@ def test_zacatecas_congreso():
 
     except Exception as exc:
         print(f"Error en prueba de Congreso: {exc}")
+
 
 if __name__ == "__main__":
     test_zacatecas_congreso()

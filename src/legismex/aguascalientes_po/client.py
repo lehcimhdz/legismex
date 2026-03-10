@@ -92,7 +92,8 @@ class AguascalientesPoClient:
 
         # El sitio espera fechas con formato "dd/MM/yyyy 0:0:0"
         def format_date(d: Optional[str]) -> str:
-            if not d: return ""
+            if not d:
+                return ""
             if " " not in d:
                 return f"{d} 0:0:0"
             return d

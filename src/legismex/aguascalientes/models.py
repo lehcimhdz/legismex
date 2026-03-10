@@ -34,6 +34,7 @@ class AgsPromocion(BaseModel):
     tipo_sesion_id: Optional[int]
     sesion_ordinaria: Optional[bool]
     tiene_archivo: bool                 # True if a PDF file is available
-    url_pdf: Optional[str]             # Full URL to download PDF (if available)
+    # Full URL to download PDF (if available)
+    url_pdf: Optional[str]
     nombre_archivo: Optional[str]       # Raw filename from API
     activo: bool

@@ -11,7 +11,7 @@ class SanLuisPoClient:
     El sitio web moderno (desarrollado con VueJS) consume directamente 
     endpoints JSON que dividen las publicaciones del día en niveles de 
     gobierno y avisos generales.
-    
+
     Este cliente agrupa esas peticiones en una sola entidad.
     """
 
@@ -57,7 +57,7 @@ class SanLuisPoClient:
 
         Args:
             fecha: Cadena en formato ISO ``YYYY-MM-DD``.
-        
+
         Returns:
             Instancia de :class:`SanLuisPoEdicion` que encapsula la lista 
             de :class:`SanLuisPoDocumento`. Si no hay publicaciones ese 
@@ -76,8 +76,9 @@ class SanLuisPoClient:
                     # Validar IDs vacíos/fantasmas (a veces retornan nulls o strings)
                     if not item.get("id"):
                         continue
-                    
-                    doc = SanLuisPoDocumento.model_validate({**item, "es_aviso": False})
+
+                    doc = SanLuisPoDocumento.model_validate(
+                        {**item, "es_aviso": False})
                     documentos.append(doc)
 
         # 2. Petición de Avisos Judiciales
@@ -89,11 +90,12 @@ class SanLuisPoClient:
                 for item in items:
                     if not item.get("id"):
                         continue
-                    
-                    doc = SanLuisPoDocumento.model_validate({**item, "es_aviso": True})
+
+                    doc = SanLuisPoDocumento.model_validate(
+                        {**item, "es_aviso": True})
                     documentos.append(doc)
         except Exception:
-            # Los avisos podrían fallar (ej. timeout de db o HTTP ratelimiting), 
+            # Los avisos podrían fallar (ej. timeout de db o HTTP ratelimiting),
             # pero no deberíamos crashear la extracción completa
             pass
 

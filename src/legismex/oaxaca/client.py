@@ -92,13 +92,14 @@ class OaxacaClient:
             href = a.get("href", "")
             # Derive id from link: parlamento/{id}.html
             try:
-                gaceta_id = int(href.split("parlamento/")[1].replace(".html", ""))
+                gaceta_id = int(href.split("parlamento/")
+                                [1].replace(".html", ""))
             except (IndexError, ValueError):
                 continue
 
             detail_url = urljoin(self.BASE + "/", href)
 
-            # Walk up to find the card container  
+            # Walk up to find the card container
             container = a.parent
             for _ in range(5):
                 if container is None:
@@ -111,7 +112,8 @@ class OaxacaClient:
             if container is None:
                 continue
 
-            lines = [l.strip() for l in container.get_text(separator="\n").split("\n") if l.strip()]
+            lines = [l.strip() for l in container.get_text(
+                separator="\n").split("\n") if l.strip()]
             # Extract number, tipo, fecha from the lines
             numero = ""
             tipo = ""

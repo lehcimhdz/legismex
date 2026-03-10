@@ -44,7 +44,8 @@ async def main():
     acuerdos = await client.a_obtener_acuerdos("65")
     print(f"  Total: {len(acuerdos)}")
     for a in acuerdos[:3]:
-        print(f"  [{a.id}] {a.fecha} | Votación: {a.votacion} | {(a.asunto or '')[:60]}...")
+        print(
+            f"  [{a.id}] {a.fecha} | Votación: {a.votacion} | {(a.asunto or '')[:60]}...")
 
     # --- Decretos ---
     print()
@@ -54,7 +55,8 @@ async def main():
     decretos = await client.a_obtener_decretos("65")
     print(f"  Total: {len(decretos)}")
     for d in decretos[:3]:
-        print(f"  [{d.id}] {d.fecha} | PDF Voto: {d.pdfvoto} | {(d.asunto or '')[:60]}...")
+        print(
+            f"  [{d.id}] {d.fecha} | PDF Voto: {d.pdfvoto} | {(d.asunto or '')[:60]}...")
 
 
 if __name__ == "__main__":

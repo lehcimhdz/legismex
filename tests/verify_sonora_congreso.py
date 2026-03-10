@@ -1,5 +1,6 @@
 from legismex.sonora.client import SonoraClient
 
+
 def imprimir_gaceta(g):
     print(f"[{g.fecha_publicacion}] {g.nombre}")
     print(f"  > Tipo: {g.tipo}")
@@ -8,6 +9,7 @@ def imprimir_gaceta(g):
         print(f"  > PDFs: {len(g.pdf_urls)}")
         for url in g.pdf_urls[:2]:
             print(f"    - {url}")
+
 
 def test_sonora_congreso():
     print("=== Sonora Congreso (Gaceta API) ===")
@@ -24,7 +26,7 @@ def test_sonora_congreso():
         print(f"\n--- Gacetas de la Legislatura {leg_clave} ---")
         gacetas = client.buscar(legislatura=leg_clave, all_pages=False)
         print(f"Total gacetas encontradas (página 1): {len(gacetas)}")
-        
+
         if not gacetas:
             print(f"No se encontraron gacetas para {leg_clave}.")
             return
@@ -41,6 +43,7 @@ def test_sonora_congreso():
 
     except Exception as exc:
         print(f"Error en prueba de Congreso: {exc}")
+
 
 if __name__ == "__main__":
     test_sonora_congreso()

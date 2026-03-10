@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 
+
 class JaliscoPoResumen(BaseModel):
     """
     Representa una previsualización de una gaceta o publicación
@@ -14,6 +15,7 @@ class JaliscoPoResumen(BaseModel):
     section: Optional[str] = None
     special: bool = False
     special_description: Optional[str] = None
+
 
 class JaliscoPoEdicion(BaseModel):
     """
@@ -30,6 +32,7 @@ class JaliscoPoEdicion(BaseModel):
     special_description: Optional[str] = None
     link: Optional[str] = None
     print_link: Optional[str] = None
+
 
 class JaliscoPoPaginacion(BaseModel):
     items: List[JaliscoPoResumen]

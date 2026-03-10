@@ -4,11 +4,11 @@ from typing import List, Optional
 
 class SanLuisPoDocumento(BaseModel):
     """Representa una publicación individual del Periódico Oficial de SLP.
-    
+
     Puede ser una 'Disposición Oficial' o un 'Aviso Judicial y Diverso'.
     """
     model_config = ConfigDict(populate_by_name=True)
-    
+
     id: int
     fecha_publicacion: str
     titulo: str
@@ -18,7 +18,7 @@ class SanLuisPoDocumento(BaseModel):
     nivel_gobierno: Optional[str] = None
     segundo: Optional[str] = None
     autoridad_emisora: Optional[str] = None
-    
+
     es_aviso: bool = False
 
     @computed_field
@@ -30,7 +30,7 @@ class SanLuisPoDocumento(BaseModel):
 
 class SanLuisPoEdicion(BaseModel):
     """Concentrado de publicaciones correspondientes a un día específico.
-    
+
     Contiene un listado de `SanLuisPoDocumento` (Disposiciones y Avisos).
     """
     fecha: str

@@ -100,7 +100,8 @@ class SinaloaPoClient:
             all_pages: Si es ``True`` (por defecto) descarga todas las páginas.
         """
         with httpx.Client(**self.client_kwargs) as client:
-            resp = client.get(_API_BASE, params=self._params(start_date, end_date, 1), headers=_HEADERS)
+            resp = client.get(_API_BASE, params=self._params(
+                start_date, end_date, 1), headers=_HEADERS)
             resp.raise_for_status()
             data = resp.json()
             total_pages = int(data.get("total_pages", 1))
@@ -109,10 +110,12 @@ class SinaloaPoClient:
 
             if all_pages and total_pages > 1:
                 for page in range(2, total_pages + 1):
-                    resp = client.get(_API_BASE, params=self._params(start_date, end_date, page), headers=_HEADERS)
+                    resp = client.get(_API_BASE, params=self._params(
+                        start_date, end_date, page), headers=_HEADERS)
                     resp.raise_for_status()
                     blk = resp.json()
-                    resultados.extend(SinaloaPoEdicion.from_api(e) for e in blk.get("events", []))
+                    resultados.extend(SinaloaPoEdicion.from_api(e)
+                                      for e in blk.get("events", []))
 
         return sorted(resultados, key=lambda e: e.fecha)
 
@@ -163,14 +166,16 @@ class SinaloaPoClient:
 
             if all_pages and total_pages > 1:
                 tareas = [
-                    client.get(_API_BASE, params=self._params(start_date, end_date, pg), headers=_HEADERS)
+                    client.get(_API_BASE, params=self._params(
+                        start_date, end_date, pg), headers=_HEADERS)
                     for pg in range(2, total_pages + 1)
                 ]
                 respuestas = await asyncio.gather(*tareas)
                 for resp in respuestas:
                     resp.raise_for_status()
                     blk = resp.json()
-                    resultados.extend(SinaloaPoEdicion.from_api(e) for e in blk.get("events", []))
+                    resultados.extend(SinaloaPoEdicion.from_api(e)
+                                      for e in blk.get("events", []))
 
         return sorted(resultados, key=lambda e: e.fecha)
 

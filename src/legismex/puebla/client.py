@@ -39,14 +39,15 @@ class PueblaClient:
     def _get_page_content(self, url: str, wait_time: int = 5) -> str:
         """
         Descarga el HTML usando playwright.
-        
+
         Args:
             url (str): La URL a descargar.
             wait_time (int): Segundos a esperar para que Cloudflare termine su verificación.
         """
         import time
-        
-        self.logger.debug(f"Fetching {url} using Playwright (headless={self.headless})")
+
+        self.logger.debug(
+            f"Fetching {url} using Playwright (headless={self.headless})")
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=self.headless)
             context = browser.new_context(
@@ -62,7 +63,8 @@ class PueblaClient:
                 content = page.content()
                 return content
             except Exception as e:
-                self.logger.error(f"Error cargando la página con Playwright: {e}")
+                self.logger.error(
+                    f"Error cargando la página con Playwright: {e}")
                 raise
             finally:
                 browser.close()
@@ -74,7 +76,7 @@ class PueblaClient:
         """
         html = self._get_page_content(self.GACETAS_URL, wait_time=5)
         soup = BeautifulSoup(html, "html.parser")
-        
+
         gacetas = []
         for a in soup.find_all("a", href=True):
             href = a["href"]
@@ -82,23 +84,24 @@ class PueblaClient:
                 # Extraer texto del link y texto de su componente padre si está suelto
                 parent_text = " ".join(a.parent.stripped_strings)
                 partes = parent_text.split()
-                
+
                 mes = "Desconocido"
                 numero = ""
                 fecha_texto = parent_text
-                
+
                 if len(partes) >= 2:
                     mes = partes[0]
                     numero = partes[1]
-                
+
                 # Tratar de encontrar el año legislativo en la url
                 anio_legis = None
-                match = re.search(r'/(?P<anio>\w+aniolegislativo)/', href, re.IGNORECASE)
+                match = re.search(
+                    r'/(?P<anio>\w+aniolegislativo)/', href, re.IGNORECASE)
                 if match:
                     anio_legis = match.group("anio")
 
                 full_url = urljoin(self.BASE_URL, href)
-                
+
                 gaceta = PueblaGaceta(
                     mes=mes,
                     numero=numero,
@@ -107,5 +110,5 @@ class PueblaClient:
                     anio_legislativo=anio_legis
                 )
                 gacetas.append(gaceta)
-                
+
         return gacetas

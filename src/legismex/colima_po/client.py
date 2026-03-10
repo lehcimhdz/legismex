@@ -6,6 +6,7 @@ from datetime import datetime
 
 from .models import ColimaPoEdicion, ColimaPoDocumento
 
+
 class ColimaPoClient:
     """Cliente para extraer ediciones del Periódico Oficial del Estado de Colima."""
     BASE_URL = "https://periodicooficial.col.gob.mx/p"
@@ -25,21 +26,22 @@ class ColimaPoClient:
     def _parse_portada(self, html: str, url_portada: str, fecha_str: str) -> ColimaPoEdicion:
         # Base de la URL de la portada para construir PDFs relativos
         base_dir = url_portada.rsplit("/", 1)[0]
-        
+
         soup = BeautifulSoup(html, "html.parser")
         links = soup.find_all("a")
-        
+
         docs = []
         for p in links:
             href = p.get("href", "")
             if ".pdf" in href.lower():
                 texto = p.get_text(strip=True)
-                
+
                 # Intentamos sacar mejor descripción del TR
                 parent = p.find_parent("tr")
                 if parent:
                     # Limpiamos el separador
-                    texto = " | ".join([s for s in parent.stripped_strings if s and "PDF" not in s]) or texto
+                    texto = " | ".join(
+                        [s for s in parent.stripped_strings if s and "PDF" not in s]) or texto
 
                 docs.append(ColimaPoDocumento(
                     titulo=texto,
@@ -62,7 +64,8 @@ class ColimaPoClient:
         if len(fecha_str) == 8:
             # Formatear a YYYY-MM-DD
             try:
-                fecha_str = datetime.strptime(fecha_str, "%d%m%Y").strftime("%Y-%m-%d")
+                fecha_str = datetime.strptime(
+                    fecha_str, "%d%m%Y").strftime("%Y-%m-%d")
             except ValueError:
                 pass
 
@@ -98,7 +101,8 @@ class ColimaPoClient:
         fecha_str = parts[0] if parts else ""
         if len(fecha_str) == 8:
             try:
-                fecha_str = datetime.strptime(fecha_str, "%d%m%Y").strftime("%Y-%m-%d")
+                fecha_str = datetime.strptime(
+                    fecha_str, "%d%m%Y").strftime("%Y-%m-%d")
             except ValueError:
                 pass
 

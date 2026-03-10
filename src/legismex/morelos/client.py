@@ -72,7 +72,8 @@ class MorelosClient:
             # Extract title from the closest <h4>
             blurb = a_tag.find_parent(class_="et_pb_blurb")
             h4 = blurb.find("h4") if blurb else None
-            titulo = h4.get_text(strip=True).replace("⬇️", "").strip() if h4 else ""
+            titulo = h4.get_text(strip=True).replace(
+                "⬇️", "").strip() if h4 else ""
             if not titulo:
                 titulo = a_tag.get_text(strip=True).replace("⬇️", "").strip()
 

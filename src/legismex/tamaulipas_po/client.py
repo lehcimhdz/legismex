@@ -4,6 +4,7 @@ import httpx
 from bs4 import BeautifulSoup
 from .models import TamaulipasPoEdicion, TamaulipasPoDocumento
 
+
 class TamaulipasPoClient:
     """Cliente para interrogar las publicaciones del Periódico Oficial del Estado de Tamaulipas."""
     BASE_URL = "https://po.tamaulipas.gob.mx/archivo/"
@@ -46,7 +47,7 @@ class TamaulipasPoClient:
             dia_text = dia_div.text.strip()
             if not dia_text.isdigit():
                 continue
-            
+
             dia = int(dia_text)
 
             span = day_div.find("span", class_="d-block")
@@ -67,7 +68,8 @@ class TamaulipasPoClient:
                 titulo = a.text.strip()
                 url = a["href"].strip()
                 if titulo and url:
-                    documentos.append(TamaulipasPoDocumento(titulo=titulo, url_pdf=url))
+                    documentos.append(TamaulipasPoDocumento(
+                        titulo=titulo, url_pdf=url))
 
             # Para reconstruir una fecha estándar YYYY-MM-DD (con zero-padding)
             fecha_iso = f"{anio}-{mes:02d}-{dia:02d}"
@@ -96,10 +98,11 @@ class TamaulipasPoClient:
         """
         params = {"ano": anio, "mes": mes}
         with httpx.Client(**self.client_kwargs) as client:
-            response = client.get(self.BASE_URL, params=params, follow_redirects=True)
+            response = client.get(
+                self.BASE_URL, params=params, follow_redirects=True)
             response.raise_for_status()
             html = response.text
-        
+
         return self._parsear_html(html, anio, mes)
 
     async def a_obtener_ediciones(self, anio: int, mes: int) -> List[TamaulipasPoEdicion]:
@@ -118,5 +121,5 @@ class TamaulipasPoClient:
             response = await client.get(self.BASE_URL, params=params, follow_redirects=True)
             response.raise_for_status()
             html = response.text
-        
+
         return self._parsear_html(html, anio, mes)

@@ -30,7 +30,8 @@ async def main():
     resultado2 = await client.a_buscar_por_palabra("decreto")
     print(f"  Total: {resultado2.total} | Páginas: {resultado2.total_paginas}")
     for pub in resultado2.publicaciones[:3]:
-        print(f"  [{pub.fecha_publicacion}] {pub.tipo}: {(pub.sumario or '')[:60]}...")
+        print(
+            f"  [{pub.fecha_publicacion}] {pub.tipo}: {(pub.sumario or '')[:60]}...")
 
     # --- Búsqueda avanzada ---
     print()
@@ -40,7 +41,8 @@ async def main():
     resultado3 = await client.a_buscar_avanzada("ley", "2026-01-01", "2026-03-01")
     print(f"  Total: {resultado3.total} | Páginas: {resultado3.total_paginas}")
     for pub in resultado3.publicaciones[:3]:
-        print(f"  [{pub.fecha_publicacion}] {pub.tipo}: {(pub.sumario or '')[:60]}...")
+        print(
+            f"  [{pub.fecha_publicacion}] {pub.tipo}: {(pub.sumario or '')[:60]}...")
 
 
 if __name__ == "__main__":

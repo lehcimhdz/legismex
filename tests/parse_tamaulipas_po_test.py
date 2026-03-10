@@ -25,32 +25,32 @@ days = soup.find_all("div", class_="day")
 for day_div in days:
     dia_div = day_div.find("div", class_="dia")
     if not dia_div:
-         continue
+        continue
     dia_text = dia_div.text.strip()
     if not dia_text.isdigit():
-         continue
-         
+        continue
+
     dia = int(dia_text)
-    
+
     span = day_div.find("span", class_="d-block")
     if span:
         # Extraer todo el texto, podríamos buscar 'Tomo' y 'Num.'
         tomo = ""
         numero = ""
         for line in span.strings:
-             line = line.strip()
-             if line.startswith("Tomo"):
-                 tomo = line.replace("Tomo", "").strip()
-             elif line.startswith("Num."):
-                 numero = line.replace("Num.", "").strip()
-        
+            line = line.strip()
+            if line.startswith("Tomo"):
+                tomo = line.replace("Tomo", "").strip()
+            elif line.startswith("Num."):
+                numero = line.replace("Num.", "").strip()
+
         # Ahora los links
         links = []
         for a in span.find_all("a", href=True):
-             titulo = a.text.strip()
-             # a veces es empty o imagen si estuviera fuera del span
-             links.append({"titulo": titulo, "url": a["href"]})
-        
+            titulo = a.text.strip()
+            # a veces es empty o imagen si estuviera fuera del span
+            links.append({"titulo": titulo, "url": a["href"]})
+
         print(f"Día {dia} | Tomo: {tomo} | Num: {numero}")
         for link in links:
-             print(f"  - {link['titulo']} : {link['url']}")
+            print(f"  - {link['titulo']} : {link['url']}")

@@ -1,5 +1,6 @@
 from legismex.sanluis.client import SanLuisClient
 
+
 def imprimir_gaceta(g):
     print(f"[{g.fecha_iso}] {g.nombre}")
     print(f"  > Mes: {g.mes}")
@@ -7,6 +8,7 @@ def imprimir_gaceta(g):
         print(f"  > PDFs encontrados: {len(g.urls_pdf)}")
         for url in g.urls_pdf[:2]:
             print(f"    - {url}")
+
 
 def test_sanluis_congreso():
     print("=== San Luis Potosí Congreso (Gaceta Parlamentaria) ===")
@@ -17,9 +19,10 @@ def test_sanluis_congreso():
         print("\n--- Extrayendo Archivo Histórico ---")
         gacetas = client.obtener_gacetas()
         print(f"Total sesiones encontradas: {len(gacetas)}")
-        
+
         if not gacetas:
-            print("No se encontraron gacetas. Verifique el bypass de Sucuri o la estructura del sitio.")
+            print(
+                "No se encontraron gacetas. Verifique el bypass de Sucuri o la estructura del sitio.")
             return
 
         # Mostrar las 5 más recientes (usualmente al final de la lista según el parser)
@@ -31,6 +34,7 @@ def test_sanluis_congreso():
 
     except Exception as exc:
         print(f"Error en prueba de Congreso: {exc}")
+
 
 if __name__ == "__main__":
     test_sanluis_congreso()

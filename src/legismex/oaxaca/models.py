@@ -6,7 +6,8 @@ class OaxacaDocumento(BaseModel):
     """A single document within an Oaxaca Congress gazette session."""
     numero: str           # Agenda item number (e.g. "1", "15", "36")
     descripcion: str      # Item description
-    url_pdfs: List[str]   # One or more PDF URLs (some items have multiple parts)
+    # One or more PDF URLs (some items have multiple parts)
+    url_pdfs: List[str]
 
 
 class OaxacaGaceta(BaseModel):

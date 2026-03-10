@@ -29,7 +29,7 @@ class GuanajuatoPoClient:
         page: int = 1,
     ) -> str:
         # New Order: {anio}/{numero}/{parte}/{inciso}/{keyword}/{limit}/{offset}
-        # Mapping: 
+        # Mapping:
         # anio -> anio
         # numero -> numero
         # tipo -> parte
@@ -51,8 +51,9 @@ class GuanajuatoPoClient:
         for item in items:
             # Note: Fields might have changed names in the new API version
             # Before: perdescripcion, now: asunto
-            descripcion = item.get("asunto") or item.get("perdescripcion") or ""
-            
+            descripcion = item.get("asunto") or item.get(
+                "perdescripcion") or ""
+
             results.append(
                 GuanajuatoPoEdicion(
                     perid=item.get("perid") or item.get("idPeriodico", 0),
@@ -92,7 +93,8 @@ class GuanajuatoPoClient:
         Returns:
             List of GuanajuatoPoEdicion matching the criteria.
         """
-        url = self._build_search_url(keyword, anio, numero, tipo, fecha, page_size, page)
+        url = self._build_search_url(
+            keyword, anio, numero, tipo, fecha, page_size, page)
         response = self._client.get(url)
         response.raise_for_status()
         data = response.json()

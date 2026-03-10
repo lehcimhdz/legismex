@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class NuevoLeonIniciativa(BaseModel):
     """
     Representa una iniciativa de ley extraída del portal del 

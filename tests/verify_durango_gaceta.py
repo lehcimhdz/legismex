@@ -1,6 +1,7 @@
 import asyncio
 from legismex import DurangoGacetaClient
 
+
 async def run_tests():
     print("==================================")
     print("VERIFICANDO DURANGO GACETA")
@@ -29,7 +30,7 @@ async def run_tests():
         print(f"URL PDF: {perm.url_pdf}")
         print(f"Tipo: {perm.tipo}")
     print("\n")
-    
+
     # 3. Conjuntas
     print("--- 3. Extracción Combinada ---")
     todas = await client.a_obtener_todas()

@@ -15,19 +15,19 @@ class VeracruzSesion(BaseModel):
     """Representa una sesión legislativa (Solemne, Ordinaria, Extraordinaria) del Congreso de Veracruz."""
     fecha: str
     tipo_sesion: str
-    
+
     # Contexto temporal en la legislatura
     periodo: str
     anio_ejercicio: str
-    
+
     # Documentos principales
     gaceta_pdf: Optional[str] = None
     acta_pdf: Optional[str] = None
     version_estenografica_pdf: Optional[str] = None
-    
+
     # Multimedia
     audio_urls: List[str] = Field(default_factory=list)
     video_urls: List[str] = Field(default_factory=list)
-    
+
     # Anexos vinculados (Leyes, Decretos, Comunicados dentro de la sesión)
     anexos: List[VeracruzDocumento] = Field(default_factory=list)

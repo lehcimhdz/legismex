@@ -110,18 +110,18 @@ __all__ = [
     "PeriodoVotacion",
     "VotacionDetalle",
     "ResultadoBusqueda",
-    
+
     # Senado
     "SenadoClient",
-    
+
     # DOF
     "DofClient",
     "DofEdicion",
-    
+
     # CDMX - Congreso
     "CdmxClient",
     "DocumentoCdmx",
-    
+
     # CDMX - Consejería
     "ConsejeriaClient",
     "GacetaConsejeria",
@@ -161,7 +161,7 @@ __all__ = [
     "PueblaPoClient",
     "PueblaPoPaginacion",
     "PueblaPoEdicion",
-    
+
     # Querétaro - Congreso
     "QueretaroClient",
     "QueretaroGaceta",
@@ -169,7 +169,7 @@ __all__ = [
     # Querétaro - PO
     "QueretaroPoClient",
     "QueretaroPoEdicion",
-    
+
     # Guanajuato - Congreso
     "GuanajuatoClient",
     "GuanajuatoAsunto",

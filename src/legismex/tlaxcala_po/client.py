@@ -53,7 +53,8 @@ class TlaxcalaPoClient:
             httpx.HTTPError: On connection errors.
         """
         if anio not in self.ANIOS:
-            raise ValueError(f"Año {anio} fuera de rango. Disponibles: {self.ANIOS}")
+            raise ValueError(
+                f"Año {anio} fuera de rango. Disponibles: {self.ANIOS}")
 
         url = self._index_url(anio)
         r = self._client.get(url)

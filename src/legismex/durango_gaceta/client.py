@@ -5,9 +5,10 @@ from typing import List
 from urllib.parse import urljoin
 from .models import DurangoGaceta
 
+
 class DurangoGacetaClient:
     """Cliente para extraer Gacetas de la LXX Legislatura del Congreso de Durango."""
-    
+
     BASE_URL_ORDINARIO = "https://congresodurango.gob.mx/gacetas-de-la-lxx-legislatura/"
     BASE_URL_PERMANENTE = "https://congresodurango.gob.mx/comision-permanente/"
 
@@ -23,7 +24,7 @@ class DurangoGacetaClient:
         table = soup.find("table", id=table_id)
         if not table:
             return []
-        
+
         gacetas = []
         tbody = table.find("tbody")
         if not tbody:
@@ -35,11 +36,11 @@ class DurangoGacetaClient:
                 numero = cols[0].get_text(strip=True)
                 fecha = cols[1].get_text(strip=True)
                 url_pdf = ""
-                
+
                 a_tag = cols[2].find("a")
                 if a_tag and "href" in a_tag.attrs:
                     url_pdf = urljoin(base_url, a_tag["href"])
-                    
+
                 if numero and url_pdf:
                     gacetas.append(DurangoGaceta(
                         numero=numero,
@@ -50,7 +51,7 @@ class DurangoGacetaClient:
         return gacetas
 
     # --- Síncronos ---
-    
+
     def obtener_ordinarios(self) -> List[DurangoGaceta]:
         """Obtiene las gacetas del periodo ordinario (tabla tablepress-41)."""
         with httpx.Client(**self.client_kwargs) as client:

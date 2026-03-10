@@ -1,3 +1,4 @@
+from legismex.bcs_congreso.client import BcsCongresoClient
 import sys
 import os
 import asyncio
@@ -5,12 +6,11 @@ import asyncio
 # Añadir src al path
 sys.path.append(os.path.abspath("src"))
 
-from legismex.bcs_congreso.client import BcsCongresoClient
 
 async def verify():
     client = BcsCongresoClient()
     url = "https://www.cbcs.gob.mx/index.php/xvii-legislatura/xvii-leg-segundo-ano/xvii-leg-segundo-ano-primer-periodo-receso/orden-del-dia"
-    
+
     print("--- Probando obtener_ordenes_dia ---")
     sesiones = client.obtener_ordenes_dia(url)
     print(f"Sesiones encontradas: {len(sesiones)}")
@@ -34,7 +34,8 @@ async def verify():
     print("\n--- Probando obtener_actas ---")
     actas_url = "https://www.cbcs.gob.mx/index.php/trabajos-legislativos/actas-sesiones"
     actas = client.obtener_actas(actas_url)
-    print(f"Actas encontradas: {len(actas)} (Nota: esta página puede requerir navegación más profunda)")
+    print(
+        f"Actas encontradas: {len(actas)} (Nota: esta página puede requerir navegación más profunda)")
 
 if __name__ == "__main__":
     asyncio.run(verify())

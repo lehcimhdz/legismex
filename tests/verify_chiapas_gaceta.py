@@ -1,6 +1,7 @@
 import asyncio
 from legismex import ChiapasGacetaClient
 
+
 async def run_tests():
     print("=========================================")
     print("VERIFICANDO GACETA DE CHIAPAS")
@@ -11,7 +12,7 @@ async def run_tests():
     print("--- 1. Obtener Gacetas ---")
     gacetas = await client.a_obtener_gacetas()
     print(f"Total gacetas recuperadas: {len(gacetas)}")
-    
+
     for idx, e in enumerate(gacetas[:5]):
         print(f"Edición {idx+1}:")
         print(f"  Número: {e.numero}")

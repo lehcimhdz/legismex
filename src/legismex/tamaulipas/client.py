@@ -4,6 +4,7 @@ import httpx
 from bs4 import BeautifulSoup
 from .models import TamaulipasGaceta
 
+
 class TamaulipasClient:
     """Cliente para la Gaceta Parlamentaria del H. Congreso del Estado de Tamaulipas."""
 
@@ -57,7 +58,8 @@ class TamaulipasClient:
                 # A veces el href ya viene escapado, otras veces tiene espacios
                 # Httpx maneja los urls si están bien formados, pero los espacios pueden dar lata
                 url_pdf = f"{self.DOMAIN}{url_path}"
-                url_pdf = url_pdf.replace(" ", "%20") # codificar los espacios simple
+                # codificar los espacios simple
+                url_pdf = url_pdf.replace(" ", "%20")
 
                 try:
                     gaceta = TamaulipasGaceta(
@@ -90,7 +92,8 @@ class TamaulipasClient:
         """
         params = {"Legislatura": str(legislatura)}
         with httpx.Client(**self.client_kwargs) as client:
-            response = client.get(self.BASE_URL, params=params, follow_redirects=True)
+            response = client.get(
+                self.BASE_URL, params=params, follow_redirects=True)
             response.raise_for_status()
             html = response.text
 

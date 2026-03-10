@@ -4,6 +4,7 @@ import re
 from typing import List, Optional
 from .models import ChihuahuaSesion, ChihuahuaDocumento
 
+
 class ChihuahuaCongresoClient:
     """
     Cliente para la extracción de la Gaceta Parlamentaria del
@@ -30,13 +31,14 @@ class ChihuahuaCongresoClient:
             # Los args son (idsesion, tipo, id, idtipodocumento)
             args_str = match.group(1)
             # Separar por comas (cuidado con comillas)
-            args = [arg.strip().strip("'").strip('"') for arg in args_str.split(",")]
+            args = [arg.strip().strip("'").strip('"')
+                    for arg in args_str.split(",")]
             # Manejar el hecho de que algunos argumentos pueden no estar
             idsesion = args[0] if len(args) > 0 else ""
             tipo = args[1] if len(args) > 1 else ""
             id_doc = args[2] if len(args) > 2 else ""
             idtipodoc = args[3] if len(args) > 3 else ""
-            
+
             return f"{self.BASE_URL}/detalleSesion.php?idsesion={idsesion}&tipo={tipo}&id={id_doc}&idtipodocumento={idtipodoc}"
         return None
 
@@ -45,11 +47,12 @@ class ChihuahuaCongresoClient:
         title_block = article.find("figure", class_="event_title")
         if not title_block:
             return None
-            
-        titulo = title_block.find("h3").get_text(strip=True) if title_block.find("h3") else ""
+
+        titulo = title_block.find("h3").get_text(
+            strip=True) if title_block.find("h3") else ""
         h4 = title_block.find("h4")
         descripcion = h4.get_text(strip=True) if h4 else ""
-        
+
         # Obtener sesion_id del href en el h4 si existe
         sesion_id = ""
         if h4 and h4.find("a"):
@@ -62,14 +65,14 @@ class ChihuahuaCongresoClient:
         url_video = None
         url_asistencia = None
         fecha = ""
-        
+
         meta = article.find("figure", class_="event_meta")
         if meta:
             anchors = meta.find_all("a", class_="btn btn-default")
             for a in anchors:
                 text = a.get_text(strip=True)
                 href = a.get("href", "")
-                
+
                 if a.find("i", class_="fa-calendar"):
                     fecha = text
                 elif a.find("i", class_="fa-youtube-play"):
@@ -93,10 +96,10 @@ class ChihuahuaCongresoClient:
             h4_header = alert.find("h4")
             if not h4_header:
                 continue
-                
+
             header_text = h4_header.get_text(strip=True).lower()
             links = alert.find_all("a")
-            
+
             docs = []
             for link in links:
                 js_href = link.get("href", "")
@@ -106,7 +109,7 @@ class ChihuahuaCongresoClient:
                         titulo=link.get_text(strip=True),
                         url=parsed_url
                     ))
-            
+
             if "probable" in header_text:
                 sesion.documentos_probables = docs
             elif "desahogado" in header_text and "votación" not in header_text and "registro" not in header_text:
@@ -121,13 +124,13 @@ class ChihuahuaCongresoClient:
     def _procesar_html(self, html_content: str) -> List[ChihuahuaSesion]:
         soup = BeautifulSoup(html_content, "html.parser")
         sesiones = []
-        
+
         articles = soup.find_all("article", class_="event_listing_wrapper")
         for article in articles:
             s = self._parsear_sesion(article)
             if s:
                 sesiones.append(s)
-                
+
         return sesiones
 
     def obtener_sesiones(self, pagina: int = 1) -> List[ChihuahuaSesion]:
@@ -137,7 +140,8 @@ class ChihuahuaCongresoClient:
         """
         params = {"pag": pagina, "pagina": "gacetas"}
         with httpx.Client(timeout=self.timeout) as client:
-            response = client.get(self.URL_BASE_GACETA, params=params, headers=self.headers)
+            response = client.get(self.URL_BASE_GACETA,
+                                  params=params, headers=self.headers)
             response.raise_for_status()
             return self._procesar_html(response.text)
 

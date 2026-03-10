@@ -1,10 +1,12 @@
 from typing import List
 from pydantic import BaseModel, ConfigDict
 
+
 class TamaulipasPoDocumento(BaseModel):
     """Representa un documento de la edición (ej. Judicial, Legislativo)."""
     titulo: str
     url_pdf: str
+
 
 class TamaulipasPoEdicion(BaseModel):
     """Representa un día consolidado del Periódico Oficial de Tamaulipas."""
@@ -14,4 +16,3 @@ class TamaulipasPoEdicion(BaseModel):
     tomo: str
     numero: str
     documentos: List[TamaulipasPoDocumento]
-

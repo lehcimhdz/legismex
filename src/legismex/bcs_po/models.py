@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class BcsPoEdicion(BaseModel):
     """
     Modelo que representa una edición del Periódico Oficial de Baja California Sur.

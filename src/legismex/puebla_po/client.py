@@ -4,6 +4,7 @@ from typing import Optional, Dict
 
 from .models import PueblaPoPaginacion, PueblaPoEdicion
 
+
 class PueblaPoClient:
     """
     Cliente para interactuar con el Periódico Oficial del Estado de Puebla.
@@ -62,7 +63,8 @@ class PueblaPoClient:
         }
 
         with httpx.Client(verify=False, timeout=self.timeout) as client:
-            response = client.post(self.SEARCH_ENDPOINT, data=data, headers=self.headers)
+            response = client.post(self.SEARCH_ENDPOINT,
+                                   data=data, headers=self.headers)
             response.raise_for_status()
             json_data = response.json()
 
@@ -82,16 +84,19 @@ class PueblaPoClient:
         for item in items:
             # item.get('title') => Ej. "Tomo: CDLXXVIII Número: 7 Sección: Segunda"
             raw_title = item.get("title", "")
-            
+
             # Utilizar REGEX simplificada para mapear campos desde raw_title
             # Tomo: ([^\s]+)\s+Número:\s+([^\s]+)\s+Sección:\s+(.*)
             tomo_val = None
             numero_val = None
             seccion_val = None
 
-            tomo_match = re.search(r'Tomo:\s+([a-zA-Z0-9_]+)', raw_title, re.IGNORECASE)
-            numero_match = re.search(r'Número:\s+([a-zA-Z0-9_\/]+)', raw_title, re.IGNORECASE)
-            seccion_match = re.search(r'Sección:\s+(.*)', raw_title, re.IGNORECASE)
+            tomo_match = re.search(
+                r'Tomo:\s+([a-zA-Z0-9_]+)', raw_title, re.IGNORECASE)
+            numero_match = re.search(
+                r'Número:\s+([a-zA-Z0-9_\/]+)', raw_title, re.IGNORECASE)
+            seccion_match = re.search(
+                r'Sección:\s+(.*)', raw_title, re.IGNORECASE)
 
             if tomo_match:
                 tomo_val = tomo_match.group(1).strip()

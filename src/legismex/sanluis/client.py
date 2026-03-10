@@ -52,11 +52,12 @@ class SanLuisClient:
         # Find the base64 encoded string
         match = re.search(r"S='([^']+)'", html)
         if not match:
-            raise ValueError("No se encontró el string base64 del reto Sucuri.")
-        
+            raise ValueError(
+                "No se encontró el string base64 del reto Sucuri.")
+
         encoded_js = match.group(1)
         decoded_js = base64.b64decode(encoded_js).decode("utf-8")
-        
+
         # Evaluate simple JS string concatenation like '4' + "d" + String.fromCharCode(50)
         def evaluate_js_string_concat(expr: str) -> str:
             result = ""
@@ -71,26 +72,30 @@ class SanLuisClient:
             return result
 
         # Extract cookie variable name from document.cookie assignment
-        cookie_assign_match = re.search(r'document\.cookie=(.+?)\s*\+\s*"="\s*\+\s*(\w+)', decoded_js)
+        cookie_assign_match = re.search(
+            r'document\.cookie=(.+?)\s*\+\s*"="\s*\+\s*(\w+)', decoded_js)
         if not cookie_assign_match:
-            raise ValueError("No se pudo extraer el nombre de la cookie del JS decodificado.")
-        
+            raise ValueError(
+                "No se pudo extraer el nombre de la cookie del JS decodificado.")
+
         cookie_name_expr = cookie_assign_match.group(1)
         val_var_name = cookie_assign_match.group(2)
 
         # Extract value assignment
-        val_match = re.search(rf"(?:var\s+)?{val_var_name}=([^;]+);", decoded_js)
+        val_match = re.search(
+            rf"(?:var\s+)?{val_var_name}=([^;]+);", decoded_js)
         if not val_match:
-            raise ValueError(f"No se pudo extraer el valor '{val_var_name}' del JS decodificado.")
-        
+            raise ValueError(
+                f"No se pudo extraer el valor '{val_var_name}' del JS decodificado.")
+
         u_val = evaluate_js_string_concat(val_match.group(1))
         cookie_name = evaluate_js_string_concat(cookie_name_expr)
-        
+
         return cookie_name, u_val
 
     def _get(self, url: str) -> httpx.Response:
         """Perform a GET request, SSL verification disabled (common for .gob.mx).
-        
+
         Handles Sucuri Cloudproxy 307 temporary redirects automatically.
         """
         def make_request(client, extra_cookies=None):
@@ -114,11 +119,12 @@ class SanLuisClient:
             # Handle Sucuri 307 Redirect JS Challenge
             if response.status_code == 307 and "Sucuri/Cloudproxy" in response.headers.get("Server", ""):
                 try:
-                    cookie_name, cookie_val = self._solve_sucuri_challenge(response.text)
+                    cookie_name, cookie_val = self._solve_sucuri_challenge(
+                        response.text)
                     cookies[cookie_name] = cookie_val
                     response = make_request(client_used, extra_cookies=cookies)
                 except Exception:
-                    pass # Fallback to original raise if solving fails
+                    pass  # Fallback to original raise if solving fails
 
             response.raise_for_status()
             return response

@@ -7,5 +7,6 @@ class TlaxcalaPoEdicion(BaseModel):
     anio: int
     fecha: str               # YYYY-MM-DD
     numero: str              # e.g. "Ex", "1Ex", "1-1ª SECC", "2-2ª SECC"
-    contenido: str           # Document description (full text without wrapping quotes)
+    # Document description (full text without wrapping quotes)
+    contenido: str
     url_pdf: Optional[str] = None   # Absolute PDF URL

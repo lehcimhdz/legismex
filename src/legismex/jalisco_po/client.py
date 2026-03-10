@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from .models import JaliscoPoResumen, JaliscoPoEdicion, JaliscoPoPaginacion
 
+
 class JaliscoPoClient:
     """
     Cliente oficial para interactuar con la API REST del
@@ -14,15 +15,15 @@ class JaliscoPoClient:
         self.verify_ssl = verify_ssl
 
     def buscar_ediciones(
-        self, 
-        fecha: str = "", 
-        palabra_clave: str = "", 
+        self,
+        fecha: str = "",
+        palabra_clave: str = "",
         pagina: int = 1,
         elementos_por_pagina: int = 100
     ) -> JaliscoPoPaginacion:
         """
         Busca las ediciones del periódico oficial usando la API pública.
-        
+
         :param fecha: Formato YYYY-MM-DD
         :param palabra_clave: Texto a buscar en el contenido.
         :param pagina: El número de página (para la paginación).
@@ -36,21 +37,22 @@ class JaliscoPoClient:
             "page": pagina,
             "perPage": elementos_por_pagina
         }
-        
+
         with httpx.Client(verify=self.verify_ssl) as client:
             response = client.get(url, params=params)
             response.raise_for_status()
-            
+
             data = response.json()
             if data.get("errors"):
-                raise ValueError(f"Error devuelto por la API del PO Jalisco: {data.get('errors')}")
-                
+                raise ValueError(
+                    f"Error devuelto por la API del PO Jalisco: {data.get('errors')}")
+
             result = data.get("result", {})
             items = []
-            
+
             for item in result.get("data", []):
                 items.append(JaliscoPoResumen(**item))
-                
+
             return JaliscoPoPaginacion(
                 items=items,
                 current_page=result.get("current_page", 1),
@@ -62,20 +64,21 @@ class JaliscoPoClient:
         """
         Obtiene el detalle completo de una publicación, lo cual
         sirve para descubrir la URL del PDF que la sustenta.
-        
+
         :param id_newspaper: El identificador numérico interno (`id_newspaper`).
         :return: Modelo `JaliscoPoEdicion`.
         """
         url = f"{self.BASE_URL}/public/find"
         params = {"id": id_newspaper}
-        
+
         with httpx.Client(verify=self.verify_ssl) as client:
             response = client.get(url, params=params)
             response.raise_for_status()
-            
+
             data = response.json()
             if data.get("errors"):
-                raise ValueError(f"Error devuelto por la API del PO Jalisco: {data.get('errors')}")
-                
+                raise ValueError(
+                    f"Error devuelto por la API del PO Jalisco: {data.get('errors')}")
+
             result = data.get("result", {})
             return JaliscoPoEdicion(**result)

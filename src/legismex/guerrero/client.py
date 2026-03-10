@@ -58,7 +58,8 @@ class GuerreroClient:
         else:
             url = self.LIST_URL
 
-        soup = self._fetch_soup(f"{url}?{'&'.join(f'{k}={v}' for k, v in params.items())}")
+        soup = self._fetch_soup(
+            f"{url}?{'&'.join(f'{k}={v}' for k, v in params.items())}")
 
         # Total records
         total_span = soup.select_one("span.total-records")
@@ -80,7 +81,8 @@ class GuerreroClient:
                 url_detalle = id_link["href"] if id_link else ""
                 nombre = cells[2].get_text(strip=True)
                 fecha_span = cells[3].find("span")
-                fecha = fecha_span.get_text(strip=True) if fecha_span else cells[3].get_text(strip=True)
+                fecha = fecha_span.get_text(
+                    strip=True) if fecha_span else cells[3].get_text(strip=True)
 
                 gaceta = GuerreroGaceta(
                     id=gac_id,
@@ -136,7 +138,8 @@ class GuerreroClient:
                 continue
             url_pdf = pdf_link["href"]
 
-            contenido = cells[4].get_text(strip=True) if len(cells) > 4 else None
+            contenido = cells[4].get_text(
+                strip=True) if len(cells) > 4 else None
 
             docs.append(
                 GuerreroDocumento(

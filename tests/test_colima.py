@@ -1,16 +1,18 @@
 import asyncio
 from legismex.colima import ColimaClient
 
+
 async def test_colima():
     client = ColimaClient()
-    
+
     print("Obteniendo decretos de la legislatura 61...")
     decretos = await client.a_obtener_decretos(61, "LXI Legislatura")
     print(f"Total Decretos encontrados: {len(decretos)}")
     if decretos:
         d = decretos[0]
-        print(f"[{d.numero}] {d.descripcion[:50]}... (Aprob: {d.fecha_aprobacion}) -> PDF: {d.url_pdf}")
-        
+        print(
+            f"[{d.numero}] {d.descripcion[:50]}... (Aprob: {d.fecha_aprobacion}) -> PDF: {d.url_pdf}")
+
     print("\nObteniendo diario de debates de la legislatura 61...")
     diarios = await client.a_obtener_diario_debates(61, "LXI Legislatura")
     print(f"Total Diarios encontrados: {len(diarios)}")

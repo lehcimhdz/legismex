@@ -1,3 +1,4 @@
+from legismex.bc_po.client import BcPoClient
 import sys
 import os
 import asyncio
@@ -5,11 +6,10 @@ import asyncio
 # Añadir src al path
 sys.path.append(os.path.abspath("src"))
 
-from legismex.bc_po.client import BcPoClient
 
 async def verify():
     client = BcPoClient()
-    
+
     print("--- Probando obtener_ediciones (Diciembre 2025) ---")
     resultado = client.obtener_ediciones(2025, 12)
     print(f"Ediciones encontradas: {len(resultado.ediciones)}")

@@ -4,6 +4,7 @@ from typing import List
 
 from legismex.cdmx.models import DocumentoCdmx
 
+
 class CdmxParser:
     """
     Parser oficial para las estructuras HTML devueltas por el Congreso de la Ciudad de México.
@@ -19,7 +20,7 @@ class CdmxParser:
         que almacenan enlaces directos a los compilados en PDF de las Gacetas o Diarios de Debate.
         """
         soup = BeautifulSoup(html_content, 'html.parser')
-        
+
         documentos = []
 
         # Buscamos todos los contenedores alert
@@ -30,7 +31,7 @@ class CdmxParser:
             enlace = alert.find('a')
             if not enlace or not enlace.get('href'):
                 continue
-            
+
             href = enlace['href'].strip()
             # Asegurar URL absoluta
             if not href.startswith('http'):
@@ -56,15 +57,16 @@ class CdmxParser:
                 if '|' in meta_text:
                     partes = meta_text.split('|')
                     # Extraer fecha
-                    fecha_str = partes[0].replace("Fecha de publicación:", "").strip()
+                    fecha_str = partes[0].replace(
+                        "Fecha de publicación:", "").strip()
                     if fecha_str:
                         fecha = fecha_str
-                    
+
                     # Extraer tamaño
                     if len(partes) > 1:
                         tamano_str = partes[1].replace("Tamaño:", "").strip()
                         peso_etiqueta = tamano_str
-                        
+
                         # Extraer solo el número flotante (ej "44,490" -> 44490.0)
                         num_match = re.search(r'([\d.,]+)', tamano_str)
                         if num_match:

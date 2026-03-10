@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from .models import NuevoLeonIniciativa
 
+
 class NuevoLeonClient:
     """
     Cliente para extraer del H. Congreso del Estado de Nuevo León,
@@ -25,45 +26,50 @@ class NuevoLeonClient:
         :return: Lista de modelos `NuevoLeonIniciativa`.
         """
         resultados = []
-        
+
         with httpx.Client(verify=self.verify_ssl) as client:
             # NL's DataTables consumen de este JSON plano gigante
             response = client.get(self.BASE_URL)
             response.raise_for_status()
             data = response.json()
-            
+
             items = data.get("data", [])
             for row in items:
                 # Filtrado por Legislatura antes de parsear HTML para ahorrar ciclos
                 row_legislatura = row[10] if len(row) > 10 else ""
-                
+
                 if legislatura and getattr(row_legislatura, 'strip', lambda: '')() != legislatura:
                     continue
-                    
+
                 # Extracción y Limpieza
                 # 0: <span class='badge'...>Exp, 21130 / LXXVII </span>
                 exp_html = row[0] if len(row) > 0 else ""
-                exp_clean = BeautifulSoup(exp_html, "html.parser").get_text(separator=" ").strip()
-                
+                exp_clean = BeautifulSoup(
+                    exp_html, "html.parser").get_text(separator=" ").strip()
+
                 # 9: Promovente oculto en texto plano (en la vista web esto se representa por un tag en col 2)
                 promovente = row[9] if len(row) > 9 else ""
-                
+
                 # 4: Asunto <div class='txtsmall'><a href...
                 asunto_html = row[4] if len(row) > 4 else ""
-                asunto_clean = BeautifulSoup(asunto_html, "html.parser").get_text(separator=" ").strip()
-                
+                asunto_clean = BeautifulSoup(
+                    asunto_html, "html.parser").get_text(separator=" ").strip()
+
                 # 5: Comisión
                 comision_html = row[5] if len(row) > 5 else ""
-                comision_clean = BeautifulSoup(comision_html, "html.parser").get_text(separator=" ").strip()
-                
+                comision_clean = BeautifulSoup(
+                    comision_html, "html.parser").get_text(separator=" ").strip()
+
                 # 6: Fecha <div class='txtsmall'>25/02/2026</div>
                 fecha_html = row[6] if len(row) > 6 else ""
-                fecha_clean = BeautifulSoup(fecha_html, "html.parser").get_text(separator=" ").strip()
-                
+                fecha_clean = BeautifulSoup(
+                    fecha_html, "html.parser").get_text(separator=" ").strip()
+
                 # 7: Estado
                 estado_html = row[7] if len(row) > 7 else ""
-                estado_clean = BeautifulSoup(estado_html, "html.parser").get_text(separator=" ").strip()
-                
+                estado_clean = BeautifulSoup(
+                    estado_html, "html.parser").get_text(separator=" ").strip()
+
                 # 8: PDF <a href='https://...' ...
                 pdf_html = row[8] if len(row) > 8 else ""
                 url_pdf = None
@@ -91,5 +97,5 @@ class NuevoLeonClient:
                     url_pdf=url_pdf
                 )
                 resultados.append(iniciativa)
-                
+
         return resultados

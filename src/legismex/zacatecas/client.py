@@ -49,7 +49,8 @@ def _parse_gacetas(html: str) -> List[ZacatecasGaceta]:
 
         # Tipo de sesión — el texto del enlace en la columna 4
         tipo_link = cells[4].find("a")
-        tipo_sesion = tipo_link.get_text(strip=True) if tipo_link else cells[4].get_text(strip=True)
+        tipo_sesion = tipo_link.get_text(
+            strip=True) if tipo_link else cells[4].get_text(strip=True)
 
         # PDF — enlace en la columna 5 (botón rojo)
         pdf_link = cells[5].find("a", href=True)

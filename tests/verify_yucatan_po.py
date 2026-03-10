@@ -1,11 +1,13 @@
 from legismex.yucatan_po.client import YucatanPoClient
 from datetime import date
 
+
 def imprimir_edicion(e):
     print(f"[{e.fecha}] {e.tipo} (No. {e.numero})")
     if e.sumario:
         print(f"  > Sumario: {e.sumario[:100]}...")
     print(f"  > PDF: {e.url_pdf}")
+
 
 def test_yucatan_po():
     print("=== Yucatán Diario Oficial ===")
@@ -16,11 +18,12 @@ def test_yucatan_po():
         fecha = "2026-3-10"
         print(f"\n--- Ediciones de {fecha} ---")
         ediciones = client.obtener_ediciones_por_fecha(fecha=fecha)
-        
+
         print(f"Total ediciones encontradas: {len(ediciones)}")
-        
+
         if not ediciones:
-            print(f"No se encontraron ediciones para la fecha {fecha}. Probando 9 de marzo...")
+            print(
+                f"No se encontraron ediciones para la fecha {fecha}. Probando 9 de marzo...")
             ediciones = client.obtener_ediciones_por_fecha(fecha="2026-3-9")
             print(f"Total ediciones 9/marzo: {len(ediciones)}")
 
@@ -31,6 +34,7 @@ def test_yucatan_po():
 
     except Exception as exc:
         print(f"Error en prueba de D.O.: {exc}")
+
 
 if __name__ == "__main__":
     test_yucatan_po()

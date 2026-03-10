@@ -1,9 +1,11 @@
 from legismex.guanajuato.client import GuanajuatoClient
 
+
 def imprimir_asunto(a):
     print(f"[{a.fecha}] {a.expediente} (Leg. {a.legislatura})")
     print(f"  > Descripción: {a.descripcion[:100]}...")
     print(f"  > Detalle: {a.url_detalle}")
+
 
 def test_guanajuato_congreso():
     print("=== Guanajuato Congreso ===")
@@ -27,6 +29,7 @@ def test_guanajuato_congreso():
 
     except Exception as exc:
         print(f"Error en prueba de Congreso: {exc}")
+
 
 if __name__ == "__main__":
     test_guanajuato_congreso()

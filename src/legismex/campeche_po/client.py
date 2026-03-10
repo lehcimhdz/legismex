@@ -6,6 +6,7 @@ from datetime import datetime
 
 from .models import CampechePoPublicacion
 
+
 class CampechePoClient:
     """Cliente para extraer actas del Periódico Oficial del Estado de Campeche."""
     BASE_URL = "http://periodicooficial.campeche.gob.mx/sipoec/public/documentos"
@@ -13,7 +14,7 @@ class CampechePoClient:
     def __init__(self, **kwargs):
         """
         Inicializa el cliente del PO de Campeche.
-        
+
         Args:
             **kwargs: Argumentos adicionales para httpx.Client o AsyncClient.
         """
@@ -44,29 +45,30 @@ class CampechePoClient:
         """Extrae la lista de publicaciones de la página en curso."""
         soup = BeautifulSoup(html, "html.parser")
         gacetas = []
-        
+
         links = soup.find_all("a", {"data-toggle": "modal"})
         docs_raw = {}
         for link in links:
             doc_id = link.get("data-id")
-            text = link.get_text(separator=" | ", strip=True) # A veces extrae multiples líneas
+            # A veces extrae multiples líneas
+            text = link.get_text(separator=" | ", strip=True)
             if not doc_id:
                 continue
-                
+
             if doc_id not in docs_raw:
                 docs_raw[doc_id] = []
             docs_raw[doc_id].append(text)
-            
+
         for doc_id, fields in docs_raw.items():
             if len(fields) >= 2:
                 # Usualmente el primer elemento es el título (PO260...) y el segundo la fecha (YYYY-MM-DD)
                 titulo = fields[0]
                 fecha_str = fields[1]
-                
+
                 try:
                     fecha_obj = datetime.strptime(fecha_str, "%Y-%m-%d").date()
                     url_pdf = self._inferir_url(titulo, fecha_str)
-                    
+
                     gacetas.append(CampechePoPublicacion(
                         titulo=titulo,
                         fecha=fecha_obj,
@@ -75,7 +77,7 @@ class CampechePoClient:
                 except ValueError:
                     # Ignorar registros donde la fecha tenga un formato inesperado
                     pass
-                    
+
         return gacetas
 
     def _obtener_numero_paginas(self, html: str) -> int:
@@ -99,7 +101,7 @@ class CampechePoClient:
     def obtener_publicaciones(self, anio: int, paginas: Optional[int] = None) -> List[CampechePoPublicacion]:
         """
         Obtiene las publicaciones de un año específico de forma síncrona.
-        
+
         Args:
             anio: Año de búsqueda (ej. 2026).
             paginas: Límite de páginas a consultar. Si es None, extrae todas las disponibles.
@@ -112,20 +114,20 @@ class CampechePoClient:
                 url_base = f"{self.BASE_URL}?anio={anio}&page=1"
                 resp = client.get(url_base)
                 resp.raise_for_status()
-                
+
                 total_paginas = self._obtener_numero_paginas(resp.text)
-                
+
                 if paginas is not None:
                     total_paginas = min(paginas, total_paginas)
-                    
+
                 resultados = self._parsear_html(resp.text)
-                
+
                 for page in range(2, total_paginas + 1):
                     url = f"{self.BASE_URL}?anio={anio}&page={page}"
                     resp = client.get(url)
                     resp.raise_for_status()
                     resultados.extend(self._parsear_html(resp.text))
-                    
+
                 return resultados
 
     async def a_obtener_publicaciones(self, anio: int, paginas: Optional[int] = None) -> List[CampechePoPublicacion]:
@@ -139,23 +141,23 @@ class CampechePoClient:
                 url_base = f"{self.BASE_URL}?anio={anio}&page=1"
                 resp = await client.get(url_base)
                 resp.raise_for_status()
-                
+
                 total_paginas = self._obtener_numero_paginas(resp.text)
-                
+
                 if paginas is not None:
                     total_paginas = min(paginas, total_paginas)
-                    
+
                 resultados = self._parsear_html(resp.text)
-                
+
                 if total_paginas > 1:
                     tareas = []
                     for page in range(2, total_paginas + 1):
                         url = f"{self.BASE_URL}?anio={anio}&page={page}"
                         tareas.append(client.get(url))
-                        
+
                     respuestas = await asyncio.gather(*tareas, return_exceptions=True)
                     for r in respuestas:
                         if isinstance(r, httpx.Response) and r.status_code == 200:
                             resultados.extend(self._parsear_html(r.text))
-                            
+
                 return resultados

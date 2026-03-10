@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from typing import List
 from .models import YucatanIniciativa, YucatanDocumento
 
+
 class YucatanCongresoClient:
     """
     Cliente para la extracción de las Iniciativas del Congreso del Estado de Yucatán.
@@ -62,17 +63,18 @@ class YucatanCongresoClient:
                     href = f"{self.BASE_URL}{href}"
                 elif not href.startswith("http"):
                     href = f"{self.BASE_URL}/{href}"
-                
+
                 # Intentar detectar extensión desde href o iconos de FontAwesome
-                ext = "pdf" if ".pdf" in href.lower() else "docx" if ".doc" in href.lower() else "desconocido"
-                
+                ext = "pdf" if ".pdf" in href.lower(
+                ) else "docx" if ".doc" in href.lower() else "desconocido"
+
                 if ext == "desconocido":
                     # Intentar detectar por clase i/svg
                     if a_tag.find("svg", class_="fa-file-pdf") or a_tag.find("i", class_="fa-file-pdf"):
                         ext = "pdf"
                     elif a_tag.find("svg", class_="fa-file-word") or a_tag.find("i", class_="fa-file-word"):
                         ext = "docx"
-                
+
                 documentos.append(YucatanDocumento(url=href, extension=ext))
 
             iniciativas.append(YucatanIniciativa(

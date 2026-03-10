@@ -5,6 +5,7 @@ from datetime import datetime
 from legismex.dof.models import DofEdicion
 from legismex.dof.parser import DofParser
 
+
 class DofClient:
     """
     Cliente oficial para la extracción de publicaciones y documentos
@@ -12,7 +13,7 @@ class DofClient:
     """
 
     BASE_URL = "https://www.dof.gob.mx"
-    
+
     DEFAULT_HEADERS = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
@@ -50,6 +51,8 @@ class DofClient:
                 return DofParser.parse_edicion_dia(html_content, fecha_edicion=date_label)
 
         except httpx.HTTPStatusError as exc:
-            raise Exception(f"HTTP error {exc.response.status_code} - al consultar el DOF: {url}")
+            raise Exception(
+                f"HTTP error {exc.response.status_code} - al consultar el DOF: {url}")
         except httpx.RequestError as exc:
-            raise Exception(f"Error de red al conectar con el servidor del DOF: {exc}")
+            raise Exception(
+                f"Error de red al conectar con el servidor del DOF: {exc}")

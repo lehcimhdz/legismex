@@ -4,6 +4,7 @@ from typing import List, Optional
 import urllib.parse
 from .models import VeracruzPoEdicion
 
+
 class VeracruzPoClient:
     """Cliente para interactuar con la Gaceta Oficial del Estado de Veracruz (Periódico Oficial)."""
 
@@ -15,7 +16,8 @@ class VeracruzPoClient:
         self._sync_client = httpx.Client(verify=False, follow_redirects=True)
         self._async_client = None
         if self.use_async:
-            self._async_client = httpx.AsyncClient(verify=False, follow_redirects=True)
+            self._async_client = httpx.AsyncClient(
+                verify=False, follow_redirects=True)
 
     def _post(self, data: dict) -> str:
         """Realiza una petición POST de forma síncrona."""
@@ -26,7 +28,8 @@ class VeracruzPoClient:
     async def _apost(self, data: dict) -> str:
         """Realiza una petición POST de forma asíncrona."""
         if not self._async_client:
-            self._async_client = httpx.AsyncClient(verify=False, follow_redirects=True)
+            self._async_client = httpx.AsyncClient(
+                verify=False, follow_redirects=True)
         response = await self._async_client.post(self.BASE_URL, data=data)
         response.raise_for_status()
         return response.text
@@ -40,13 +43,14 @@ class VeracruzPoClient:
             data_id = article.get("data-id")
             if not data_id:
                 continue
-            
+
             # Extract plain text content for the name e.g "Gac2024-001 Lunes 01.pdf"
             nombre_raw = article.text.strip()
-            
+
             # Clean up trailing .pdf if present (for accurate `fecha_textual` display)
-            nombre = nombre_raw[:-4] if nombre_raw.lower().endswith(".pdf") else nombre_raw
-            
+            nombre = nombre_raw[:-
+                                4] if nombre_raw.lower().endswith(".pdf") else nombre_raw
+
             # The name is usually "GacYYYY-XXX Day DD [TOMO Ext]"
             # So the date part is basically the "Day DD" part
             parts = nombre.split(" ")
@@ -55,7 +59,7 @@ class VeracruzPoClient:
                 fecha_textual = f"{parts[1]} {parts[2]}"
             elif len(parts) == 2:
                 fecha_textual = parts[1]
-                
+
             # The URL uses urllib.parse.quote() for spaces to become %20
             # Ensure "Gac2024-001 Lunes 01.pdf" turns into "Gac2024-001%20Lunes%2001.pdf"
             pdf_path_quoted = urllib.parse.quote(data_id)
@@ -76,10 +80,10 @@ class VeracruzPoClient:
         mes_str = str(mes).zfill(2)
         anio_str = str(anio)
         data = {"anio": anio_str, "mes": mes_str}
-        
+
         if self.use_async:
             raise RuntimeError("Use aostener_ediciones() in async mode")
-        
+
         html = self._post(data)
         return self._parse(html)
 
@@ -88,10 +92,11 @@ class VeracruzPoClient:
         mes_str = str(mes).zfill(2)
         anio_str = str(anio)
         data = {"anio": anio_str, "mes": mes_str}
-        
+
         if not self.use_async:
-            raise RuntimeError("Client must be initialized with use_async=True")
-            
+            raise RuntimeError(
+                "Client must be initialized with use_async=True")
+
         html = await self._apost(data)
         return self._parse(html)
 

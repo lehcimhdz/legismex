@@ -115,7 +115,8 @@ class SonoraGaceta(BaseModel):
     def from_api(cls, data: dict) -> "SonoraGaceta":
         leg = data.get("legislatura") or {}
         periodo_obj = data.get("legislaturaPeriodo") or {}
-        medias = [SonoraGacetaMedia.from_api(m) for m in data.get("mediaGaceta", [])]
+        medias = [SonoraGacetaMedia.from_api(m)
+                  for m in data.get("mediaGaceta", [])]
         return cls(
             id=data["id"],
             nombre=data.get("nombre", ""),

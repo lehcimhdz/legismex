@@ -1,9 +1,11 @@
 from legismex.guanajuato_po.client import GuanajuatoPoClient
 
+
 def imprimir_edicion(e):
     print(f"[{e.fecha}] No. {e.numero}, Parte {e.parte} (Año {e.anio})")
     print(f"  > Desc: {e.descripcion[:100]}...")
     print(f"  > PDF: {e.url_pdf}")
+
 
 def test_guanajuato_po():
     print("=== Guanajuato Periódico Oficial ===")
@@ -27,6 +29,7 @@ def test_guanajuato_po():
 
     except Exception as exc:
         print(f"Error en prueba de P.O.: {exc}")
+
 
 if __name__ == "__main__":
     test_guanajuato_po()

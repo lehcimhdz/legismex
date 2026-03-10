@@ -2,6 +2,7 @@ from datetime import date
 from typing import List, Optional
 from pydantic import BaseModel
 
+
 class BcPoEdicion(BaseModel):
     """Representa una edición del Periódico Oficial de Baja California."""
     tomo: str
@@ -9,6 +10,7 @@ class BcPoEdicion(BaseModel):
     fecha: date
     seccion: str
     url_pdf: str
+
 
 class BcPoResultado(BaseModel):
     """Resultado de búsqueda de ediciones para un periodo específico."""

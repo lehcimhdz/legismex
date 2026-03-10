@@ -13,7 +13,8 @@ class AgsPoEdicion(BaseModel):
     fecha_captura: Optional[str]
     numero: Optional[Union[str, int]]  # Issue number, e.g. "45" or 45
     tomo: Optional[Union[str, int]]
-    edicion: Optional[str]            # "ORDINARIO", "EXTRAORDINARIO", "VESPERTINA"
+    # "ORDINARIO", "EXTRAORDINARIO", "VESPERTINA"
+    edicion: Optional[str]
     seccion: Optional[str]            # "PRIMERA SECCION", etc.
     contenido: Optional[str]          # OCR content/index text
     dependencias: Optional[str]       # HTML list of issuing Autoridades

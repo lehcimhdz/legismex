@@ -1,6 +1,7 @@
 import asyncio
 from legismex import TamaulipasClient
 
+
 def test_sync():
     client = TamaulipasClient()
     print("Obteniendo de forma síncrona la legislatura 66...")
@@ -8,6 +9,7 @@ def test_sync():
     print(f"Total gacetas extruídas: {len(results)}")
     if results:
         print("Ejemplo:", results[0].model_dump())
+
 
 async def test_async():
     client = TamaulipasClient()

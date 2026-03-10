@@ -1,10 +1,12 @@
 from legismex.guerrero_po.client import GuerreroPoClient
 
+
 def imprimir_publicacion(p):
     print(f"[{p.fecha}] {p.categoria}")
     print(f"  > Título: {p.titulo[:100]}...")
     print(f"  > PDF: {p.url_pdf}")
     print(f"  > Detalle: {p.url_detalle}")
+
 
 def test_guerrero_po():
     print("=== Guerrero Periódico Oficial ===")
@@ -28,6 +30,7 @@ def test_guerrero_po():
 
     except Exception as exc:
         print(f"Error en prueba de P.O.: {exc}")
+
 
 if __name__ == "__main__":
     test_guerrero_po()
