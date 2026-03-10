@@ -1,0 +1,43 @@
+name: Reporte de Falla de Scraper
+description: Usa esta plantilla si el código de un estado dejó de extraer datos o lanza error.
+title: "[BUG] <Estado> - <Breve descripción del problema>"
+labels: ["bug", "scraper-falla"]
+body:
+  - type: dropdown
+    id: estado
+    attributes:
+      label: "¿A qué Estado / Dependencia afecta este error?"
+      options:
+        - "Selecciona uno..."
+        - "Aguascalientes"
+        - "Baja California"
+        - "CDMX (Consejería ZK Framework)"
+        - "Senado / Diputados / DOF"
+        - "Otro (Especificar en título)"
+    validations:
+      required: true
+  - type: dropdown
+    id: modulo
+    attributes:
+      label: "¿Es el Congreso o el Periódico Oficial?"
+      options:
+        - "Congreso (Gaceta Parlamentaria / Iniciativas)"
+        - "Periódico Oficial"
+    validations:
+      required: true
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: "Comportamiento Inesperado"
+      description: "¿Qué pasó? ¿Arrojó una excepción Python o trajo lista vacía?"
+      placeholder: "Al correr `verify.py --estado campeche`, la consola se queda colgada y luego lanza HTMLParsingError..."
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: "Salida de Consola (Output)"
+      description: "Copia y pega la salida exacta de la terminal o el stack trace de Python."
+      render: shell
+    validations:
+      required: false

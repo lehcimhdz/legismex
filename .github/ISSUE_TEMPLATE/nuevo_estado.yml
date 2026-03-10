@@ -1,0 +1,28 @@
+name: Solicitar/Agregar Nuevo Estado
+description: Usa esta plantilla si deseas integrar un estado o dependencia que aún no está soportado.
+title: "[NUEVO ESTADO] <Nombre del Estado> - <Congreso/PO>"
+labels: ["enhancement", "nuevo-scraper"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: "URL del Portal Institucional"
+      description: "Por favor provee el enlace donde se publican las Gacetas, PDF's o Periódicos."
+      placeholder: "https://www.congresoestado.gob.mx/gaceta"
+    validations:
+      required: true
+  - type: textarea
+    id: contexto
+    attributes:
+      label: "Contexto Tecnológico (Opcional)"
+      description: "¿Notaste algo especial sobre el sitio? (Usa reCAPTCHA, Cloudflare, Joomla, ASP.NET, etc.)"
+      placeholder: "El listado de leyes está en un iframe escondido y requiere enviar POST con el número de sesión..."
+    validations:
+      required: false
+  - type: checkboxes
+    id: planes
+    attributes:
+      label: "¿Estás dispuesto a intentar programarlo tú mismo?"
+      options:
+        - label: "Sí, planeo abrir un Pull Request siguiendo la guía `CONTRIBUTING.md`"
+        - label: "Solo quiero dejar la sugerencia para que alguien más lo programe."

@@ -1,0 +1,48 @@
+site_name: Legismex
+site_description: Biblioteca en Python para facilitar el acceso a información legislativa en México.
+site_author: Michel Cano
+
+repo_name: lehcimhdz/legismex
+repo_url: https://github.com/lehcimhdz/legismex
+
+theme:
+  name: material
+  language: es
+  palette:
+    # Palette format for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: red
+      toggle:
+        icon: material/brightness-7
+        name: Cambiar a modo oscuro
+
+    # Palette format for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: green
+      accent: red
+      toggle:
+        icon: material/brightness-4
+        name: Cambiar a modo claro
+  features:
+    - navigation.indexes
+    - navigation.sections
+    - content.code.copy
+
+nav:
+  - 🏠 Inicio: index.md
+  - 📖 Tutorial y Ejemplos: tutorial.md
+  - 🛠️ Tipos de Respuesta (Excepciones): excepciones.md
+  - 🤝 Guía de Contribución: contributing.md
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
