@@ -30,6 +30,7 @@ from .aguascalientes_po import AguascalientesPoClient, AgsPoEdicion, AgsPoPublic
 from .campeche import CampecheClient, CampecheGaceta
 from .campeche_po import CampechePoClient, CampechePoPublicacion
 from .chiapas_po import ChiapasPoClient, ChiapasPoEdicion, ChiapasAdministracion
+from .chiapas_gaceta import ChiapasGaceta, ChiapasGacetaClient
 from .qroo import QrooClient, QrooGaceta, QrooDocumento
 from .qroo_po import QrooPoClient, QrooPoPublicacion
 from .colima import (
@@ -234,6 +235,10 @@ __all__ = [
     "ChiapasPoClient",
     "ChiapasPoEdicion",
     "ChiapasAdministracion",
+
+    # Chiapas - Gaceta
+    "ChiapasGaceta",
+    "ChiapasGacetaClient",
 
     # Quintana Roo - Gaceta
     "QrooClient",

@@ -1085,9 +1085,23 @@ Modelos: `TamaulipasPoEdicion` (fecha, tomo, numero, documentos), `TamaulipasPoD
 
 ---
 
-## Paso 39: Periódico Oficial del Estado de Chiapas
+### 🐆 Chiapas - Gaceta Parlamentaria
+El Congreso del Estado de Chiapas renderiza su tabla de gacetas de manera asíncrona mediante un API estática basada en PHP. `legismex` efectúa la llamada interna con los parámetros adecuados, entregándote el historial completo de un solo golpe.
 
-El Periódico Oficial de Chiapas aloja sus publicaciones segregadas por sexenios (`periodico0612` hasta `periodico2430`). El cliente de `legismex.chiapas_po` gestiona la segmentación, extrayendo las páginas automáticamente. 
+```python
+from legismex import ChiapasGacetaClient
+
+client = ChiapasGacetaClient()
+gacetas = client.obtener_gacetas()
+
+print(f"Total de publicaciones extraídas: {len(gacetas)}")
+
+for gaceta in gacetas[:2]:
+    print(f"[{gaceta.periodo}] {gaceta.numero} - {gaceta.titulo}")
+    print(f" -> Enlace: {gaceta.url_pdf}\n")
+```
+
+### 🐆 Chiapas - Periódico Oficial de Chiapas aloja sus publicaciones segregadas por sexenios (`periodico0612` hasta `periodico2430`). El cliente de `legismex.chiapas_po` gestiona la segmentación, extrayendo las páginas automáticamente. 
 
 ```python
 from legismex import ChiapasPoClient, ChiapasAdministracion

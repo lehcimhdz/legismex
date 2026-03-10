@@ -50,6 +50,7 @@
 *   🏺 **Campeche**: Gaceta Parlamentaria (Procesa el histórico simultáneo global de legislaturas extrayendo más de 800 gacetas en una petición estática basada en pestañas).
 *   🏺 **Campeche**: Periódico Oficial del Estado (Lee y pagina el listado HTML de la biblioteca virtual del SIPOEC, infiriendo velozmente la URL de descarga local del PDF a partir del título y fecha sin consultar el API de expedición).
 *   🌊 **San Luis Potosí**: Gaceta Parlamentaria (Procesa el histórico simultáneo global de legislaturas renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
+*   🐆 **Chiapas**: Gaceta Parlamentaria (Obtiene de un solo golpe todas las publicaciones de periodos ordinarios y permanentes enviando el payload HTTP correspondiente a su API AJAX oculta).
 *   🐆 **Chiapas**: Periódico Oficial del Estado (Extrae masivamente publicaciones abarcando décadas usando los endpoints del sexenio y parseando la paginación de respuestas).
 *   🍫 **Tabasco**: Gaceta Parlamentaria (Procesa el histórico simultáneo global renderizado estáticamente desde posts-table-pro usando BeautifulSoup in-memory).
 *   🏝️ **Quintana Roo**: Gaceta Parlamentaria (Integración masiva a la API REST subyacente de su SPA Nuxt.js extrayendo metadatos y documentos concatenados saltando el parseo de HTML).
@@ -472,6 +473,20 @@ async def test_campeche_po():
         print(f"[{pub.fecha}] Doc: {pub.titulo} | Enlace: {pub.url_pdf}")
 
 asyncio.run(test_campeche_po())
+```
+
+### 🐆 Chiapas - Gaceta Parlamentaria
+Obtiene la lista de publicaciones desde los endpoints AJAX del sitio web, permitiendo descargar el `flipbook` o la versión en PDF.
+```python
+from legismex import ChiapasGacetaClient
+
+client = ChiapasGacetaClient()
+gacetas = client.obtener_gacetas()
+print("Gacetas encontradas:", len(gacetas))
+
+for g in gacetas[:2]:
+    print(f"[{g.anio}] {g.titulo} - {g.numero} | {g.periodo}")
+    print(f"URL: {g.url_pdf}\n")
 ```
 
 ### 🐆 Chiapas - Periódico Oficial
