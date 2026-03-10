@@ -1,0 +1,33 @@
+name: Publicar en PyPI 📦
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  pypi-publish:
+    name: Subir release a PyPI
+    runs-on: ubuntu-latest
+    
+    # IMPORTANTE: Estos permisos son necesarios para usar OIDC (Trusted Publishing)
+    permissions:
+      id-token: write  
+      contents: read
+    
+    steps:
+    - name: Descargar el código
+      uses: actions/checkout@v4
+      
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+        
+    - name: Instalar dependencias de empaquetado
+      run: python -m pip install build
+      
+    - name: Construir el paquete (Wheel y Tarball)
+      run: python -m build
+      
+    - name: Publicar paquete en PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
