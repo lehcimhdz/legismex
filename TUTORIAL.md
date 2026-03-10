@@ -1630,3 +1630,35 @@ async def main():
 
 asyncio.run(main())
 ```
+
+### Paso 58: Consultar el Periódico Oficial del Estado de Zacatecas
+
+La API del POEZ interactúa mediante JSON puro hacia distintas colecciones de documentos. `ZacatecasPoClient` consolida todo permitiendo extraer periódicos ordinarios, suplementos y todo el marco normativo histórico.
+
+```python
+import asyncio
+from legismex import ZacatecasPoClient
+
+async def probar_zacatecas_po():
+    client = ZacatecasPoClient()
+    
+    # 1. Obtener ediciones ordinarias en un rango
+    ordinarios = await client.a_obtener_ediciones(fecha_inicial="2026-03-01", fecha_final="2026-03-31")
+    print(f"Ordinarios encontrados: {len(ordinarios)}")
+    
+    # 2. Obtener Suplementos
+    suplementos = await client.a_buscar_suplementos()
+    print(f"Suplementos recientes: {len(suplementos)}")
+    
+    # 3. Mostrar la Ley más antigua disponible (última de la lista)
+    leyes = await client.a_buscar_leyes()
+    if leyes:
+        ley_antigua = leyes[-1]
+        print(f"\nLey más antigua:")
+        print(f"Fecha: {ley_antigua.fecha_publicacion}")
+        print(f"Título: {ley_antigua.descripcion}")
+        print(f"Enlace PDF: {ley_antigua.url_pdf}")
+
+if __name__ == "__main__":
+    asyncio.run(probar_zacatecas_po())
+```

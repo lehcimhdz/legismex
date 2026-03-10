@@ -85,6 +85,7 @@ from .bcs_congreso import (
 )
 from .hidalgo_po import HidalgoPoClient, HidalgoPoEdicion, HidalgoPoResultado
 from .zacatecas import ZacatecasClient, ZacatecasGaceta
+from .zacatecas_po import ZacatecasPoClient, ZacatecasPoPublicacion
 
 __all__ = [
     # Gaceta Parlamentaria
@@ -341,4 +342,8 @@ __all__ = [
     # Zacatecas - Congreso
     "ZacatecasClient",
     "ZacatecasGaceta",
+
+    # Zacatecas - PO
+    "ZacatecasPoClient",
+    "ZacatecasPoPublicacion",
 ]
