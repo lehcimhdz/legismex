@@ -18,7 +18,7 @@ class AguascalientesPoClient:
     the present (Ordinario, Extraordinario, Vespertina).
 
     Filters available:
-    - ``fecha_inicio`` / ``fecha_fin``: date range as ``dd/MM/yyyy``
+    - ``fecha_inicio`` / ``fecha_fin``: date range as ``MM/dd/yyyy`` (e.g. 12/31/2024)
     - ``edicion_id``: 0=All, 1=ORDINARIO, 2=EXTRAORDINARIO, 3=VESPERTINA
     - ``seccion_id``: 0=All, 1-10=Secciones 1ª–10ª, 52=Vespertina,
       53-107=Further seccions, 58=Extraordinario
@@ -71,8 +71,8 @@ class AguascalientesPoClient:
         """Fetch one page (500 items) of Periódico Oficial editions.
 
         Args:
-            fecha_inicio:       Start date in ``dd/MM/yyyy`` format. E.g. ``"01/01/2025"``.
-            fecha_fin:          End date in ``dd/MM/yyyy`` format. E.g. ``"31/12/2025"``.
+            fecha_inicio:       Start date in ``MM/dd/yyyy`` format. E.g. ``"12/31/2025"``.
+            fecha_fin:          End date in ``MM/dd/yyyy`` format. E.g. ``"12/31/2025"``.
             edicion_id:         0=All, 1=ORDINARIO, 2=EXTRAORDINARIO, 3=VESPERTINA.
             seccion_id:         0=All; 1–10 for Secciones 1ª–10ª.
             orden_gobierno_id:  Issuing authority ID. None=All.
@@ -90,19 +90,26 @@ class AguascalientesPoClient:
         """
         indice_actual = (pagina - 1) * self.PAGE_SIZE + 1
 
+        # El sitio espera fechas con formato "dd/MM/yyyy 0:0:0"
+        def format_date(d: Optional[str]) -> str:
+            if not d: return ""
+            if " " not in d:
+                return f"{d} 0:0:0"
+            return d
+
         payload = {
-            "fipub": fecha_inicio,
-            "ffpub": fecha_fin,
+            "fipub": format_date(fecha_inicio),
+            "ffpub": format_date(fecha_fin),
             "actualIndice": None,
-            "IdOrdenGobierno": orden_gobierno_id,
+            "IdOrdenGobierno": str(orden_gobierno_id) if orden_gobierno_id else "",
             "IdDependencia": None,
-            "numero": None,
-            "IdEdicion": edicion_id,
-            "IdTipoPublicacion": tipo_publicacion_id,
-            "NombreDocumento": nombre_documento,
-            "IdTomo": 0,
-            "IdSeccion": seccion_id,
-            "Contenido": contenido,
+            "numero": "",
+            "IdEdicion": str(edicion_id or 0),
+            "IdTipoPublicacion": str(tipo_publicacion_id or ""),
+            "NombreDocumento": nombre_documento or "",
+            "IdTomo": "",
+            "IdSeccion": str(seccion_id or 0),
+            "Contenido": contenido or "",
             "indiceActual": indice_actual,
         }
 
