@@ -664,7 +664,7 @@ Al utilizar este cliente, los científicos de datos obtienen URIs determinístic
 
 ## Siguientes Pasos
 
-* Consulta el código fuente de [src/legismex/gaceta/client.py](src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
+* Consulta el código fuente de [src/legismex/gaceta/client.py](https://github.com/lehcimhdz/legismex/blob/main/src/legismex/gaceta/client.py) para ver cómo manejamos los tiempos de respuesta.
 * Si te interesa descargar los PDFs masivamente y extraer su texto interno, revisa bibliotecas como `PyMuPDF` (`fitz`) combinadas con las URL devueltas por nuestro cliente.
 
 ---
