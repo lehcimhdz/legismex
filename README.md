@@ -27,6 +27,7 @@
 *   🌵 **Baja California**: 
     *   Congreso del Estado (`bc_congreso`) — Extracción de iniciativas, posicionamientos y recolección de URLs de PDF con navegación de ASP.NET.
     *   Periódico Oficial del Estado (`bc_po`) — Consultas integradas para POES mensual y descargas desde CDN.
+*   🌴 **Yucatán**: Congreso del Estado (`yucatan_congreso`) — Scraper con simulación de navegación TLS para evadir bloqueos, tabla de Iniciativas completas con anexos.
 *   🌵 **Sonora**: Gaceta Parlamentaria `sonora` (REST API, 7 legislaturas) y Periódico Oficial `sonora_po` (Joomla Scraping, archivo 1981–2026).
 *   🐸 **Guanajuato**: Gaceta Parlamentaria del Congreso del Estado
 *   🐸 **Guanajuato**: Periódico Oficial del Estado
