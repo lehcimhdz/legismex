@@ -38,7 +38,7 @@ class JaliscoPoClient:
             "perPage": elementos_por_pagina
         }
 
-        with httpx.Client(verify=self.verify_ssl) as client:
+        with httpx.Client(verify=self.verify_ssl, follow_redirects=True) as client:
             response = client.get(url, params=params)
             response.raise_for_status()
 
@@ -71,7 +71,7 @@ class JaliscoPoClient:
         url = f"{self.BASE_URL}/public/find"
         params = {"id": id_newspaper}
 
-        with httpx.Client(verify=self.verify_ssl) as client:
+        with httpx.Client(verify=self.verify_ssl, follow_redirects=True) as client:
             response = client.get(url, params=params)
             response.raise_for_status()
 

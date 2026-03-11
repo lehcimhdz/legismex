@@ -16,7 +16,12 @@ class EdomexPoClient:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         }
         self.client = httpx.Client(
-            verify=verify_ssl, timeout=timeout, headers=self.headers)
+            base_url=self.BASE_URL,
+            headers=self.headers,
+            timeout=30.0,
+            verify=False,
+            follow_redirects=True
+        )
 
     def obtener_ediciones_recientes(self) -> List[EdomexPoEdicion]:
         """

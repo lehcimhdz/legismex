@@ -20,6 +20,7 @@ class ChiapasPoClient:
         self.client_kwargs = {
             "verify": False,  # Ignorar validación SSL de sgg.chiapas.gob.mx
             "timeout": 30.0,
+            "follow_redirects": True,
             **kwargs
         }
 

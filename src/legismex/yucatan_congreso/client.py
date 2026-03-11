@@ -25,10 +25,10 @@ class YucatanCongresoClient:
 
     def _get_httpx_ssl_client(self) -> httpx.Client:
         # Yucatán requiere que nos conectemos con HTTP/1.1 para evadir los bloqueos estrictos o WAF
-        return httpx.Client(timeout=self.timeout, verify=False, http1=True, http2=False)
+        return httpx.Client(timeout=self.timeout, verify=False, http1=True, http2=False, follow_redirects=True)
 
     def _get_httpx_ssl_async_client(self) -> httpx.AsyncClient:
-        return httpx.AsyncClient(timeout=self.timeout, verify=False, http1=True, http2=False)
+        return httpx.AsyncClient(timeout=self.timeout, verify=False, http1=True, http2=False, follow_redirects=True)
 
     def _procesar_html(self, html_content: str) -> List[YucatanIniciativa]:
         soup = BeautifulSoup(html_content, "html.parser")

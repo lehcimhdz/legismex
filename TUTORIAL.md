@@ -286,20 +286,26 @@ Aquí mostramos cómo guardar todas las votaciones de un periodo en un archivo E
 ```python
 # Requiere tener instalado pandas: pip install pandas
 import pandas as pd
+from legismex.gaceta import GacetaClient
 
-# 1. Convertimos la lista de objetos Pydantic a una lista de diccionarios
+# 1. Obtener los datos (Ejemplo con votaciones)
+client = GacetaClient()
+periodos = client.get_periodos_votacion()
+ultimo_periodo = periodos[0]
+votaciones = client.get_votaciones_por_periodo(ultimo_periodo.url_base)
+
+# 2. Convertimos la lista de objetos Pydantic a una lista de diccionarios
 datos_para_df = [v.model_dump() for v in votaciones]
-# (Podrías hacer lo mismo para `iniciativas` o `resultados` de búsqueda)
 
-# 2. Creamos el DataFrame de Pandas
+# 3. Creamos el DataFrame de Pandas
 df = pd.DataFrame(datos_para_df)
 
-# 3. Limpiamos un poco los datos (rellenamos valores nulos con 0 para los votos)
+# 4. Limpiamos un poco los datos (rellenamos valores nulos con 0 para los votos)
 df['votos_favor'] = df['votos_favor'].fillna(0)
 df['votos_contra'] = df['votos_contra'].fillna(0)
 df['abstenciones'] = df['abstenciones'].fillna(0)
 
-# 4. Guardamos el resultado en CSV
+# 5. Guardamos el resultado en CSV (o Excel con .to_excel)
 df.to_csv('votaciones_recientes.csv', index=False, encoding='utf-8')
 
 print("\n¡Datos exportados con éxito a 'votaciones_recientes.csv'!")

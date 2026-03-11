@@ -27,7 +27,7 @@ class QueretaroPoClient:
         """
         url_calendario = f"{self.BASE_URL}{anio}.html"
 
-        with httpx.Client(verify=False, timeout=self.timeout) as client:
+        with httpx.Client(verify=False, timeout=self.timeout, follow_redirects=True) as client:
             try:
                 response = client.get(url_calendario)
                 response.raise_for_status()

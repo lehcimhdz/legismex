@@ -105,7 +105,7 @@ class YucatanPoClient:
             f_query = fecha
 
         params = {"f": f_query}
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
+        async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = await client.get(self.URL_DIARIO, params=params, headers=self.headers)
             response.raise_for_status()
             return self._procesar_html(response.text, fecha)

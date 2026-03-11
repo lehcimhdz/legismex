@@ -28,7 +28,7 @@ class NuevoLeonPoClient:
         """
         resultados = []
 
-        with httpx.Client(verify=self.verify_ssl, timeout=self.timeout, headers=self.headers) as client:
+        with httpx.Client(verify=self.verify_ssl, timeout=self.timeout, headers=self.headers, follow_redirects=True) as client:
             response = client.get(self.BASE_URL)
             response.raise_for_status()
 

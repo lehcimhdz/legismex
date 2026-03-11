@@ -16,7 +16,7 @@ class JaliscoClient:
 
     def __init__(self, verify_ssl: bool = False):
         self.verify_ssl = verify_ssl
-        self.client = httpx.Client(verify=self.verify_ssl)
+        self.client = httpx.Client(verify=self.verify_ssl, follow_redirects=True)
 
     def obtener_calendario_eventos(self) -> List[Dict[str, Any]]:
         """

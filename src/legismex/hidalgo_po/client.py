@@ -59,7 +59,7 @@ class HidalgoPoClient:
         """Busca ediciones de forma síncrona."""
         params = self._build_params(
             fecha_desde, fecha_hasta, term, tipo_edicion, page)
-        with httpx.Client(headers=self.headers, timeout=self.timeout) as client:
+        with httpx.Client(headers=self.headers, timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = client.get(self.AJAX_URL, params=params)
             response.raise_for_status()
             return self._process_response(response.json(), page)
@@ -68,7 +68,7 @@ class HidalgoPoClient:
         """Busca ediciones de forma asíncrona."""
         params = self._build_params(
             fecha_desde, fecha_hasta, term, tipo_edicion, page)
-        async with httpx.AsyncClient(headers=self.headers, timeout=self.timeout) as client:
+        async with httpx.AsyncClient(headers=self.headers, timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = await client.get(self.AJAX_URL, params=params)
             response.raise_for_status()
             return self._process_response(response.json(), page)

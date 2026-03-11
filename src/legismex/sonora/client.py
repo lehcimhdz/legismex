@@ -88,8 +88,12 @@ class SonoraClient:
     _EXPAND_DETAIL = "mediaGaceta.media,legislatura"
 
     def __init__(self, **kwargs):
-        self.client_kwargs = {"timeout": 30.0,
-                              "follow_redirects": True, **kwargs}
+        self.client_kwargs = {
+            "timeout": 30.0,
+            "verify": False,
+            "follow_redirects": True,
+            **kwargs,
+        }
 
     def _id_legislatura(self, legislatura: str) -> str:
         """Resuelve una clave legible (ej. 'LXIV') o un UUID directo."""

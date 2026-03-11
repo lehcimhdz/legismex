@@ -15,6 +15,7 @@ class ColimaPoClient:
         self.client_kwargs = {
             "timeout": 30.0,
             "verify": False,  # Ignorar problemas de SSL del sitio web oficial
+            "follow_redirects": True,
             **kwargs
         }
 

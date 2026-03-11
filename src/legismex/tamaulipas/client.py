@@ -20,7 +20,9 @@ class TamaulipasClient:
                 como timeouts, proxies, verificación SSL, etc.
         """
         self.client_kwargs = {
+            "timeout": 30.0,
             "verify": False,  # Ignorar validación SSL
+            "follow_redirects": True,
             **kwargs
         }
 

@@ -20,6 +20,7 @@ class TamaulipasPoClient:
         self.client_kwargs = {
             "verify": False,  # Ignorar validación SSL de .gob.mx si fuera necesario
             "timeout": 30.0,
+            "follow_redirects": True,
             **kwargs
         }
 

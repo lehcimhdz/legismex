@@ -15,6 +15,7 @@ class DurangoPoClient:
         self.client_kwargs = {
             "timeout": 30.0,
             "verify": False,
+            "follow_redirects": True,
             "headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"},
             **kwargs,
         }

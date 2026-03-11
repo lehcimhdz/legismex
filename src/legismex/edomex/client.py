@@ -18,7 +18,12 @@ class EdomexClient:
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
         self.client = httpx.Client(
-            verify=verify_ssl, timeout=timeout, headers=self.headers)
+            base_url=self.BASE_URL,
+            headers=self.headers,
+            timeout=30.0,
+            verify=False,
+            follow_redirects=True
+        )
 
     def obtener_gacetas(self) -> List[EdomexGaceta]:
         """

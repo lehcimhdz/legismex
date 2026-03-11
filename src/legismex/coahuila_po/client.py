@@ -105,7 +105,7 @@ class CoahuilaPoClient:
     def obtener_ediciones(self, anio: int) -> List[CoahuilaPoEdicion]:
         """Extrae todas las publicaciones del P.O. de un año específico de forma Síncrona."""
         params = {"Ano": str(anio)}
-        with httpx.Client(timeout=self.timeout, verify=False) as client:
+        with httpx.Client(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = client.get(
                 self.URL_BUSQUEDA, params=params, headers=self.headers)
             response.raise_for_status()
@@ -116,7 +116,7 @@ class CoahuilaPoClient:
     async def a_obtener_ediciones(self, anio: int) -> List[CoahuilaPoEdicion]:
         """Extrae todas las publicaciones del P.O. de un año específico de forma Asíncrona."""
         params = {"Ano": str(anio)}
-        async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
+        async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = await client.get(self.URL_BUSQUEDA, params=params, headers=self.headers)
             response.raise_for_status()
             response.encoding = 'utf-8'

@@ -95,7 +95,7 @@ class CoahuilaCongresoClient:
         """
         Extrae la primera página de iniciativas (más recientes) síncronamente.
         """
-        with httpx.Client(timeout=self.timeout) as client:
+        with httpx.Client(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = client.get(self.URL_INICIATIVAS, headers=self.headers)
             response.raise_for_status()
             return self._procesar_html(response.text)
@@ -104,7 +104,7 @@ class CoahuilaCongresoClient:
         """
         Extrae la primera página de iniciativas (más recientes) asíncronamente.
         """
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
+        async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = await client.get(self.URL_INICIATIVAS, headers=self.headers)
             response.raise_for_status()
             return self._procesar_html(response.text)

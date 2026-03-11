@@ -128,9 +128,10 @@ class ZacatecasClient:
 
     def __init__(self, **kwargs):
         self.client_kwargs = {
-            "timeout": 30.0,
-            "follow_redirects": True,
+            "timeout": 32.0,
             "verify": False,
+            "follow_redirects": True,
+            "headers": self.headers,
             **kwargs,
         }
 

@@ -139,7 +139,7 @@ class ChihuahuaCongresoClient:
         :param pagina: El número de página (por defecto 1).
         """
         params = {"pag": pagina, "pagina": "gacetas"}
-        with httpx.Client(timeout=self.timeout) as client:
+        with httpx.Client(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = client.get(self.URL_BASE_GACETA,
                                   params=params, headers=self.headers)
             response.raise_for_status()
@@ -148,7 +148,7 @@ class ChihuahuaCongresoClient:
     async def a_obtener_sesiones(self, pagina: int = 1) -> List[ChihuahuaSesion]:
         """Extrae las sesiones de la página indicada asíncronamente."""
         params = {"pag": pagina, "pagina": "gacetas"}
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
+        async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = await client.get(self.URL_BASE_GACETA, params=params, headers=self.headers)
             response.raise_for_status()
             return self._procesar_html(response.text)

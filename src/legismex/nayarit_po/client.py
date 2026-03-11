@@ -72,8 +72,8 @@ class NayaritPoClient:
     def __init__(self, **kwargs):
         self.client_kwargs = {
             "timeout": 30.0,
-            "follow_redirects": True,
             "verify": False,  # Certificado SSL del servidor gubernamental es inválido
+            "follow_redirects": True,
             **kwargs,
         }
 

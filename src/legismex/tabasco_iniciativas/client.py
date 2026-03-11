@@ -18,10 +18,10 @@ class TabascoIniciativasClient:
                 como timeouts, verificación SSL, proxies, etc.
         """
         self.client_kwargs = {
+            "timeout": 35.0,
             "verify": False,
-            # La tabla es pesada al descargar (400+ filas html)
-            "timeout": 45.0,
-            **kwargs
+            "follow_redirects": True,
+            **kwargs,
         }
 
     def _parsear_html(self, html: str, anio_filtro: Optional[int] = None, mes_filtro: Optional[int] = None) -> List[TabascoIniciativa]:

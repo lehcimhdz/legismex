@@ -21,6 +21,7 @@ class CampechePoClient:
         self.client_kwargs = {
             "verify": False,
             "timeout": 30.0,
+            "follow_redirects": True,
             **kwargs
         }
 

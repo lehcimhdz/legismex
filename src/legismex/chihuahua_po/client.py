@@ -109,7 +109,7 @@ class ChihuahuaPoClient:
         if texto:
             params["keys"] = texto
 
-        with httpx.Client(timeout=self.timeout) as client:
+        with httpx.Client(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = client.get(
                 self.URL_BUSCADOR, params=params, headers=self.headers)
             response.raise_for_status()
@@ -125,7 +125,7 @@ class ChihuahuaPoClient:
         if texto:
             params["keys"] = texto
 
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
+        async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True, verify=False) as client:
             response = await client.get(self.URL_BUSCADOR, params=params, headers=self.headers)
             response.raise_for_status()
             return self._procesar_html(response.text)

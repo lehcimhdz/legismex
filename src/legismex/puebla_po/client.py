@@ -62,7 +62,7 @@ class PueblaPoClient:
             "pag": str(pagina)
         }
 
-        with httpx.Client(verify=False, timeout=self.timeout) as client:
+        with httpx.Client(verify=False, timeout=self.timeout, follow_redirects=True) as client:
             response = client.post(self.SEARCH_ENDPOINT,
                                    data=data, headers=self.headers)
             response.raise_for_status()

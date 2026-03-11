@@ -12,6 +12,7 @@ class ZacatecasPoClient:
         self.client_kwargs = {
             "timeout": 30.0,
             "verify": False,  # Frecuentes problemas SSL en sitios gubernamentales
+            "follow_redirects": True,
             **kwargs,
         }
 

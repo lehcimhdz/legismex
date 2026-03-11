@@ -21,8 +21,8 @@ class BcsCongresoClient:
     def __init__(self, **kwargs):
         self.client_kwargs = {
             "timeout": 30.0,
-            "follow_redirects": True,
             "verify": False,  # A veces hay problemas de SSL en sitios gubernamentales
+            "follow_redirects": True,
             **kwargs,
         }
 

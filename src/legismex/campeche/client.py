@@ -16,9 +16,10 @@ class CampecheClient:
             **kwargs: Argumentos adicionales para httpx.Client o AsyncClient.
         """
         self.client_kwargs = {
-            "verify": False,
             "timeout": 30.0,
-            **kwargs
+            "verify": False,
+            "follow_redirects": True,
+            **kwargs,
         }
 
     def _parsear_html(self, html: str) -> List[CampecheGaceta]:

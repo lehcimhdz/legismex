@@ -12,9 +12,10 @@ class QrooClient:
 
     def __init__(self, **kwargs):
         self.client_kwargs = {
-            "verify": False,
             "timeout": 30.0,
-            **kwargs
+            "verify": False,
+            "follow_redirects": True,
+            **kwargs,
         }
 
     def _parsear_gacetas(self, data: List[dict]) -> List[QrooGaceta]:
