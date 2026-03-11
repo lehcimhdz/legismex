@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 
 
 class DofDocumento(BaseModel):
@@ -15,6 +15,7 @@ class DofDocumento(BaseModel):
         description="Secretaría o Entidad específica (ej. SECRETARIA DE GOBERNACION)")
     titulo: str = Field(description="Título o síntesis del decreto o acuerdo")
     url: str = Field(description="URL hacia el documento de la nota detallada")
+    url_pdf: Optional[str] = Field(default=None, description="URL directa hacia el PDF del documento (si está disponible)")
 
 
 class DofEdicion(BaseModel):

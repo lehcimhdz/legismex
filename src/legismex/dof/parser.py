@@ -57,8 +57,17 @@ class DofParser:
             # Buscar Documento
             enlace = tr.find('a', class_='enlaces')
             if enlace and 'nota_detalle.php' in enlace.get('href', ''):
-                url = enlace['href']
+                url_relativa = enlace['href'].strip()
+                # Hacer la URL absoluta
+                if url_relativa.startswith('/'):
+                    url_absoluta = f"https://www.dof.gob.mx{url_relativa}"
+                else:
+                    url_absoluta = f"https://www.dof.gob.mx/{url_relativa}"
+                
                 titulo = enlace.get_text(strip=True)
+
+                # El DOF suele exponer el PDF equivalente cambiando el endpoint
+                url_pdf = url_absoluta.replace("nota_detalle.php", "nota_to_pdf.php")
 
                 documentos.append(
                     DofDocumento(
@@ -66,7 +75,8 @@ class DofParser:
                         organismo=current_poder,
                         dependencia=current_dependencia,
                         titulo=titulo,
-                        url=url
+                        url=url_absoluta,
+                        url_pdf=url_pdf
                     )
                 )
 
