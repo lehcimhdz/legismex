@@ -96,8 +96,8 @@ class GacetaClient:
         legislatura: "66", "65", etc.
         origen: "T" (Todas), "D" (Dictaminadas), "N" (Sin dictaminar)
         """
-        # Según el HTML de muestra el endpoint es dinámico por legislatura
-        url = f"{self.BASE_URL}/gp{legislatura}_b_QEjecutivo.php3"
+        # El endpoint ha sido movido bajo bases estructuradas por legislatura en el servidor
+        url = f"{self.BASE_URL}/base/inis/{legislatura}/gp{legislatura}_b_QEjecutivo.php3"
 
         # En el HTML se usa el método POST
         data = {

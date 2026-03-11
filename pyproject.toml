@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "legismex"
-version = "1.0.3"
+version = "1.0.4"
 description = "Biblioteca en Python para facilitar el trabajo legislativo en México (SIL, Cámara de Diputados, Senado, etc.)"
 readme = "README.md"
 requires-python = ">=3.9"
