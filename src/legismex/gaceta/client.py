@@ -11,7 +11,7 @@ class GacetaClient:
     Cliente para interactuar con la Gaceta Parlamentaria.
     Maneja las peticiones HTTP ignorando errores de SSL obsoletos comunes en sitios gubernamentales.
     """
-    BASE_URL = "http://gaceta.diputados.gob.mx"
+    BASE_URL = "https://gaceta.diputados.gob.mx"
 
     def __init__(self, timeout: float = 30.0):
         self.headers = {
