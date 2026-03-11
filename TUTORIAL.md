@@ -202,6 +202,16 @@ if __name__ == "__main__":
     asyncio.run(obtener_boletines_bcs())
 ```
 
+> [!IMPORTANT]
+> **Error "asyncio.run() cannot be called from a running event loop"**
+> 
+> Si estás ejecutando este código en un **Jupyter Notebook** o **Google Colab**, verás este error. Esto se debe a que el notebook ya tiene un bucle de eventos activo.
+> 
+> **Solución en Notebooks/Colab:** No uses `asyncio.run()`, simplemente llama a la función con `await` directamente en la celda:
+> ```python
+> await obtener_boletines_bcs()
+> ```
+
 ---
 
 ## 6. Proposiciones y Documentos Estáticos (Actas, Acuerdos, Agendas, Asistencias)
