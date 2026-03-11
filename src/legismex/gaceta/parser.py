@@ -138,15 +138,20 @@ class GacetaParser:
             fecha_ext = titulo.split(
                 ',')[-1].strip() if ',' in titulo else titulo
 
+            url_pdf = None
+            if url_origen.endswith('.html'):
+                if '/Gaceta/' in url_origen:
+                    # Convertir fragmentos (ej. 20241016-II-4.html) a tomo completo en /PDF/ (20241016.pdf)
+                    url_pdf = re.sub(r'-[0-9A-Za-z-]+(?=\.html$)', '', url_origen).replace('/Gaceta/', '/PDF/').replace('.html', '.pdf')
+                else:
+                    url_pdf = url_origen.replace('.html', '.pdf')
+
             resultados.append(ResultadoBusqueda(
                 palabra_clave=palabra_clave,
                 fecha=fecha_ext,
                 contexto=contexto,
                 url_origen=url_origen,
-                # En gaceta el PDF usualmente tiene el mismo prefijo que su origin HTML,
-                # ej: .../2025/abr/20250430-X.html -> .../2025/abr/20250430-X.pdf
-                url_pdf=url_origen.replace(
-                    '.html', '.pdf') if url_origen.endswith('.html') else None
+                url_pdf=url_pdf
             ))
 
         return resultados
