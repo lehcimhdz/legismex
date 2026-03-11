@@ -17,7 +17,7 @@ Si aún no tienes instalada la biblioteca, puedes hacerlo directamente desde el 
 Abre tu terminal y ejecuta:
 
 ```bash
-pip install git+https://github.com/lehcimhdz/legismex.git
+pip install legismex
 ```
 
 ## 🌐 Paso 2: Conectarse y Obtener Periodos Legislativos
@@ -81,6 +81,15 @@ if primera_votacion.url_pdf:
 ```
 
 **Nota sobre los datos:** No todas las filas en la Gaceta contienen votos numéricos (algunas pueden ser acuerdos verbales o actas sin votación nominal). En esos casos, los campos de `votos_favor`, `votos_contra` o `abstenciones` serán `None`.
+
+---
+
+> [!WARNING]
+> **Bloqueos en Google Colab y Nubes Extranjeras (AWS, Azure, etc.)**
+> 
+> Muchos servidores gubernamentales en México implementan *firewalls* muy estrictos (Geo-Bloqueo o listas blancas) para evitar ataques automatizados. Por lo tanto, si intentas ejecutar consultas a sitios como la Gaceta Parlamentaria usando **Google Colab**, servidores de Amazon (AWS) en Estados Unidos, o nubes foráneas, es muy probable que te encuentres con un error `ConnectTimeout`.
+> 
+> Las dependencias gubernamentales silenciosamente "dejan en visto" a las IPs de los mega-centros de datos extranjeros. Para asegurar el funcionamiento, recomendamos ejecutar tus scripts **localmente** usando el proveedor de internet de tu oficina o casa (las IPs residenciales mexicanas son admitidas sin problema), o, de ser indispensable la nube, usar proxies residenciales alojados en México.
 
 ---
 

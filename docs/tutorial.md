@@ -17,7 +17,7 @@ Si aún no tienes instalada la biblioteca, puedes hacerlo directamente desde el 
 Abre tu terminal y ejecuta:
 
 ```bash
-pip install git+https://github.com/lehcimhdz/legismex.git
+pip install legismex
 ```
 
 ## 🌐 Paso 2: Conectarse y Obtener Periodos Legislativos

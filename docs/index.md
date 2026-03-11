@@ -13,12 +13,12 @@ Legismex unifica estas interfaces caóticas en modelos `Pydantic` estrictamente 
 Puedes instalar la librería e integrarla a tu proyecto de Ciencia de Datos o de Análisis Político velozmente.
 
 ```bash
-pip install git+https://github.com/lehcimhdz/legismex.git
+pip install legismex
 ```
 
 *Nota: Para extraer documentos protegidos por el gobierno de la CDMX y Puebla:*
 ```bash
-pip install "legismex[consejeria]  @ git+https://github.com/lehcimhdz/legismex.git"
+pip install "legismex[consejeria]"
 playwright install chromium
 ```
 

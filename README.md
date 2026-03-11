@@ -112,23 +112,21 @@ print(f"Top decree: {today_edition.documentos[0].titulo}")
 *   **Instrumentos Legislativos:** Acceso a Actas, Acuerdos, Agendas y Asistencias de forma indexada.
 
 
-## Instalación desde GitHub
+## Instalación Vía PyPI 📦
 
-Si deseas instalar y usar la biblioteca directamente en otro proyecto sin clonarla, puedes hacerlo instalándola mediante `pip` apuntando a tu repositorio de GitHub:
+La forma oficial y recomendada de instalar la biblioteca es mediante `pip`:
 
 ```bash
-pip install git+https://github.com/lehcimhdz/legismex.git
+pip install legismex
 ```
 
 *Nota: Si deseas extraer archivos de la Gaceta Oficial de la Consejería de la CDMX, requieres usar la "instalación avanzada" con `playwright`:*
 ```bash
-pip install "legismex[consejeria] @ git+https://github.com/lehcimhdz/legismex.git"
+pip install "legismex[consejeria]"
 playwright install chromium
 ```
 
-*Nota: Asegúrate de tener Git instalado en el ambiente donde vas a ejecutar el comando `pip install`.*
-
-*(Para desarrollo local)*:
+*(Para desarrollo local o contribución)*:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
