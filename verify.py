@@ -81,7 +81,7 @@ def main():
             pattern = f"verify_{args.estado.lower()}*.py"
 
     search_path = os.path.join(test_dir, pattern)
-    scripts = sorted(glob.glob(search_path))
+    scripts = sorted(s for s in glob.glob(search_path) if "verify_all.py" not in s)
 
     if not scripts:
         print(f"⚠️  No se encontraron pruebas para el patrón: {pattern}")
