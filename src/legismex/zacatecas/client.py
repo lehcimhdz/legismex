@@ -131,7 +131,6 @@ class ZacatecasClient:
             "timeout": 32.0,
             "verify": False,
             "follow_redirects": True,
-            "headers": self.headers,
             **kwargs,
         }
 
