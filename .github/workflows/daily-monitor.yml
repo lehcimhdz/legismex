@@ -40,10 +40,10 @@ jobs:
       with:
         script: |
           // Si el paso anterior fracasa, este bot abrirá un Issue de alerta.
-          github.rest.issues.create({
+          await github.rest.issues.create({
             owner: context.repo.owner,
             repo: context.repo.repo,
             title: '🚨 Alerta: Monitor Diario detectó una caída en un Scraper',
             body: `El monitor automatizado acaba de fallar.\n\nEs altamente probable que el HTML de algún portal del Gobierno haya cambiado de diseño, que haya expirado un certificado SSL, o que tengan protección de Cloudflare activa.\n\nRevisa la pestaña "Actions" de GitHub para ver el \`Traceback\` completo y saber cuál estado está afectado.`,
-            labels: ['bug', 'automated-alert', 'scraper-falla']
+            labels: ['bug']
           })
