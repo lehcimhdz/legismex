@@ -1,3 +1,10 @@
+from .exceptions import (
+    LegismexError,
+    LegismexConnectionError,
+    HTMLParsingError,
+    APIResponseError,
+    DocumentNotFoundError,
+)
 from .gaceta import GacetaClient, PeriodoVotacion, VotacionDetalle, ResultadoBusqueda
 from .senado import SenadoClient
 from .dof import DofClient, DofEdicion
@@ -99,6 +106,13 @@ from .coahuila_congreso import CoahuilaCongresoClient, CoahuilaIniciativa
 from .coahuila_po import CoahuilaPoClient, CoahuilaPoEdicion
 
 __all__ = [
+    # Excepciones tipadas (jerarquía común)
+    "LegismexError",
+    "LegismexConnectionError",
+    "HTMLParsingError",
+    "APIResponseError",
+    "DocumentNotFoundError",
+
     # Durango
     "DurangoGacetaClient",
     "DurangoGaceta",
