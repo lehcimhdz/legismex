@@ -34,7 +34,8 @@ class TlaxcalaPoClient:
 
     def _index_url(self, anio: int) -> str:
         """Return the direct iframe URL for a given year."""
-        return f"{self.INDEX_BASE}/{anio}.php"
+        slug = _SLUG_MAP.get(anio, str(anio))
+        return f"{self.INDEX_BASE}/{slug}.php"
 
     def obtener_ediciones(
         self,
