@@ -82,7 +82,7 @@ class GacetaParser:
             # Extraer conteo de votos
             fav = None
             contra = None
-            abs = None
+            abstenc = None
 
             m_fav = re.search(
                 r'(\d+)\s+votos\s+(en\s+pro|a\s+favor)', texto_puro, re.IGNORECASE)
@@ -95,7 +95,7 @@ class GacetaParser:
             if m_contra:
                 contra = int(m_contra.group(1))
             if m_abs:
-                abs = int(m_abs.group(1))
+                abstenc = int(m_abs.group(1))
 
             votaciones.append(VotacionDetalle(
                 fecha=fecha_text,
@@ -104,7 +104,7 @@ class GacetaParser:
                 url_pdf=url_pdf,
                 votos_favor=fav,
                 votos_contra=contra,
-                abstenciones=abs
+                abstenciones=abstenc
             ))
 
         return votaciones
