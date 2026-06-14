@@ -4,6 +4,7 @@ from .exceptions import (
     HTMLParsingError,
     APIResponseError,
     DocumentNotFoundError,
+    wrap_httpx_errors,
 )
 from .gaceta import GacetaClient, PeriodoVotacion, VotacionDetalle, ResultadoBusqueda
 from .senado import SenadoClient
@@ -112,6 +113,7 @@ __all__ = [
     "HTMLParsingError",
     "APIResponseError",
     "DocumentNotFoundError",
+    "wrap_httpx_errors",
 
     # Durango
     "DurangoGacetaClient",
