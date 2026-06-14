@@ -20,13 +20,17 @@ class CdmxClient:
 
     BASE_URL = "https://www.congresocdmx.gob.mx"
 
-    def __init__(self, use_tqdm: bool = True):
-        self.session = httpx.Client(verify=False, timeout=30.0, follow_redirects=True)
-        self.session.headers.update({
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Language": "es-MX,es;q=0.9,en-US;q=0.8,en;q=0.7",
-        })
+    def __init__(self, use_tqdm: bool = True, verify_ssl: bool = False, timeout: float = 30.0):
+        self.client_kwargs = {
+            "verify": verify_ssl,
+            "timeout": timeout,
+            "follow_redirects": True,
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "Accept-Language": "es-MX,es;q=0.9,en-US;q=0.8,en;q=0.7",
+            },
+        }
         self.use_tqdm = use_tqdm and tqdm is not None
 
     def obtener_gacetas_por_url(self, url: str) -> List[DocumentoCdmx]:
@@ -41,15 +45,16 @@ class CdmxClient:
             else:
                 url = f"{self.BASE_URL}/{url}"
 
-        response = self.session.get(url)
-        response.raise_for_status()
+        with httpx.Client(**self.client_kwargs) as client:
+            response = client.get(url)
+            response.raise_for_status()
 
         return CdmxParser.parse_alertas_pdf(response.text)
 
     def descargar_pdf(self, url_pdf: str, ruta_destino: str) -> Optional[str]:
         """
         Descarga un PDF de gran tamaño desde la URL proporcionada.
-        Muestra una barra de progreso nativa en terminal para mejorar la UX. 
+        Muestra una barra de progreso nativa en terminal para mejorar la UX.
         """
         if not url_pdf.startswith('http'):
             url_pdf = f"{self.BASE_URL}/{url_pdf.lstrip('/')}"
@@ -61,7 +66,8 @@ class CdmxClient:
 
         # Request file as stream
         try:
-            with self.session.stream('GET', url_pdf) as response:
+            with httpx.Client(**self.client_kwargs) as client, \
+                    client.stream('GET', url_pdf) as response:
                 response.raise_for_status()
                 
                 total_size_in_bytes = int(response.headers.get('content-length', 0))
