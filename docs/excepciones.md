@@ -20,16 +20,18 @@ Si deseas blindar tu código en producción sin que tu programa aborte ejecució
 
 ```python
 from legismex import ZacatecasPoClient
-from legismex.exceptions import HTMLParsingError, LegismexConnectionError
+from legismex.exceptions import APIResponseError, LegismexConnectionError
 
 client = ZacatecasPoClient()
 
 try:
-    ediciones = client.obtener_ediciones()
+    ediciones = client.obtener_ediciones("2026-01-01", "2026-03-31")
     print(f"Éxito: {len(ediciones)}")
 
 except LegismexConnectionError:
     print("🚨 El servidor del Gobierno de Zacatecas se cayó. Reintentando...")
-except HTMLParsingError:
-    print("🚨 El Gobierno renovó su página web. Hay que actualizar el scraper.")
+except APIResponseError:
+    print("🚨 La API devolvió un payload inesperado. Revisa el endpoint.")
 ```
+
+> Las excepciones tipadas se lanzan hoy desde los clientes federales (`GacetaClient`, `DofClient`, `SenadoClient`). Los clientes estatales propagan las excepciones de `httpx` (`httpx.RequestError`, `httpx.HTTPStatusError`); puedes capturarlas directamente o envolverlas en tu propio adapter.
