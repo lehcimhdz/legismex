@@ -10,6 +10,11 @@ except ImportError:
 
 from legismex.cdmx.models import DocumentoCdmx
 from legismex.cdmx.parser import CdmxParser
+from legismex.exceptions import (
+    APIResponseError,
+    LegismexConnectionError,
+    wrap_httpx_errors,
+)
 
 
 class CdmxClient:
@@ -45,7 +50,7 @@ class CdmxClient:
             else:
                 url = f"{self.BASE_URL}/{url}"
 
-        with httpx.Client(**self.client_kwargs) as client:
+        with httpx.Client(**self.client_kwargs) as client, wrap_httpx_errors(url):
             response = client.get(url)
             response.raise_for_status()
 
@@ -67,6 +72,7 @@ class CdmxClient:
         # Request file as stream
         try:
             with httpx.Client(**self.client_kwargs) as client, \
+                    wrap_httpx_errors(url_pdf), \
                     client.stream('GET', url_pdf) as response:
                 response.raise_for_status()
                 
@@ -112,7 +118,7 @@ class CdmxClient:
         
                 print(f"¡Descarga exitosa guardada en {ruta_destino}! 🚀")
                 return ruta_destino
-        except httpx.RequestError as e:
+        except (LegismexConnectionError, APIResponseError) as e:
             print(
                 f"Error al conectar o descargar el archivo desde {url_pdf}: {e}")
             return None

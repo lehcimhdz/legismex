@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from typing import List
 import urllib.parse
 from .models import VeracruzPoEdicion
+from legismex.exceptions import wrap_httpx_errors
 
 
 class VeracruzPoClient:
@@ -69,7 +70,7 @@ class VeracruzPoClient:
         anio_str = str(anio)
         data = {"anio": anio_str, "mes": mes_str}
 
-        with httpx.Client(**self.client_kwargs) as client:
+        with httpx.Client(**self.client_kwargs) as client, wrap_httpx_errors(self.BASE_URL):
             response = client.post(self.BASE_URL, data=data)
             response.raise_for_status()
             return self._parse(response.text)
@@ -81,9 +82,10 @@ class VeracruzPoClient:
         data = {"anio": anio_str, "mes": mes_str}
 
         async with httpx.AsyncClient(**self.client_kwargs) as client:
-            response = await client.post(self.BASE_URL, data=data)
-            response.raise_for_status()
-            return self._parse(response.text)
+            with wrap_httpx_errors(self.BASE_URL):
+                response = await client.post(self.BASE_URL, data=data)
+                response.raise_for_status()
+                return self._parse(response.text)
 
     # Backward-compat: nombre anterior (mantener referencias existentes que vivían en el codebase).
     aobtener_ediciones = a_obtener_ediciones

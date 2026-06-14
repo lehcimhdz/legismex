@@ -2,6 +2,7 @@ import httpx
 from bs4 import BeautifulSoup
 from typing import List
 from .models import EdomexGaceta
+from legismex.exceptions import wrap_httpx_errors
 
 
 class EdomexClient:
@@ -31,7 +32,7 @@ class EdomexClient:
             timeout=self.timeout,
             verify=self.verify_ssl,
             follow_redirects=True,
-        ) as client:
+        ) as client, wrap_httpx_errors(url):
             response = client.get(url)
             response.raise_for_status()
 

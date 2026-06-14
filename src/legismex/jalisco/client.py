@@ -7,6 +7,7 @@ from .parser import (
     parse_orden_dia,
     parse_subpuntos
 )
+from legismex.exceptions import wrap_httpx_errors
 
 
 class JaliscoClient:
@@ -27,7 +28,7 @@ class JaliscoClient:
         Retorna una lista de diccionarios, ej: [{'fecha': '2025-10-06', 'tipo': '1'}, ...]
         """
         url = f"{self.BASE_URL}/fechas_eventos.php?nr=1&com=0"
-        with httpx.Client(**self.client_kwargs) as client:
+        with httpx.Client(**self.client_kwargs) as client, wrap_httpx_errors(url):
             response = client.get(url)
             response.raise_for_status()
             return response.json()
@@ -40,8 +41,9 @@ class JaliscoClient:
         with httpx.Client(**self.client_kwargs) as client:
             # 1. Obtener eventos de la fecha
             url_eventos = f"{self.BASE_URL}/datos_eventos.php?fechasel={fecha}&nr=1&com=0"
-            res_evt = client.get(url_eventos)
-            res_evt.raise_for_status()
+            with wrap_httpx_errors(url_eventos):
+                res_evt = client.get(url_eventos)
+                res_evt.raise_for_status()
 
             eventos = parse_eventos_dia(res_evt.text, fecha)
 
@@ -54,7 +56,8 @@ class JaliscoClient:
                 else:
                     continue
 
-                res_orden = client.get(url_orden)
+                with wrap_httpx_errors(url_orden):
+                    res_orden = client.get(url_orden)
                 if res_orden.status_code == 200:
                     puntos_data = parse_orden_dia(res_orden.text)
 
@@ -74,7 +77,8 @@ class JaliscoClient:
                                 url_sub = None
 
                             if url_sub:
-                                res_sub = client.get(url_sub)
+                                with wrap_httpx_errors(url_sub):
+                                    res_sub = client.get(url_sub)
                                 if res_sub.status_code == 200:
                                     punto_obj.documentos = parse_subpuntos(
                                         res_sub.text)
