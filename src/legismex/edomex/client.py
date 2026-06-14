@@ -13,26 +13,27 @@ class EdomexClient:
     BASE_URL = "https://legislacion.congresoedomex.gob.mx"
 
     def __init__(self, verify_ssl: bool = False, timeout: float = 30.0):
+        self.verify_ssl = verify_ssl
+        self.timeout = timeout
         # El sitio puede tardar o bloquear sin User-Agent estándar
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
-        self.client = httpx.Client(
-            base_url=self.BASE_URL,
-            headers=self.headers,
-            timeout=30.0,
-            verify=False,
-            follow_redirects=True
-        )
 
     def obtener_gacetas(self) -> List[EdomexGaceta]:
         """
-        Descarga todos los números de la gaceta parlamentaria publicados 
+        Descarga todos los números de la gaceta parlamentaria publicados
         durante la legislatura actual desde la sección histórica.
         """
         url = f"{self.BASE_URL}/asuntosparlamentarios/gacetaanteriores"
-        response = self.client.get(url)
-        response.raise_for_status()
+        with httpx.Client(
+            headers=self.headers,
+            timeout=self.timeout,
+            verify=self.verify_ssl,
+            follow_redirects=True,
+        ) as client:
+            response = client.get(url)
+            response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
         gacetas = []

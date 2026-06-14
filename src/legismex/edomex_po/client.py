@@ -12,16 +12,11 @@ class EdomexPoClient:
     BASE_URL = "https://legislacion.edomex.gob.mx"
 
     def __init__(self, verify_ssl: bool = False, timeout: float = 30.0):
+        self.verify_ssl = verify_ssl
+        self.timeout = timeout
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         }
-        self.client = httpx.Client(
-            base_url=self.BASE_URL,
-            headers=self.headers,
-            timeout=30.0,
-            verify=False,
-            follow_redirects=True
-        )
 
     def obtener_ediciones_recientes(self) -> List[EdomexPoEdicion]:
         """
@@ -29,8 +24,14 @@ class EdomexPoClient:
         Organiza cada edición con sus documentos fraccionados y su url global si existe.
         """
         url = f"{self.BASE_URL}/ve_periodico_oficial"
-        response = self.client.get(url)
-        response.raise_for_status()
+        with httpx.Client(
+            headers=self.headers,
+            timeout=self.timeout,
+            verify=self.verify_ssl,
+            follow_redirects=True,
+        ) as client:
+            response = client.get(url)
+            response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
         ediciones = []
