@@ -1,9 +1,9 @@
 import httpx
 from typing import Optional, Dict
-from datetime import datetime
 
 from legismex.dof.models import DofEdicion
 from legismex.dof.parser import DofParser
+from legismex.exceptions import wrap_httpx_errors
 
 
 class DofClient:
@@ -42,17 +42,12 @@ class DofClient:
         """
         url = f"{self.BASE_URL}/index.php"
 
-        try:
-            with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
-                response = client.get(url)
-                response.raise_for_status()
-
-                html_content = response.text
-                return DofParser.parse_edicion_dia(html_content, fecha_edicion=date_label)
-
-        except httpx.HTTPStatusError as exc:
-            raise Exception(
-                f"HTTP error {exc.response.status_code} - al consultar el DOF: {url}")
-        except httpx.RequestError as exc:
-            raise Exception(
-                f"Error de red al conectar con el servidor del DOF: {exc}")
+        with httpx.Client(
+            timeout=self.timeout,
+            headers=self.headers,
+            verify=self._verify_ssl,
+            follow_redirects=True,
+        ) as client, wrap_httpx_errors(url):
+            response = client.get(url)
+            response.raise_for_status()
+            return DofParser.parse_edicion_dia(response.text, fecha_edicion=date_label)

@@ -1,11 +1,10 @@
 import httpx
-from typing import Optional
-from typing import List, Dict
-import re
+from typing import Optional, List, Dict
 from bs4 import BeautifulSoup
 
 from legismex.senado.models import GacetaSenado, ReferenciaGaceta
 from legismex.senado.parser import SenadoParser
+from legismex.exceptions import wrap_httpx_errors
 
 
 class SenadoClient:
@@ -46,20 +45,15 @@ class SenadoClient:
         """
         url = f"{self.BASE_URL}/{legislatura}/gaceta_del_senado"
 
-        try:
-            with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
-                response = client.get(url)
-                response.raise_for_status()
-
-                html_content = response.text
-                return SenadoParser.parse_gaceta_dia(html_content)
-
-        except httpx.HTTPStatusError as exc:
-            raise Exception(
-                f"HTTP error {exc.response.status_code} - al consultar la Gaceta del Senado: {url}")
-        except httpx.RequestError as exc:
-            raise Exception(
-                f"Error de red al conectar con el servidor del Senado: {exc}")
+        with httpx.Client(
+            timeout=self.timeout,
+            headers=self.headers,
+            verify=self._verify_ssl,
+            follow_redirects=True,
+        ) as client, wrap_httpx_errors(url):
+            response = client.get(url)
+            response.raise_for_status()
+            return SenadoParser.parse_gaceta_dia(response.text)
 
     def obtener_gaceta_por_url(self, url: str) -> GacetaSenado:
         """
@@ -71,20 +65,15 @@ class SenadoClient:
         if not url.startswith("http"):
             url = f"{self.BASE_URL}{url}"
 
-        try:
-            with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
-                response = client.get(url)
-                response.raise_for_status()
-
-                html_content = response.text
-                return SenadoParser.parse_gaceta_dia(html_content)
-
-        except httpx.HTTPStatusError as exc:
-            raise Exception(
-                f"HTTP error {exc.response.status_code} - al consultar la Gaceta del Senado: {url}")
-        except httpx.RequestError as exc:
-            raise Exception(
-                f"Error de red al conectar con el servidor del Senado: {exc}")
+        with httpx.Client(
+            timeout=self.timeout,
+            headers=self.headers,
+            verify=self._verify_ssl,
+            follow_redirects=True,
+        ) as client, wrap_httpx_errors(url):
+            response = client.get(url)
+            response.raise_for_status()
+            return SenadoParser.parse_gaceta_dia(response.text)
 
     def get_calendario_gacetas(self, legislatura: str = "66", year: Optional[int] = None, month: Optional[int] = None) -> List[ReferenciaGaceta]:
         """
@@ -101,43 +90,40 @@ class SenadoClient:
         else:
             url = f"{self.BASE_URL}/{legislatura}/gaceta_del_senado/calendario"
 
-        try:
-            with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
-                response = client.get(url)
-                response.raise_for_status()
+        with httpx.Client(
+            timeout=self.timeout,
+            headers=self.headers,
+            verify=self._verify_ssl,
+            follow_redirects=True,
+        ) as client, wrap_httpx_errors(url):
+            response = client.get(url)
+            response.raise_for_status()
 
-                soup = BeautifulSoup(response.text, 'html.parser')
-                referencias = []
+        soup = BeautifulSoup(response.text, 'html.parser')
+        referencias = []
 
-                # Aislar tabla calendario
-                filas = soup.select('table.calendario tbody tr td a')
-                for a in filas:
-                    href = a.get('href', '')
-                    if not href:
-                        continue
+        # Aislar tabla calendario
+        filas = soup.select('table.calendario tbody tr td a')
+        for a in filas:
+            href = a.get('href', '')
+            if not href:
+                continue
 
-                    # Normalizar a absoluto
-                    if not href.startswith("http"):
-                        href = f"{self.BASE_URL}{href}" if href.startswith(
-                            "/") else f"{self.BASE_URL}/{href}"
+            # Normalizar a absoluto
+            if not href.startswith("http"):
+                href = f"{self.BASE_URL}{href}" if href.startswith(
+                    "/") else f"{self.BASE_URL}/{href}"
 
-                    dia_texto = a.get_text(strip=True)
-                    descripcion = a.get('title', '') or a.parent.get(
-                        'title', '') or dia_texto
+            dia_texto = a.get_text(strip=True)
+            descripcion = a.get('title', '') or a.parent.get(
+                'title', '') or dia_texto
 
-                    referencias.append(
-                        ReferenciaGaceta(
-                            fecha=dia_texto,
-                            url=href,
-                            descripcion=descripcion
-                        )
-                    )
+            referencias.append(
+                ReferenciaGaceta(
+                    fecha=dia_texto,
+                    url=href,
+                    descripcion=descripcion
+                )
+            )
 
-                return referencias
-
-        except httpx.HTTPStatusError as exc:
-            raise Exception(
-                f"HTTP error {exc.response.status_code} - al consultar el calendario del Senado: {url}")
-        except httpx.RequestError as exc:
-            raise Exception(
-                f"Error de red al conectar con el servidor del Senado: {exc}")
+        return referencias

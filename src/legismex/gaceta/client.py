@@ -1,9 +1,9 @@
 import httpx
 from typing import Optional, Dict, List
-from bs4 import BeautifulSoup
 
 from .models import PeriodoVotacion, VotacionDetalle, ResultadoBusqueda, Iniciativa, BaseDictamenes, Dictamen, DocumentoGaceta, Proposicion
 from .parser import GacetaParser
+from legismex.exceptions import wrap_httpx_errors
 
 
 class GacetaClient:
@@ -26,9 +26,27 @@ class GacetaClient:
 
     def _get(self, url: str, params: Optional[Dict] = None) -> httpx.Response:
         """Realiza una petición GET genérica soportando redirects y sin check SSL."""
-        with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
+        with httpx.Client(
+            timeout=self.timeout,
+            headers=self.headers,
+            verify=self._verify_ssl,
+            follow_redirects=True,
+        ) as client, wrap_httpx_errors(url):
             response = client.get(url, params=params)
             # La Gaceta acostumbra usar ISO-8859-1 en sus páginas
+            response.encoding = 'iso-8859-1'
+            response.raise_for_status()
+            return response
+
+    def _post(self, url: str, data: Optional[Dict] = None) -> httpx.Response:
+        """Petición POST equivalente a ``_get`` con manejo unificado de errores."""
+        with httpx.Client(
+            timeout=self.timeout,
+            headers=self.headers,
+            verify=self._verify_ssl,
+            follow_redirects=True,
+        ) as client, wrap_httpx_errors(url):
+            response = client.post(url, data=data)
             response.encoding = 'iso-8859-1'
             response.raise_for_status()
             return response
@@ -108,22 +126,16 @@ class GacetaClient:
             'tipo_perio': ''
         }
 
-        with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
-            response = client.post(url, data=data)
-            response.encoding = 'iso-8859-1'
-            response.raise_for_status()
+        response = self._post(url, data=data)
+        iniciativas = GacetaParser.parse_iniciativas(response.text)
 
-            # El parser necesita arreglar URLs relativas tal vez
-            iniciativas = GacetaParser.parse_iniciativas(response.text)
+        for i in iniciativas:
+            if i.url_gaceta and i.url_gaceta.startswith("/"):
+                i.url_gaceta = f"{self.BASE_URL}{i.url_gaceta}"
+            if i.url_pdf and i.url_pdf.startswith("/"):
+                i.url_pdf = f"{self.BASE_URL}{i.url_pdf}"
 
-            # Corregir URLs relativas
-            for i in iniciativas:
-                if i.url_gaceta and i.url_gaceta.startswith("/"):
-                    i.url_gaceta = f"{self.BASE_URL}{i.url_gaceta}"
-                if i.url_pdf and i.url_pdf.startswith("/"):
-                    i.url_pdf = f"{self.BASE_URL}{i.url_pdf}"
-
-            return iniciativas
+        return iniciativas
 
     def obtener_bases_dictamenes(self) -> List[BaseDictamenes]:
         """
@@ -158,27 +170,16 @@ class GacetaClient:
             "texto": palabra_clave
         }
 
-        try:
-            with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
-                response = client.post(url, data=data)
-                response.encoding = 'iso-8859-1'
-                response.raise_for_status()
+        response = self._post(url, data=data)
+        dictamenes = GacetaParser.parse_dictamenes(response.text)
 
-                # Parsear el HTML a la lista de dictámenes
-                dictamenes = GacetaParser.parse_dictamenes(response.text)
+        for d in dictamenes:
+            if d.url_gaceta and d.url_gaceta.startswith('/'):
+                d.url_gaceta = "https://gaceta.diputados.gob.mx" + d.url_gaceta
+            if d.url_pdf and d.url_pdf.startswith('/'):
+                d.url_pdf = "https://gaceta.diputados.gob.mx" + d.url_pdf
 
-                # Arreglar URLs relativas
-                for d in dictamenes:
-                    if d.url_gaceta and d.url_gaceta.startswith('/'):
-                        d.url_gaceta = "https://gaceta.diputados.gob.mx" + d.url_gaceta
-                    if d.url_pdf and d.url_pdf.startswith('/'):
-                        d.url_pdf = "https://gaceta.diputados.gob.mx" + d.url_pdf
-
-                return dictamenes
-
-        except httpx.RequestError as exc:
-            raise Exception(
-                f"Error de red al conectar con el buscador de dictámenes de la Gaceta: {exc}")
+        return dictamenes
 
     def buscar_proposiciones(self, legislatura: str = "66", palabra_clave: str = "") -> List[Proposicion]:
         """
@@ -188,17 +189,8 @@ class GacetaClient:
         data = {
             "texto": palabra_clave
         }
-        try:
-            with httpx.Client(timeout=self.timeout, headers=self.headers, verify=self._verify_ssl, follow_redirects=True) as client:
-                response = client.post(url, data=data)
-                response.encoding = 'iso-8859-1'
-                response.raise_for_status()
-
-                propos = GacetaParser.parse_proposiciones(response.text)
-                return propos
-        except httpx.RequestError as exc:
-            raise Exception(
-                f"Error al conectar con la Gaceta (Proposiciones): {exc}")
+        response = self._post(url, data=data)
+        return GacetaParser.parse_proposiciones(response.text)
 
     def obtener_actas(self, legislatura: str = "66") -> List[DocumentoGaceta]:
         url = f"https://gaceta.diputados.gob.mx/gp{legislatura}_actas.html"
