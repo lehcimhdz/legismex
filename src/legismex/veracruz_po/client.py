@@ -1,6 +1,6 @@
 import httpx
 from bs4 import BeautifulSoup
-from typing import List, Optional
+from typing import List
 import urllib.parse
 from .models import VeracruzPoEdicion
 
@@ -11,28 +11,16 @@ class VeracruzPoClient:
     BASE_URL = "https://editoraveracruz.gob.mx/gacetas/seleccion.php"
     PDF_BASE_URL = "https://editoraveracruz.gob.mx/gacetas/"
 
-    def __init__(self, use_async: bool = False):
-        self.use_async = use_async
-        self._sync_client = httpx.Client(verify=False, follow_redirects=True)
-        self._async_client = None
-        if self.use_async:
-            self._async_client = httpx.AsyncClient(
-                verify=False, follow_redirects=True)
+    def __init__(self, **kwargs):
+        # Backward-compat: ignora ``use_async`` si lo pasa código viejo.
+        kwargs.pop("use_async", None)
 
-    def _post(self, data: dict) -> str:
-        """Realiza una petición POST de forma síncrona."""
-        response = self._sync_client.post(self.BASE_URL, data=data)
-        response.raise_for_status()
-        return response.text
-
-    async def _apost(self, data: dict) -> str:
-        """Realiza una petición POST de forma asíncrona."""
-        if not self._async_client:
-            self._async_client = httpx.AsyncClient(
-                verify=False, follow_redirects=True)
-        response = await self._async_client.post(self.BASE_URL, data=data)
-        response.raise_for_status()
-        return response.text
+        self.client_kwargs = {
+            "verify": False,
+            "follow_redirects": True,
+            "timeout": 30.0,
+            **kwargs,
+        }
 
     def _parse(self, html: str) -> List[VeracruzPoEdicion]:
         """Extrae las ediciones del Periódico Oficial del HTML retornado por el API."""
@@ -76,32 +64,26 @@ class VeracruzPoClient:
         return ediciones
 
     def obtener_ediciones(self, anio: int | str, mes: int | str) -> List[VeracruzPoEdicion]:
-        """Obtiene las publicaciones de la Gaceta Oficial de Veracruz form un año y mes (1-12)."""
+        """Obtiene las publicaciones de la Gaceta Oficial de Veracruz para un año y mes (1-12)."""
         mes_str = str(mes).zfill(2)
         anio_str = str(anio)
         data = {"anio": anio_str, "mes": mes_str}
 
-        if self.use_async:
-            raise RuntimeError("Use aostener_ediciones() in async mode")
+        with httpx.Client(**self.client_kwargs) as client:
+            response = client.post(self.BASE_URL, data=data)
+            response.raise_for_status()
+            return self._parse(response.text)
 
-        html = self._post(data)
-        return self._parse(html)
-
-    async def aobtener_ediciones(self, anio: int | str, mes: int | str) -> List[VeracruzPoEdicion]:
-        """Obtiene las publicaciones de la Gaceta Oficial de forma asíncrona."""
+    async def a_obtener_ediciones(self, anio: int | str, mes: int | str) -> List[VeracruzPoEdicion]:
+        """Versión asíncrona de :meth:`obtener_ediciones`."""
         mes_str = str(mes).zfill(2)
         anio_str = str(anio)
         data = {"anio": anio_str, "mes": mes_str}
 
-        if not self.use_async:
-            raise RuntimeError(
-                "Client must be initialized with use_async=True")
+        async with httpx.AsyncClient(**self.client_kwargs) as client:
+            response = await client.post(self.BASE_URL, data=data)
+            response.raise_for_status()
+            return self._parse(response.text)
 
-        html = await self._apost(data)
-        return self._parse(html)
-
-    async def close(self):
-        """Cierra el cliente asíncrono si está activo."""
-        if self._async_client:
-            await self._async_client.aclose()
-            self._async_client = None
+    # Backward-compat: nombre anterior (mantener referencias existentes que vivían en el codebase).
+    aobtener_ediciones = a_obtener_ediciones
