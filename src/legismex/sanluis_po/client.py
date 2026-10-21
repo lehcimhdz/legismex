@@ -62,6 +62,10 @@ class SanLuisPoClient:
             Instancia de :class:`SanLuisPoEdicion` que encapsula la lista 
             de :class:`SanLuisPoDocumento`. Si no hay publicaciones ese 
             día, la lista vendrá vacía.
+
+        Los errores HTTP, de conexión, JSON o validación de cualquiera de
+        las dos consultas se propagan para no devolver una edición parcial
+        como si estuviera completa.
         """
         documentos: List[SanLuisPoDocumento] = []
 
@@ -83,21 +87,16 @@ class SanLuisPoClient:
 
         # 2. Petición de Avisos Judiciales
         url_aviso = f"{self.BASE_URL}{self.ENDPOINT_AVISOS.format(fecha=fecha)}"
-        try:
-            data_aviso = self._get(url_aviso)
-            if data_aviso.get("success"):
-                items = data_aviso.get("publicacionesAv", [])
-                for item in items:
-                    if not item.get("id"):
-                        continue
+        data_aviso = self._get(url_aviso)
+        if data_aviso.get("success"):
+            items = data_aviso.get("publicacionesAv", [])
+            for item in items:
+                if not item.get("id"):
+                    continue
 
-                    doc = SanLuisPoDocumento.model_validate(
-                        {**item, "es_aviso": True})
-                    documentos.append(doc)
-        except Exception:
-            # Los avisos podrían fallar (ej. timeout de db o HTTP ratelimiting),
-            # pero no deberíamos crashear la extracción completa
-            pass
+                doc = SanLuisPoDocumento.model_validate(
+                    {**item, "es_aviso": True})
+                documentos.append(doc)
 
         return SanLuisPoEdicion(fecha=fecha, documentos=documentos)
 
